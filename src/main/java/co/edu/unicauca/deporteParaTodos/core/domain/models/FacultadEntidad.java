@@ -19,5 +19,5 @@ import lombok.Setter;
 public class FacultadEntidad {
     @Id
     @Column(name = "fac_nombre")
-    private String fac_nombre;
+    private String nombre;
 }

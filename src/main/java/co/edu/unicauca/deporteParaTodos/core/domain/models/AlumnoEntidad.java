@@ -20,8 +20,8 @@ public class AlumnoEntidad{
     
     @Id
     @Column (name = "alm_codigo", unique = true, length = 20, nullable = false)
-    private String alm_codigo;
+    private String codigo;
     
     @Column(name = "alm_tipo", length = 20, nullable = false)
-    private String alm_tipo;
+    private String tipo;
 }
