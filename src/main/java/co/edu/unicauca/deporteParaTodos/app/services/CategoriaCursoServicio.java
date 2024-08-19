@@ -1,8 +1,5 @@
 package co.edu.unicauca.deporteParaTodos.app.services;
 
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +8,7 @@ import co.edu.unicauca.deporteParaTodos.core.domain.ports.inbound.ICategoriaCurs
 import co.edu.unicauca.deporteParaTodos.core.domain.ports.outbound.database.ICategoriaCursoRepositorio;
 
 @Service
-public class CategoriaCurso implements ICategoriaCursoServicio{
+public class CategoriaCursoServicio implements ICategoriaCursoServicio{
 
     @Autowired
     private ICategoriaCursoRepositorio repoCategoriaCurso;
