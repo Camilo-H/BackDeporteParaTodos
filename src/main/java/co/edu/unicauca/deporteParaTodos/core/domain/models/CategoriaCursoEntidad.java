@@ -6,8 +6,17 @@ import java.sql.Clob;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table (name = "tbl_categoria_curso")
 public class CategoriaCursoEntidad {
@@ -16,8 +25,9 @@ public class CategoriaCursoEntidad {
     private String cat_titulo;
 
     @Column(name = "cat_descripcion", length = 1000, nullable = false)
-    private Clob cat_descripcion;
+    private String cat_descripcion;
 
+    @Lob
     @Column (name = "cat_imagen", nullable = true)
-    private Blob cat_imagen;
+    private byte[] cat_imagen;
 }
