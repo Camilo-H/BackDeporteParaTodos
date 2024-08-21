@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Objects;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Id;
 
 public class GrupoId implements Serializable{
     @Column(name = "GRP_NOMBRE")
