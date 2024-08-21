@@ -4,21 +4,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import co.edu.unicauca.deporteParaTodos.core.domain.models.DeporteEntidad;
-import co.edu.unicauca.deporteParaTodos.core.domain.ports.inbound.IDeporteServicio;
+import co.edu.unicauca.deporteParaTodos.core.domain.models.CoordinadorEntidad;
+import co.edu.unicauca.deporteParaTodos.core.domain.ports.inbound.ICoordinadorServicio;
 import org.springframework.web.bind.annotation.GetMapping;
 
 
 @RestController
 @RequestMapping("api")
-public class DeporteRestControlador {
+public class CoordinadorRestControlador {
     
     @Autowired
-    private IDeporteServicio servicio;
+    private ICoordinadorServicio servicio;
 
-    @GetMapping("/deportes")
-    public Iterable<DeporteEntidad> obtenerDeportes() {
-        return servicio.obtenerDeportes();
+    @GetMapping("/coordinadores")
+    public Iterable<CoordinadorEntidad> obtenerCoordinadores() {
+        return servicio.obtenerCoordinadores();
     }
     
+
 }
