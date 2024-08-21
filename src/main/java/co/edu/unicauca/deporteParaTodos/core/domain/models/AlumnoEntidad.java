@@ -19,9 +19,15 @@ import lombok.Setter;
 public class AlumnoEntidad{
     
     @Id
-    @Column (name = "alm_codigo", unique = true, length = 20, nullable = false)
-    private String codigo;
+    @Column(name="PERF_ID")
+    private String idPerfil;
     
-    @Column(name = "alm_tipo", length = 20, nullable = false)
-    private String tipo;
+    @Column(name="ALM_CODIGO")
+    private String codigoAlumno;
+
+    @Column(name="FAC_NOMBRE")
+    private String nombreFacultad;
+
+    @Column(name="ALM_TIPO")
+    private String tipoAlumno;
 }
