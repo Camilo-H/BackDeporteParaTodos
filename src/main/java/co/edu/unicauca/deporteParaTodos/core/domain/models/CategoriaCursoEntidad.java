@@ -1,8 +1,5 @@
 package co.edu.unicauca.deporteParaTodos.core.domain.models;
 
-import java.sql.Blob;
-import java.sql.Clob;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
