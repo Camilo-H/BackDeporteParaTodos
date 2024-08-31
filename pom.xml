@@ -8,10 +8,10 @@
 		<version>3.2.3</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>co.edu.unicauca.desarrolloprueba</groupId>
-	<artifactId>desarrolloprueba</artifactId>
+	<groupId>co.edu.unicauca.deporteParaTodos</groupId>
+	<artifactId>deporteParaTodos</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>desarrolloprueba</name>
+	<name>deporteParaTodos</name>
 	<description>desarrollo de prueba spring</description>
 	<properties>
 		<java.version>17</java.version>
