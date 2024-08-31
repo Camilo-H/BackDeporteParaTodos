@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import co.edu.unicauca.deporteParaTodos.core.domain.models.ClaseEntidad;
-import co.edu.unicauca.deporteParaTodos.core.domain.ports.inbound.IClaseServicio;
-import co.edu.unicauca.deporteParaTodos.core.domain.ports.outbound.database.IClaseRepositorio;
+import co.edu.unicauca.deporteParaTodos.infraestructure.ports.inbound.IClaseServicio;
+import co.edu.unicauca.deporteParaTodos.infraestructure.ports.outbound.database.IClaseRepositorio;
 
 @Service
 public class ClaseServicio implements IClaseServicio{

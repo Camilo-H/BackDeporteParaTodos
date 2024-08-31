@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import co.edu.unicauca.deporteParaTodos.core.domain.models.FacultadEntidad;
-import co.edu.unicauca.deporteParaTodos.core.domain.ports.inbound.IFacultadServicio;
-import co.edu.unicauca.deporteParaTodos.core.domain.ports.outbound.database.IFacultadRepositorio;
+import co.edu.unicauca.deporteParaTodos.infraestructure.ports.inbound.IFacultadServicio;
+import co.edu.unicauca.deporteParaTodos.infraestructure.ports.outbound.database.IFacultadRepositorio;
 
 @Service
 public class FacultadServicio implements IFacultadServicio{

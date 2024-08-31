@@ -5,7 +5,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.unicauca.deporteParaTodos.core.domain.models.InstructorEntidad;
-import co.edu.unicauca.deporteParaTodos.core.domain.ports.inbound.IInstructorServicio;
+import co.edu.unicauca.deporteParaTodos.infraestructure.ports.inbound.IInstructorServicio;
+
 import org.springframework.web.bind.annotation.GetMapping;
 
 

@@ -5,7 +5,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.unicauca.deporteParaTodos.core.domain.models.HorarioEntidad;
-import co.edu.unicauca.deporteParaTodos.core.domain.ports.inbound.IHorarioServicio;
+import co.edu.unicauca.deporteParaTodos.infraestructure.ports.inbound.IHorarioServicio;
+
 import org.springframework.web.bind.annotation.GetMapping;
 
 

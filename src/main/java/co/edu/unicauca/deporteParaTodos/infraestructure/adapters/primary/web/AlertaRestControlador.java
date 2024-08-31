@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.unicauca.deporteParaTodos.core.domain.models.AlertaEntidad;
-import co.edu.unicauca.deporteParaTodos.core.domain.ports.inbound.IAlertaServicio;
+import co.edu.unicauca.deporteParaTodos.infraestructure.ports.inbound.IAlertaServicio;
 
 @RestController
 @RequestMapping("api")

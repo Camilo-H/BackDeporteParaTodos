@@ -5,7 +5,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.unicauca.deporteParaTodos.core.domain.models.GrupoEntidad;
-import co.edu.unicauca.deporteParaTodos.core.domain.ports.inbound.IGrupoServicio;
+import co.edu.unicauca.deporteParaTodos.infraestructure.ports.inbound.IGrupoServicio;
+
 import org.springframework.web.bind.annotation.GetMapping;
 
 
