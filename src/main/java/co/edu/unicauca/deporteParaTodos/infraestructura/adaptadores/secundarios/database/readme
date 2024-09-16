@@ -1,0 +1,3 @@
+La presente capa, debe contener a los adaptadores asociados a la base de datos,
+sin embargo, debido al uso de JPA, estas implementaciones permanecen ocultas al desarollador,
+para su uso se establecen interfaces (puertos) los cuales se encuentran descritos den los puertos de salida de la presente aplicacion
