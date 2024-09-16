@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IAsistenciaServicio;
+import co.edu.unicauca.deporteParaTodos.aplicacion.puertosEntrada.IAsistenciaServicio;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.AsistenciaEntidad;
 
 @RestController

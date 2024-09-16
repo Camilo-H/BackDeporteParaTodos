@@ -3,8 +3,8 @@ package co.edu.unicauca.deporteParaTodos.dominio.servicios;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IAlumnoServicio;
-import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.baseDatos.IAlumnoRepositorio;
+import co.edu.unicauca.deporteParaTodos.aplicacion.puertosEntrada.IAlumnoServicio;
+import co.edu.unicauca.deporteParaTodos.aplicacion.puertosSalida.baseDatos.IAlumnoRepositorio;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.AlumnoEntidad;
 
 @Service

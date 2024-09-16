@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IDeporteServicio;
+import co.edu.unicauca.deporteParaTodos.aplicacion.puertosEntrada.IDeporteServicio;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.DeporteEntidad;
 
 import org.springframework.web.bind.annotation.GetMapping;
