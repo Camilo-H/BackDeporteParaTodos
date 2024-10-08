@@ -3,9 +3,9 @@ package co.edu.unicauca.deporteParaTodos.dominio.servicios;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import co.edu.unicauca.deporteParaTodos.aplicacion.puertosEntrada.ICoordinadorServicio;
-import co.edu.unicauca.deporteParaTodos.aplicacion.puertosSalida.baseDatos.ICoordinadorRepositorio;
-import co.edu.unicauca.deporteParaTodos.dominio.modelo.CoordinadorEntidad;
+import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.ICoordinadorServicio;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CoordinadorEntidad;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.ICoordinadorRepositorio;
 
 @Service
 public class CoordinadorServico implements ICoordinadorServicio{

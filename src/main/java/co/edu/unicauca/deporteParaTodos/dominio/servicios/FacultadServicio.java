@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import co.edu.unicauca.deporteParaTodos.aplicacion.puertosEntrada.IFacultadServicio;
-import co.edu.unicauca.deporteParaTodos.aplicacion.puertosSalida.baseDatos.IFacultadRepositorio;
-import co.edu.unicauca.deporteParaTodos.dominio.modelo.FacultadEntidad;
+import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IFacultadServicio;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.FacultadEntidad;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IFacultadRepositorio;
 
 @Service
 public class FacultadServicio implements IFacultadServicio{

@@ -1,0 +1,1 @@
+para menejo de excepciones personalizadas, cree una nueva clase que extienda de runtimeExcepcion, o distintas a las del sistema

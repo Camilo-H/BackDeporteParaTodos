@@ -3,9 +3,9 @@ package co.edu.unicauca.deporteParaTodos.dominio.servicios;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import co.edu.unicauca.deporteParaTodos.aplicacion.puertosEntrada.IDeporteServicio;
-import co.edu.unicauca.deporteParaTodos.aplicacion.puertosSalida.baseDatos.IDeporteRepositorio;
-import co.edu.unicauca.deporteParaTodos.dominio.modelo.DeporteEntidad;
+import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IDeporteServicio;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.DeporteEntidad;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IDeporteRepositorio;
 
 @Service
 public class DeporteServicio implements IDeporteServicio{
