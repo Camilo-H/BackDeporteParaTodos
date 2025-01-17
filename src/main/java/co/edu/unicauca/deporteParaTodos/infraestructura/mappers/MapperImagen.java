@@ -9,7 +9,7 @@ import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.e
 
 public class MapperImagen {
 
-    public static ImagenEntidad imagenToentidad(Imagen imagen){
+    public static ImagenEntidad imagenToentidad(Imagen imagen) {
         ImagenEntidad entidad = new ImagenEntidad();
         entidad.setNombre(imagen.getNombre());
         entidad.setLongitud(imagen.getLongitud());
@@ -18,7 +18,7 @@ public class MapperImagen {
         return entidad;
     }
 
-    public static Imagen entidadToImagen(ImagenEntidad entidad){
+    public static Imagen entidadToImagen(ImagenEntidad entidad) {
         Imagen imagen = new Imagen();
         imagen.setId(entidad.getId());
         imagen.setNombre(entidad.getNombre());
@@ -29,40 +29,39 @@ public class MapperImagen {
     }
 
     /***
-     * Convierte manualmente un objeto multiparfile a tipo ImagenDTO, omitiendo el id en el destino.
-     * @param archivo 
+     * Convierte manualmente un objeto multiparfile a tipo ImagenDTO, omitiendo el
+     * id en el destino.
+     * 
+     * @param archivo
      * @return objeto de tipo ImagenDTO con los datos del archivo recibido.
      */
-    public static ImagenDTO multiparfileToImagenDTO(MultipartFile archivo){
-        //validacion de contenido
-        if(
-            archivo==null || 
-            archivo.isEmpty() || 
-            archivo.getSize()==0){
+    public static ImagenDTO multiparfileToImagenDTO(MultipartFile archivo) {
+        // validacion de contenido
+        if (archivo == null ||
+                archivo.isEmpty() ||
+                archivo.getSize() == 0) {
             throw new ArchivoNoConvertibleExcepcion("Archivo vacio");
         }
-        //validacion de nombre
-        if(
-            !(
-                archivo.getContentType().equals("image/jpeg") ||
+        // validacion de nombre
+        if (!(archivo.getContentType().equals("image/jpeg") ||
                 archivo.getContentType().equals("image/png") ||
-                archivo.getContentType().equals("image/webp")
-            )
-        ){
-            throw new ArchivoNoConvertibleExcepcion(archivo.getContentType()+ " es un tipo de archivo no permitido, solo se permiten image/jpeg, image/png, image/webp");
+                archivo.getContentType().equals("image/webp"))) {
+            throw new ArchivoNoConvertibleExcepcion(archivo.getContentType()
+                    + " es un tipo de archivo no permitido, solo se permiten image/jpeg, image/png, image/webp");
         }
-        //validacion de nombre
-        if(archivo.getOriginalFilename()==null || archivo.getOriginalFilename()==""){
+        // validacion de nombre
+        if (archivo.getOriginalFilename() == null || archivo.getOriginalFilename() == "") {
             throw new ArchivoNoConvertibleExcepcion("el archivo no posee un nombre");
         }
-        //TODO: validacion de extension, de momento no lo veo necesario pues ya valido el tipo, sin embargo dejo como recordatorio ante algun imprevisto
+        // TODO: validacion de extension, de momento no lo veo necesario pues ya valido
+        // el tipo, sin embargo dejo como recordatorio ante algun imprevisto
         ImagenDTO dto = new ImagenDTO();
         dto.setNombre(archivo.getOriginalFilename());
         dto.setTipoArchivo(archivo.getContentType());
         dto.setLongitud(archivo.getSize());
-        try{
+        try {
             dto.setDatos(archivo.getBytes());
-        }catch(Exception ex){
+        } catch (Exception ex) {
             throw new ArchivoNoConvertibleExcepcion("ex.getMessage().toString()");
         }
         return dto;

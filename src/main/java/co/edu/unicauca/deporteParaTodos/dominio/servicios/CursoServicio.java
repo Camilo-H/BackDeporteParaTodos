@@ -1,83 +1,61 @@
 package co.edu.unicauca.deporteParaTodos.dominio.servicios;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.ICursoServicio;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.ICursoGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Curso;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.comunes.CursoDTO;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CursoEntidad;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ImagenEntidad;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.ICursoRepositorio;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IImagenRepositorio;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.InsercionFallidaExepcion;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ListadoVacioExcepcion;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
 
 @Service
-public class CursoServicio implements ICursoServicio{
-
-    @Autowired
-    private ICursoRepositorio repoCurso;
-    
-    @Autowired
-    private IImagenRepositorio repoImagen;
+public class CursoServicio implements ICursoServicio {
 
     @Autowired
     private ICursoGateway cursoGateway;
 
     @Override
-    public Iterable<CursoEntidad> obtenerCursos() {
-        cursoGateway.obtenerCursos();
-        return null;
-    }
-
-    @Override
-    public CursoEntidad insertarCurso(CursoDTO datosCurso) {
-        CursoEntidad cursoInsertado = new CursoEntidad();
-        if(datosCurso.getImagen()==null){
-            System.out.println("datos de imagen vacio");
-            return cursoInsertado;
-        }
-        if(repoImagen.existsById(1)){
-            repoImagen.deleteById(1);
-        }
-        ImagenEntidad imagen = new ImagenEntidad();
-        imagen.setId(2);
-        imagen.setNombre(datosCurso.getImagen().getOriginalFilename());
-        imagen.setTipoArchivo(datosCurso.getImagen().getContentType());
-        imagen.setLongitud(datosCurso.getImagen().getSize());
-        try{
-            imagen.setDatos(datosCurso.getImagen().getBytes());
-        }catch(IOException e){
-            System.out.println("no se ha obtenido la imagen");
-            return cursoInsertado;
-        }
-
-        System.out.println(repoImagen.save(imagen));
-        //cursoInsertado = new CursoEntidad(datosCurso.getNombre(),datosCurso.getNombreDeporte(), datosCurso.getTituloCategoria(), 1, datosCurso.getDescripcion());
-        
-        return repoCurso.save(cursoInsertado);
-    }
-
-    @Override
-    public Curso obtenerCurso(String titulo) {
-        return cursoGateway.obtenerCurso(titulo);
-    }
-
-    @Override
     public List<Curso> recuperarCursos() {
-        return cursoGateway.obtenerCursos();
+        List<Curso> cursos = cursoGateway.obtenerCursos();
+        if (cursos.isEmpty()) {
+            throw new ListadoVacioExcepcion("No se encuentran cursos registrados");
+        }
+        return cursos;
     }
 
     @Override
-    public Curso guardarCurso(Curso curso) {
+    @Transactional
+    public Curso insertarCurso(Curso datosCurso) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'guardarCurso'");
+        Curso cursoInsertado = cursoGateway.insertarCurso(null);
+        if (cursoInsertado == null) {
+            throw new InsercionFallidaExepcion("La insercion no se pudo realizar con exito");
+        }
+        return cursoInsertado;
     }
 
-    
-    
+    @Override
+    public Curso obtenerCurso(String nombre) {
+        return cursoGateway.obtenerCurso(nombre)
+                .orElseThrow(() -> new NoExisteExcepcion("El curso con el nombre " + nombre + " no existe"));
+    }
+
+    @Override
+    public Curso actualizarCurso(Curso datCurso) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'actualizarCurso'");
+    }
+
+    @Override
+    public Curso eliminarCurso(String nombre) {
+        // TODO Auto-generated method stub
+        if (!cursoGateway.existeCurso(nombre)) {
+            throw new NoExisteExcepcion("El curso con el nombre " + nombre + " no existe");
+        }
+        return cursoGateway.eliminarCurso(nombre);
+    }
+
 }

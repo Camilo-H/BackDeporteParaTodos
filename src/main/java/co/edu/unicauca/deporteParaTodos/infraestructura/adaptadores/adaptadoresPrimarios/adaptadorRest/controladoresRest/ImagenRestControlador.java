@@ -18,59 +18,63 @@ import co.edu.unicauca.deporteParaTodos.dominio.modelo.Imagen;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.comunes.ImagenDTO;
 import co.edu.unicauca.deporteParaTodos.infraestructura.mappers.MapperImagen;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-
-
 @RestController
-//Notacion a nivel de clase para validacion de los argumentos de los endpoints
-@Validated
+// Notacion a nivel de clase para validacion de los argumentos de los endpoints
+@CrossOrigin(origins = { "*" }, maxAge = 4200, allowCredentials = "false")
 @RequestMapping("api")
+@Validated
 public class ImagenRestControlador {
-    
+
     @Autowired
     private IImagenServicio servicio;
 
-    
-    //Use mapper generico para conversiones directas en los tipos
+    // Use mapper generico para conversiones directas en los tipos
     @Qualifier("modelMapperGenerico")
     @Autowired
     private ModelMapper mapper;
 
     /***
      * Obtiene todas las imagenes en la base de datos
-     * @return Lista obtenida o json error 
+     * 
+     * @return Lista obtenida o json error
      */
     @GetMapping("imagenes")
     public ResponseEntity<List<ImagenDTO>> getImagenes() {
         List<Imagen> resultado = servicio.obtenerImagenes();
-        //se mapean los tipos de datos de Imagen a ImagenDTO para el retorno.
-        List<ImagenDTO> listDTO = mapper.map(resultado, new TypeToken<List<ImagenDTO>>(){}.getType());
-        //objeto de retorno
+        // se mapean los tipos de datos de Imagen a ImagenDTO para el retorno.
+        List<ImagenDTO> listDTO = mapper.map(resultado, new TypeToken<List<ImagenDTO>>() {
+        }.getType());
+        // objeto de retorno
         ResponseEntity<List<ImagenDTO>> response;
-        response = new ResponseEntity<List<ImagenDTO>>(listDTO,HttpStatus.OK);
+        response = new ResponseEntity<List<ImagenDTO>>(listDTO, HttpStatus.OK);
         return response;
     }
 
     @GetMapping("imagen/{id}")
-    public ResponseEntity<ImagenDTO> getImagen(@PathVariable Integer id){
+    public ResponseEntity<ImagenDTO> getImagen(@PathVariable Integer id) {
         Imagen respuesta = servicio.obtenerImagen(id);
         ResponseEntity<ImagenDTO> response;
-        if(respuesta==null){
-            response = new ResponseEntity<ImagenDTO>(new ImagenDTO(),HttpStatus.NO_CONTENT);
+        if (respuesta == null) {
+            response = new ResponseEntity<ImagenDTO>(new ImagenDTO(), HttpStatus.NO_CONTENT);
             return response;
         }
-        //mapeo mediante ModelMapper
+        // mapeo mediante ModelMapper
         ImagenDTO respuestaDTO = mapper.map(respuesta, ImagenDTO.class);
         response = new ResponseEntity<ImagenDTO>(respuestaDTO, HttpStatus.OK);
         return response;
     }
+
     /***
-     * Recibe un archivo imagen sin ser codificado, que es recibido como Multipartfile
+     * Recibe un archivo imagen sin ser codificado, que es recibido como
+     * Multipartfile
+     * 
      * @param imagen archivo
      * @return
      */
@@ -80,28 +84,29 @@ public class ImagenRestControlador {
         ImagenDTO imagenDTO = new ImagenDTO();
         ResponseEntity<ImagenDTO> response = null;
 
-        //Convertir Multiparfil a tipo de dato ImagenDTO, Mapeo manual
+        // Convertir Multiparfil a tipo de dato ImagenDTO, Mapeo manual
         imagenDTO = MapperImagen.multiparfileToImagenDTO(imagen);
-        //Convertir ImagenDTO a Imagen para usar el servicio, mendiante ModelMapper
+        // Convertir ImagenDTO a Imagen para usar el servicio, mendiante ModelMapper
         imagenModelo = mapper.map(imagenDTO, Imagen.class);
         Imagen respuesta = servicio.insertarImagen(imagenModelo);
-        //Convertir respuesta a ImagenDTO para responder el endpoint, uso de ModelMapper
+        // Convertir respuesta a ImagenDTO para responder el endpoint, uso de
+        // ModelMapper
         ImagenDTO respuestaDTO = mapper.map(respuesta, ImagenDTO.class);
-        if(respuesta==null){
+        if (respuesta == null) {
             response = new ResponseEntity<ImagenDTO>(respuestaDTO, HttpStatus.NOT_MODIFIED);
             return response;
         }
-        response = new ResponseEntity<ImagenDTO>(respuestaDTO,HttpStatus.CREATED);
+        response = new ResponseEntity<ImagenDTO>(respuestaDTO, HttpStatus.CREATED);
         return response;
     }
 
     @DeleteMapping("imagen/{id}")
-    public ResponseEntity<ImagenDTO> deleteImagen(@PathVariable Integer id){
+    public ResponseEntity<ImagenDTO> deleteImagen(@PathVariable Integer id) {
         Imagen imagenEliminada = null;
         ResponseEntity<ImagenDTO> response = null;
         imagenEliminada = servicio.eliminarImagen(id);
-        if(imagenEliminada==null){
-            response = new ResponseEntity<>(null,HttpStatus.NOT_MODIFIED);
+        if (imagenEliminada == null) {
+            response = new ResponseEntity<>(null, HttpStatus.NOT_MODIFIED);
             return response;
         }
         ImagenDTO imagenEliminadaDTO = mapper.map(imagenEliminada, ImagenDTO.class);

@@ -1,7 +1,15 @@
 package co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada;
 
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.InscripcionEntidad;
+import java.sql.Timestamp;
+import java.util.List;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Inscripcion;
 
 public interface IInscripcionServicio {
-    public Iterable<InscripcionEntidad> obtenerInscripciones();
+    public List<Inscripcion> obtenerInscripciones();
+
+    public Inscripcion obteneInscripcion(Timestamp fecha);
+
+    public Inscripcion insertarInscripcion(Inscripcion datosInscripcion);
+
+    public Inscripcion eliminarInscripcion(Timestamp fecha);
 }

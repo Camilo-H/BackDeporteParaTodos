@@ -2,8 +2,16 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadores
 
 import java.io.Serializable;
 import java.util.Objects;
-
 import jakarta.persistence.Column;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 
 public class AsistenciaId implements Serializable{
     @Column(name="PERF_ID")

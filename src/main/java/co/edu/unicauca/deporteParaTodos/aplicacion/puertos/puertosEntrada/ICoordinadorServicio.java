@@ -1,7 +1,18 @@
 package co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada;
 
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CoordinadorEntidad;
+import java.util.List;
 
-public interface ICoordinadorServicio{
-    public Iterable<CoordinadorEntidad> obtenerCoordinadores();
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Coordinador;
+
+public interface ICoordinadorServicio {
+
+    public List<Coordinador> obtenerCoordinadores();
+
+    public Coordinador insertarCoordinador(Coordinador datosCoordinador);
+
+    public Coordinador obtenerCoordinador(String coorId);
+
+    public Coordinador actualizarCoordinador(String coordId, Coordinador datosCoordinador);
+
+    public Coordinador eliminarCoordinador(String coordId);
 }

@@ -2,7 +2,13 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadores
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinColumns;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,31 +21,31 @@ import lombok.Setter;
 @NoArgsConstructor
 
 @Entity
-@Table(name="tbl_horario")
+@Table(name = "tbl_horario")
 public class HorarioEntidad {
 
     @Id
-    @Column(name="hr_id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_entidad_horario")
+    @SequenceGenerator(name = "seq_entidad_horario", sequenceName = "SEQ_ID_HORARIO", allocationSize = 1)
+    @Column(name = "hr_id")
     private Integer id;
 
-    @Column(name="grp_nombre")
-    private String grupoNombre;
+    @ManyToOne
+    @JoinColumns({
+            @JoinColumn(name = "GRP_NOMBRE", referencedColumnName = "GRP_NOMBRE"),
+            @JoinColumn(name = "GRP_ANIO", referencedColumnName = "GRP_ANIO"),
+            @JoinColumn(name = "GRP_ITERABLE", referencedColumnName = "GRP_ITERABLE") })
+    private GrupoEntidad grupo;
 
-    @Column(name="grp_anio")
-    private String grupoAnio;
-
-    @Column(name="grp_iterable")
-    private String grupoIterable;
-
-    @Column(name="hr_dia")
+    @Column(name = "hr_dia")
     private String dia;
 
-    @Column(name="hr_horainicio")
+    @Column(name = "hr_horainicio")
     private String horaInicio;
 
-    @Column(name="hr_horafin")
+    @Column(name = "hr_horafin")
     private String horaFin;
 
-    @Column(name="hr_escenario")
+    @Column(name = "hr_escenario")
     private String escenario;
 }

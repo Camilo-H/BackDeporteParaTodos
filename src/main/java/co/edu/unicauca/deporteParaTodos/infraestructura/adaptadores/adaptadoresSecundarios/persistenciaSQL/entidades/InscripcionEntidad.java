@@ -5,6 +5,8 @@ import java.sql.Timestamp;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -12,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import jakarta.persistence.JoinColumns;
 
 @Getter
 @Setter
@@ -19,24 +22,30 @@ import lombok.Setter;
 @AllArgsConstructor
 
 @Entity
-@Table(name="tbl_inscripcion")
+@Table(name = "tbl_inscripcion")
 public class InscripcionEntidad {
     @Id
-    @Column (name = "inscr_fechainscripcion", nullable = false)
+    @Column(name = "inscr_fechainscripcion", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp fechaInscripcion;
 
-    @Column (name = "inscr_fechadesvinculacion", nullable = true)
+    @Column(name = "inscr_fechadesvinculacion", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp fechaDesvinculacion;
 
-    @Column(name = "grp_nombre", nullable = false)
-    private String nombre;
+    @Column(name = "fecha_desvinculacion")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Timestamp fechaDesvinculado;
 
-    @Column(name = "grp_anio", nullable= false)
-    private int anio;
+    @ManyToOne
+    @JoinColumn(name = "perf_id", referencedColumnName = "perf_id")
+    private AlumnoEntidad alumno;
 
-    @Column(name = "grp_iterable", nullable = false)
-    private int iterable;
+    @ManyToOne
+    @JoinColumns({
+            @JoinColumn(name = "GRP_NOMBRE", referencedColumnName = "GRP_NOMBRE"),
+            @JoinColumn(name = "GRP_ANIO", referencedColumnName = "GRP_ANIO"),
+            @JoinColumn(name = "GRP_ITERABLE", referencedColumnName = "GRP_ITERABLE") })
+    private GrupoEntidad grupoInscripcion;
 
 }

@@ -3,19 +3,18 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadores
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.ICursoGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Curso;
-import co.edu.unicauca.deporteParaTodos.dominio.modelo.Imagen;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CursoEntidad;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.GrupoEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ImagenEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.ICursoRepositorio;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IImagenRepositorio;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
 
 @Service
 public class CursoGateway implements ICursoGateway{
@@ -23,76 +22,44 @@ public class CursoGateway implements ICursoGateway{
     @Autowired
     private ICursoRepositorio repoCurso;
 
-    @Autowired
-    private IImagenRepositorio repoImagen;
-
     @Qualifier("modelMapperGenerico")
     @Autowired
     private ModelMapper mapper;
 
     @Override
     public boolean existeCurso(String nombreCurso) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'existeCurso'");
+       return repoCurso.existsById(nombreCurso);
     }
 
-    //TODO: utilizar mapeo
     @Override
     public List<Curso> obtenerCursos() {
-        Iterable<CursoEntidad> respuesta = this.repoCurso.findAll();
-        Curso curso = mapper.map(respuesta, Curso.class);
-        if(curso==null){
-            System.out.println("nullll");
-        }
-        return null;
-        /*Iterable<CursoEntidad> iterable = repoCurso.findAll();
-        List<Curso> list = new ArrayList<Curso>();
-        Curso curso = new Curso();
-        for (CursoEntidad cursoEntidad : iterable) {
-            cursoEntidad.getImagen();
-            curso= new Curso(
-                cursoEntidad.getNombre(), 
-                cursoEntidad.getNombreDeporte(), 
-                cursoEntidad.getTituloCategoria(), 
-                null, 
-                cursoEntidad.getDescripcion()
-            );
-            Optional<ImagenEntidad> imagenOptional = repoImagen.findById(cursoEntidad.getImagen());
-            if(imagenOptional.isPresent()){
-                Imagen imagen = new Imagen(
-                    imagenOptional.get().getId(),
-                    imagenOptional.get().getNombre(),
-                    imagenOptional.get().getTipoArchivo(),
-                    imagenOptional.get().getLongitud(),
-                    imagenOptional.get().getDatos()
-                );
-                curso.setImagen(imagen);
-            }
-            list.add(curso);
-        }
-        return list;*/
+        Iterable<CursoEntidad> respuesta = repoCurso.findAll();
+        List<Curso> cursos = new ArrayList<>();
+        cursos = mapper.map(respuesta, new TypeToken<List<Curso>>(){}.getType());
+        return cursos;
     }
 
-    //TODO: mapeo no esta dando resultado, corregir
     @Override
-    public Curso obtenerCurso(String nombreCurso) {
-        System.out.println("nombre: : : "+nombreCurso);
+    public Optional<Curso> obtenerCurso(String nombreCurso) {
         Optional<CursoEntidad> resultado = repoCurso.findById(nombreCurso);
-        if(!resultado.isPresent()){
-            System.out.println("no resultado");
-            return null;
-        }
-        Curso respuesta = mapper.map(resultado, Curso.class);
-        if(respuesta==null){
-            System.out.println("no conversion");
-        }
-        return respuesta;
+        List<GrupoEntidad> grupos = resultado.get().getGrupos();
+        System.out.println(" ");
+        System.out.println("GRUPO 1 DEL CURSO "+grupos.get(0).getNombre());
+        System.out.println(" ");
+        return resultado.map(cursoEntidad -> mapper.map(cursoEntidad, Curso.class));
+        
     }
 
     @Override
     public Curso insertarCurso(Curso curso) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'insertarCurso'");
+        CursoEntidad entidad = mapper.map(curso, CursoEntidad.class);
+        if (curso.getObjImagen() != null) {
+            ImagenEntidad imagenEntidad = mapper.map(curso.getObjImagen(), ImagenEntidad.class);
+            entidad.setObjImagen(imagenEntidad);
+        }
+        CursoEntidad entidadGuardada = repoCurso.save(entidad);
+        return mapper.map(entidadGuardada, Curso.class);
     }
 
     @Override
@@ -104,7 +71,13 @@ public class CursoGateway implements ICursoGateway{
     @Override
     public Curso eliminarCurso(String nombre) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'eliminarCurso'");
-    }
-    
+        Optional <CursoEntidad> entidadExistente = repoCurso.findById(nombre);
+        if (entidadExistente.isPresent()) {
+            CursoEntidad entidad = entidadExistente.get();
+            repoCurso.delete(entidad);
+            return mapper.map(entidad, Curso.class);
+        }else{
+            throw new NoExisteExcepcion("El curso con el nombre " + nombre + " no existe");
+        }
+    } 
 }

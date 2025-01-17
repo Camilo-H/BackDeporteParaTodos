@@ -1,8 +1,16 @@
 package co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada;
 
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CategoriaCursoEntidad;
+import java.util.List;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Categoria;
 
-public interface ICategoriaCursoServicio {
-    public Iterable<CategoriaCursoEntidad> obtenerCategoriasCurso();
-    public CategoriaCursoEntidad obtenerCategoriaCursoPorId();
+public interface ICategoriaCursoServicio  {
+    public List<Categoria> recuperarCategoriasCurso();
+
+    public Categoria insertarCategoria(Categoria datosCategoria);
+
+    public Categoria obtenerCategoriaCursoPorId(String tituloCategoria);
+
+    public Categoria actualizarCategoria(String titulo, Categoria datosCategoria);
+
+    public Categoria eliminarCategoria(String tituloCategoria);
 }

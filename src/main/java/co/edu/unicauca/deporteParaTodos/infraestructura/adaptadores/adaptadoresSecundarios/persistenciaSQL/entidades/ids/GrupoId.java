@@ -2,9 +2,18 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadores
 
 import java.io.Serializable;
 import java.util.Objects;
-
 import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+//@Embeddable
 public class GrupoId implements Serializable{
     @Column(name = "GRP_NOMBRE")
     private String nombre;

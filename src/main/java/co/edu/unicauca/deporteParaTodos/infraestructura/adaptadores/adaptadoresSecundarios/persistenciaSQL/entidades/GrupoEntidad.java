@@ -1,14 +1,22 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades;
 
-import java.sql.Blob;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ids.GrupoId;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
-import jakarta.persistence.Lob;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,9 +29,12 @@ import lombok.Setter;
 @AllArgsConstructor
 
 @Entity
-@Table(name="tbl_grupo")
+@Table(name = "tbl_grupo")
 @IdClass(value = GrupoId.class)
-public class GrupoEntidad{
+public class GrupoEntidad {
+    /*@EmbeddedId
+    private GrupoId id;*/
+
     @Id
     @Column(name = "GRP_NOMBRE")
     private String nombre;
@@ -36,12 +47,14 @@ public class GrupoEntidad{
     @Column(name = "GRP_ITERABLE")
     private int iterable;
 
-    @Column(name = "CUR_NOMBRE")
-    private String nombreCurso;
+    @ManyToOne
+    @JoinColumn(name = "CUR_NOMBRE", referencedColumnName = "CUR_NOMBRE")
+    //@JsonBackReference
+    private CursoEntidad curso;
 
-    @Lob
-    @Column(name = "GRP_IMAGEN")
-    private Blob imagen;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "GRP_IMAGEN", referencedColumnName = "IMG_ID")
+    private ImagenEntidad imagenGrupo;
 
     @Column(name = "GRP_CUPOS")
     private int cupos;
@@ -54,4 +67,14 @@ public class GrupoEntidad{
 
     @Column(name = "GRP_FECHA_FINALIZACION")
     private Date fechaFinalizacion;
+
+    @OneToMany(mappedBy = "grupo", cascade = CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval = true)
+    @JsonManagedReference
+    private List<HorarioEntidad> horarios = new ArrayList<>();
+
+    @OneToMany(mappedBy = "grupoInscripcion", cascade = CascadeType.ALL,  fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonManagedReference
+    private List<InscripcionEntidad> inscripciones = new ArrayList<>();
+
 }
+// fetch = FetchType.EAGER fetch = FetchType.LAZY,

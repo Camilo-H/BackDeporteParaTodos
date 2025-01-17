@@ -1,7 +1,15 @@
 package co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada;
 
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.FacultadEntidad;
+import java.util.List;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Facultad;
 
 public interface IFacultadServicio {
-    public Iterable<FacultadEntidad> obtenerFacultades();
+
+    public List<Facultad> obtenerFacultades();
+
+    public Facultad obtenerFacultad(String nombre);
+
+    public Facultad insertarFacultad(Facultad datosFacultad);
+
+    public Facultad eliminarFacultad(String nombre);
 }

@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ArchivoNoConvertibleExcepcion;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.InsercionFallidaExepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ListadoVacioExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.YaExisteElementoExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.formatoError.CodigoError;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.formatoError.ErrorUtils;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.formatoError.Error;
@@ -21,13 +23,17 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
 public class RestExceptionHandler {
-
         /***
-         * Captura las excepciones generadas por los argumentos en los endpoint al no coincidir con los constraint establecidos.
-         * Los constraint se encuentran denotados en los tipos de datos DTO, mediante jakarta validation
-         * Para su uso en los endpoints debe establecese la notacion @Validated a nivel de clase y la notacion @Valid a nivel de metodo
+         * Captura las excepciones generadas por los argumentos en los endpoint al no
+         * coincidir con los constraint establecidos.
+         * Los constraint se encuentran denotados en los tipos de datos DTO, mediante
+         * jakarta validation
+         * Para su uso en los endpoints debe establecese la notacion @Validated a nivel
+         * de clase y la notacion @Valid a nivel de metodo
+         * 
          * @param ex excepcion a capturar
-         * @return response entity con la lista de errores o reglas infringidas en los argumentos
+         * @return response entity con la lista de errores o reglas infringidas en los
+         *         argumentos
          */
         @ExceptionHandler(MethodArgumentNotValidException.class)
         public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
@@ -45,49 +51,78 @@ public class RestExceptionHandler {
         /**
          * Captura exception cuando no se encuentran elementos en un listado
          * para su uso lance una exception de tipo ListadoVacioException
+         * 
          * @param req
-         * @param ex excepcion a capturar
+         * @param ex  excepcion a capturar
          * @return
          */
         @ExceptionHandler(ListadoVacioExcepcion.class)
         @ResponseBody
-        public ResponseEntity<Error> GenericException(final HttpServletRequest req,final ListadoVacioExcepcion ex) {
+        public ResponseEntity<Error> GenericException(final HttpServletRequest req, final ListadoVacioExcepcion ex) {
                 final Error error = ErrorUtils.crearError(
-                        CodigoError.LISTADO_VACIO.getCodigo(), 
-                        String.format("%s, %s", CodigoError.LISTADO_VACIO.getLlaveMensaje(),ex.getMessage()), 
-                        HttpStatus.OK.value())
-                        .setUrl(req.getRequestURL().toString())
-                        .setMetodo(req.getMethod());
+                                CodigoError.LISTADO_VACIO.getCodigo(),
+                                String.format("%s, %s", CodigoError.LISTADO_VACIO.getLlaveMensaje(), ex.getMessage()),
+                                HttpStatus.OK.value())
+                                .setUrl(req.getRequestURL().toString())
+                                .setMetodo(req.getMethod());
 
                 return new ResponseEntity<Error>(error, HttpStatus.OK);
         }
 
+        // Cuando intenta buscar un elemento por código y no se encuentra
         @ExceptionHandler(NoExisteExcepcion.class)
-        public ResponseEntity<Error> GenericException(final HttpServletRequest req, final NoExisteExcepcion ex){
+        public ResponseEntity<Error> GenericException(final HttpServletRequest req, final NoExisteExcepcion ex) {
                 final Error error = ErrorUtils.crearError(
-                        ex.getCodigo(),
-                        ex.getLlaveMensaje(),
-                        HttpStatus.NOT_FOUND.value())
-                        .setUrl(req.getRequestURL().toString())
-                        .setMetodo(req.getMethod());
+                                ex.getCodigo(),
+                                ex.getLlaveMensaje(),
+                                HttpStatus.NOT_FOUND.value())
+                                .setUrl(req.getRequestURL().toString())
+                                .setMetodo(req.getMethod());
                 return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
         }
 
         /**
          * Captura excepcion de tipo Archivo no convertible
+         * 
          * @param req
-         * @param ex excepcion a capturar
+         * @param ex  excepcion a capturar
          * @return ResponseEntity con reporte de error generado.
          */
         @ExceptionHandler(ArchivoNoConvertibleExcepcion.class)
-        public ResponseEntity<Error> GenericException(final HttpServletRequest req, final ArchivoNoConvertibleExcepcion ex){
+        public ResponseEntity<Error> GenericException(final HttpServletRequest req,
+                        final ArchivoNoConvertibleExcepcion ex) {
                 final Error error = ErrorUtils.crearError(
-                        ex.getCodigo(),
-                        String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage()),
-                        HttpStatus.BAD_REQUEST.value())
-                        .setUrl(req.getRequestURL().toString())
-                        .setMetodo(req.getMethod());
+                                ex.getCodigo(),
+                                String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage()),
+                                HttpStatus.BAD_REQUEST.value())
+                                .setUrl(req.getRequestURL().toString())
+                                .setMetodo(req.getMethod());
                 return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
         }
 
+        /**
+         * 
+         * 
+         */
+        @ExceptionHandler(InsercionFallidaExepcion.class)
+        public ResponseEntity<Error> GenericException(final HttpServletRequest req, final InsercionFallidaExepcion ex) {
+                final Error error = ErrorUtils.crearError(
+                                ex.getCodigo(),
+                                String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage()),
+                                HttpStatus.NOT_MODIFIED.value())
+                                .setUrl(req.getRequestURL().toString())
+                                .setMetodo(req.getMethod());
+                return new ResponseEntity<Error>(error, HttpStatus.NOT_MODIFIED);
+        }
+
+        @ExceptionHandler(YaExisteElementoExcepcion.class)
+        public ResponseEntity<Error> GenericException(final HttpServletRequest req,
+                        final YaExisteElementoExcepcion ex) {
+                final Error error = ErrorUtils
+                                .crearError(ex.getCodigo(),
+                                                String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage()),
+                                                HttpStatus.CONFLICT.value())
+                                .setUrl(req.getRequestURL().toString()).setMetodo(req.getMethod());
+                return new ResponseEntity<Error>(error, HttpStatus.CONFLICT);
+        }
 }

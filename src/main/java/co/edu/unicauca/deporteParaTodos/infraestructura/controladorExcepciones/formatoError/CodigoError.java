@@ -10,8 +10,10 @@ public enum CodigoError {
         ERROR_GENERICO("GC-0001", "ERROR GENERICO"),
         LISTADO_VACIO("GC-0002", "El listado a retornar se encuentra vacio"),
         NO_EXISTE("GC-0003","No se encuentra registrado el elemento"),
-        ARCHIVO_NO_CONVERTIBLE("GC-0004","El archivo no puede ser transformado");
-        
+        ARCHIVO_NO_CONVERTIBLE("GC-0004","El archivo no puede ser transformado"),
+        INSERCION_FALLIDA("GC-0005", "El elemento no pudo ser insertado en la base de datos"),
+        YA_EXISTE("GC-0006", "Ya existe es mismo registro en el sistema");
+
         private final String codigo;
         private final String llaveMensaje;
 }

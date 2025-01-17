@@ -38,4 +38,6 @@ public class AlertaEntidad {
     
     @Column(name="ALERT_DESCRIPCION")
     private String descripcion;
+
+    
 }
