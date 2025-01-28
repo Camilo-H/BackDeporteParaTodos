@@ -45,7 +45,8 @@ public class MapperImagen {
         // validacion de nombre
         if (!(archivo.getContentType().equals("image/jpeg") ||
                 archivo.getContentType().equals("image/png") ||
-                archivo.getContentType().equals("image/webp"))) {
+                archivo.getContentType().equals("image/webp") ||
+                archivo.getContentType().equals("image/jpg"))) {
             throw new ArchivoNoConvertibleExcepcion(archivo.getContentType()
                     + " es un tipo de archivo no permitido, solo se permiten image/jpeg, image/png, image/webp");
         }

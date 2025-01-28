@@ -21,7 +21,7 @@ public class ImagenDTO {
     private String nombre;
 
     @NotNull(message = "{imagen.tipo.null}")
-    @Pattern(regexp = "(image/jpeg|image/png|image/webp)", message = "{imagen.tipo.tipo}")
+    @Pattern(regexp = "(image/jpeg|image/png|image/webp|image/jpg)", message = "{imagen.tipo.tipo}")
     private String tipoArchivo;
     
     @NotNull(message = "{imagen.longitud.null}")

@@ -78,7 +78,8 @@ public class ImagenRestControlador {
      * @param imagen archivo
      * @return
      */
-    @PostMapping("imagenfile")
+    
+    @PostMapping("/imagenfile")
     public ResponseEntity<ImagenDTO> postImagen(@ModelAttribute MultipartFile imagen) {
         Imagen imagenModelo = new Imagen();
         ImagenDTO imagenDTO = new ImagenDTO();
@@ -100,6 +101,7 @@ public class ImagenRestControlador {
         return response;
     }
 
+
     @DeleteMapping("imagen/{id}")
     public ResponseEntity<ImagenDTO> deleteImagen(@PathVariable Integer id) {
         Imagen imagenEliminada = null;
@@ -114,4 +116,5 @@ public class ImagenRestControlador {
         return response;
     }
 
+    
 }

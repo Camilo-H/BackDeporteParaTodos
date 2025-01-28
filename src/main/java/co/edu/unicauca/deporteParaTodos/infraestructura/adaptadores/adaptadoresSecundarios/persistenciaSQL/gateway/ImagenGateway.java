@@ -36,7 +36,7 @@ public class ImagenGateway implements IImagenGateway {
         list = mapper.map(iterable, new TypeToken<List<Imagen>>() {
         }.getType());
         System.out.println(list.size());
-        return list;
+        return list;  
     }
 
     @Override
