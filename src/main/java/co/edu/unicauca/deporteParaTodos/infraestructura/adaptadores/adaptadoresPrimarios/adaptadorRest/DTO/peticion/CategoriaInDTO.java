@@ -4,8 +4,13 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
-public class CategoriaDTO {
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class CategoriaInDTO {
 
     @NotNull(message = "{categoria.titulo.null}") //no existe el campo, la informacion
     @NotEmpty(message = "{categoria.titulo.empty}") //no se ha digitado nada

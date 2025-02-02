@@ -17,4 +17,6 @@ public interface ICategoriaCursoGateway {
     public Categoria actualizarCategoria(String titulo, Categoria categoria);
 
     public Categoria eliminarCategoria(String nombreCategoria);
+
+    public Categoria registrarCategoria (Categoria datosCategoria);
 }

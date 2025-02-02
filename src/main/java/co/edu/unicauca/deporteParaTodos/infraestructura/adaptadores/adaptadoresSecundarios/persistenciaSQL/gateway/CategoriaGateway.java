@@ -11,6 +11,8 @@ import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresS
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ImagenEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.ICategoriaCursoRepositorio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.YaExisteElementoExcepcion;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.ArrayList;
@@ -67,7 +69,7 @@ public class CategoriaGateway implements ICategoriaCursoGateway {
             throw new NoExisteExcepcion("La categoría no existe.");
         }
         // Obtener la entidad existente o lanzar una excepción si no se encuentra
-        CategoriaCursoEntidad entidadExistente = repoCategoria.findById(titulo) 
+        CategoriaCursoEntidad entidadExistente = repoCategoria.findById(titulo)
                 .orElseThrow(() -> new NoExisteExcepcion("La categoría no existe."));
 
         // Actualizar los datos de la entidad con los datos del modelo
@@ -94,5 +96,22 @@ public class CategoriaGateway implements ICategoriaCursoGateway {
             // Si no existe, puedes lanzar una excepción o retornar null
             throw new NoExisteExcepcion("La categoría con el título " + nombreCategoria + " no existe.");
         }
+    }
+
+    @Override
+    public Categoria registrarCategoria(Categoria datosCategoria) {
+        // TODO Auto-generated method stub
+        if (existeCategoria(datosCategoria.getTitulo())) {
+            throw new YaExisteElementoExcepcion(null);
+        }
+
+        System.out.println( "Longitud de imagen "+ datosCategoria.getTitulo() + "-----" + datosCategoria.getImagen().getLongitud());
+        CategoriaCursoEntidad entidad = mapper.map(datosCategoria, CategoriaCursoEntidad.class);
+        ImagenEntidad imgEntidad = mapper.map(datosCategoria.getImagen(), ImagenEntidad.class);
+        entidad.setObjImagenCategoria(imgEntidad);
+        
+        repoCategoria.save(entidad);
+        Categoria insertada = mapper.map(entidad, Categoria.class);
+        return insertada;
     }
 }

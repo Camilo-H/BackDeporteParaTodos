@@ -14,7 +14,6 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class CursoDTO {
 
     @NotNull(message = "{curso.nombre.null}") // no existe el campo, la informacion

@@ -45,15 +45,4 @@ public class ImagenEntidad {
     // Este lado de la relacion no tiene la columna foranea, esta entidad es foranea
     // por tanto se llama al otro extremo de la relacion, con el nombre del objeto
     // "objImagen"
-    @OneToOne(mappedBy = "objImagen")
-    private CursoEntidad curso;
-
-    @OneToOne(mappedBy = "objImagenCategoria")
-    private CategoriaCursoEntidad categoria;
-
-    @OneToOne(mappedBy = "imagenGrupo")
-    private GrupoEntidad grupo;
-
-    @OneToOne(mappedBy = "perf_imagen")
-    private PerfilEntidad perfil;
 }
