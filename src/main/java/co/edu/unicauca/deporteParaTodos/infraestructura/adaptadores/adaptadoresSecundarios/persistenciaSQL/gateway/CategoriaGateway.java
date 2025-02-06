@@ -7,12 +7,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.ICategoriaCursoGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Categoria;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Imagen;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CategoriaCursoEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ImagenEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.ICategoriaCursoRepositorio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.YaExisteElementoExcepcion;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.ArrayList;
@@ -34,7 +34,6 @@ public class CategoriaGateway implements ICategoriaCursoGateway {
 
     @Override
     public List<Categoria> obtenerCategorias() {
-
         Iterable<CategoriaCursoEntidad> categoriasEntidad = repoCategoria.findAll();
         List<Categoria> categorias = new ArrayList<Categoria>();
         categorias = mapper.map(categoriasEntidad, new TypeToken<List<Categoria>>() {
@@ -100,18 +99,20 @@ public class CategoriaGateway implements ICategoriaCursoGateway {
 
     @Override
     public Categoria registrarCategoria(Categoria datosCategoria) {
-        // TODO Auto-generated method stub
         if (existeCategoria(datosCategoria.getTitulo())) {
             throw new YaExisteElementoExcepcion(null);
         }
 
-        System.out.println( "Longitud de imagen "+ datosCategoria.getTitulo() + "-----" + datosCategoria.getImagen().getLongitud());
-        CategoriaCursoEntidad entidad = mapper.map(datosCategoria, CategoriaCursoEntidad.class);
+        CategoriaCursoEntidad entidadInsertar = mapper.map(datosCategoria, CategoriaCursoEntidad.class);
         ImagenEntidad imgEntidad = mapper.map(datosCategoria.getImagen(), ImagenEntidad.class);
-        entidad.setObjImagenCategoria(imgEntidad);
-        
-        repoCategoria.save(entidad);
-        Categoria insertada = mapper.map(entidad, Categoria.class);
-        return insertada;
+        entidadInsertar.setObjImagenCategoria(imgEntidad);
+        repoCategoria.save(entidadInsertar);
+
+        Categoria categoriacreada = mapper.map(entidadInsertar, Categoria.class);
+        Imagen  ent = categoriacreada.getImagen();
+        System.out.println("--NOMBRE DE CATEGORÍA INSERTADA: "+categoriacreada.getTitulo() +" , "+ categoriacreada.getDescripcion());
+        System.out.println("--ID IMAGEN INSERTADA: "+ ent.getId() + ", "+ ent.getNombre()+ " , "+ ent.getTipoArchivo());
+        System.out.println("--Longitud IMAGEN INSERTADA: "+ categoriacreada.getImagen().getLongitud() );
+        return categoriacreada;
     }
 }

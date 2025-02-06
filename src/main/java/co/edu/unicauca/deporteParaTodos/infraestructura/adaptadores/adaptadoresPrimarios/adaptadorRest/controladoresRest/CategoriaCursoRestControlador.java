@@ -38,9 +38,6 @@ public class CategoriaCursoRestControlador {
     @Autowired
     private ICategoriaCursoServicio servicio;
 
-    @Autowired
-    private ImagenRestControlador imagenRestControlador;
-
     // Use mapper generico para conversiones directas en los tipos
     @Qualifier("modelMapperGenerico")
     @Autowired
@@ -92,8 +89,7 @@ public class CategoriaCursoRestControlador {
     }
 
     @PostMapping("/categoriass")
-    public ResponseEntity<CategoriaDTO> insertarCategoriaOficial(@Valid @ModelAttribute CategoriaInDTO categoriaDTO ) {
-        System.out.println("---- Controlles" + categoriaDTO.getNombre());
+    public ResponseEntity<CategoriaDTO> insertarCategoria(@Valid @ModelAttribute CategoriaInDTO categoriaDTO ) {
         CategoriaDTO respuestaDTO = servicio.registrarCategoria(categoriaDTO);
         return new ResponseEntity<>(respuestaDTO, HttpStatus.CREATED);
     }
@@ -136,53 +132,5 @@ public class CategoriaCursoRestControlador {
         CategoriaDTO categoriaEliminadaDTO = mapper.map(categoriaEliminada, CategoriaDTO.class);
         return new ResponseEntity<CategoriaDTO>(categoriaEliminadaDTO, HttpStatus.OK);
     }
-
-    /*
-     * if (imagen != null && !imagen.isEmpty()) {
-     * Imagen imagenModelo = new Imagen();
-     * ImagenDTO imagenDTO = categoriaDTO.getImagen();
-     * imagenDTO = MapperImagen.multiparfileToImagenDTO(imagen);
-     * imagenModelo = mapper.map(imagenDTO, Imagen.class);
-     * categoriaModelo.setImagen(imagenModelo);
-     * Categoria categoriaInsertada = servicio.insertarCategoria(categoriaModelo);
-     * CategoriaDTO respuestaDTO = mapper.map(categoriaInsertada,
-     * CategoriaDTO.class);
-     * return new ResponseEntity<>(respuestaDTO, HttpStatus.CREATED);
-     * }
-     */
-    /*
-     * @PostMapping("/categorias")
-     * public ResponseEntity<CategoriaDTO> insertarCategoria(@ModelAttribute
-     * CategoriaDTO categoriaDTO) {
-     * try {
-     * ResponseEntity<ImagenDTO> imagenResponse=null;
-     * // Convertir CategoriaDTO a modelo Categoria usando ModelMapper
-     * Categoria categoriaModelo = mapper.map(categoriaDTO, Categoria.class);
-     * // Verificar si CategoriaDTO incluye la imagen
-     * System.out.println("Antes del if");
-     * if (categoriaDTO.getImagen() != null) {
-     * System.out.println("ENTRO A BUSCAR LA IMAGEN");
-     * imagenResponse = imagenRestControlador.postImagen(categoriaDTO.getImagen());
-     * if (imagenResponse.getStatusCode() != HttpStatus.CREATED) {
-     * System.out.println("ALGO SALIO MAL");
-     * return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-     * }
-     * Imagen iamgenModelo = mapper.map(imagenResponse, Imagen.class);
-     * categoriaModelo.setImagen(iamgenModelo);
-     * Categoria categoriaInsertada = servicio.insertarCategoria(categoriaModelo);
-     * CategoriaDTO respuestaDTO = mapper.map(categoriaInsertada,
-     * CategoriaDTO.class);
-     * System.out.println("SE HA CREADO LA CATEGORIA");
-     * return new ResponseEntity<>(respuestaDTO, HttpStatus.CREATED);
-     * }
-     * Categoria categoriaInsertada = servicio.insertarCategoria(categoriaModelo);
-     * CategoriaDTO respuestaDTO = mapper.map(categoriaInsertada,
-     * CategoriaDTO.class);
-     * return new ResponseEntity<>(respuestaDTO, HttpStatus.CREATED);
-     * } catch (Exception ex) {
-     * return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-     * }
-     * }
-     */
 
 }

@@ -6,7 +6,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -42,7 +41,4 @@ public class ImagenEntidad {
     @Lob
     private byte[] datos;
 
-    // Este lado de la relacion no tiene la columna foranea, esta entidad es foranea
-    // por tanto se llama al otro extremo de la relacion, con el nombre del objeto
-    // "objImagen"
 }

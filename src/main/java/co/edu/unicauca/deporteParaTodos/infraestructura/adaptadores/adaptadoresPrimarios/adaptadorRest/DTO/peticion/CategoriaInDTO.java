@@ -15,7 +15,7 @@ public class CategoriaInDTO {
     @NotNull(message = "{categoria.titulo.null}") //no existe el campo, la informacion
     @NotEmpty(message = "{categoria.titulo.empty}") //no se ha digitado nada
     @NotBlank(message = "{categoria.titulo.blank}")
-    private String nombre;
+    private String titulo;
 
     @NotNull(message = "{categoria.descripcion.null}")
     @NotEmpty(message = "{categoria.descripcion.empty}") 

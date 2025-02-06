@@ -2,7 +2,6 @@ package co.edu.unicauca.deporteParaTodos.dominio.servicios;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -83,33 +82,30 @@ public class CategoriaCursoServicio implements ICategoriaCursoServicio {
 
     @Override
     public CategoriaDTO registrarCategoria(CategoriaInDTO datos) {
-        // TODO Auto-generated method stub
-
-        Categoria nuevaCategoria = new Categoria();
-        ImagenDTO imagen = new ImagenDTO();
-        Imagen img;
+        Categoria categoriaModelo = new Categoria();
+        ImagenDTO imagenDTO = new ImagenDTO();
+        Imagen imagenModelo;
+        ImagenDTO dtoimagenRetorno = null;
         if (datos.getImagen() != null || datos.getImagen().isEmpty()) {
-            imagen = MapperImagen.multiparfileToImagenDTO(datos.getImagen());
-            img = mapper.map(imagen, Imagen.class);
-            nuevaCategoria.setImagen(img);
-           
-        }
-        nuevaCategoria.setTitulo(datos.getNombre());
-        nuevaCategoria.setDescripcion(datos.getDescripcion());
+            imagenDTO = MapperImagen.multiparfileToImagenDTO(datos.getImagen());
+            imagenModelo = mapper.map(imagenDTO, Imagen.class);
+            categoriaModelo.setImagen(imagenModelo);
 
-        Categoria regitro = categoriaCursoGateway.registrarCategoria(nuevaCategoria);
-        ImagenDTO dtoimagen = null;
-        if(regitro.getImagen() !=null){
-            dtoimagen = mapper.map(regitro.getImagen(), ImagenDTO.class);
-            System.out.println("******* esta es una vga DTO "+ dtoimagen.getLongitud());
         }
+
+        categoriaModelo.setTitulo(datos.getTitulo());
+        categoriaModelo.setDescripcion(datos.getDescripcion());
+        Categoria regitro = categoriaCursoGateway.registrarCategoria(categoriaModelo);
         
+        if (regitro.getImagen() != null) {
+            dtoimagenRetorno = mapper.map(regitro.getImagen(), ImagenDTO.class);
+            dtoimagenRetorno.setId(regitro.getImagen().getId());
+        }
 
-        CategoriaDTO resp = new CategoriaDTO();
-        resp.setTitulo(regitro.getTitulo());
-        resp.setDescripcion(regitro.getDescripcion());
-        resp.setImagen(dtoimagen);
-
-        return resp;
+        CategoriaDTO catRetorno = new CategoriaDTO();
+        catRetorno.setTitulo(regitro.getTitulo());
+        catRetorno.setDescripcion(regitro.getDescripcion());
+        catRetorno.setImagen(dtoimagenRetorno);
+        return catRetorno;
     }
 }
