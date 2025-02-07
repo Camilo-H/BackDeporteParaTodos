@@ -1,26 +1,48 @@
 package co.edu.unicauca.deporteParaTodos.dominio.servicios;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import co.edu.unicauca.deporteParaTodos.aplicacion.puertosEntrada.IFacultadServicio;
-import co.edu.unicauca.deporteParaTodos.aplicacion.puertosSalida.baseDatos.IFacultadRepositorio;
-import co.edu.unicauca.deporteParaTodos.dominio.modelo.FacultadEntidad;
+import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IFacultadServicio;
+import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IFacultadGateway;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Facultad;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ListadoVacioExcepcion;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
 
 @Service
-public class FacultadServicio implements IFacultadServicio{
+public class FacultadServicio implements IFacultadServicio {
 
     @Autowired
-    private IFacultadRepositorio repoFacultad;
+    private IFacultadGateway facultadGateway;
 
     @Override
-    @Transactional(readOnly = true)
-    public Iterable<FacultadEntidad> obtenerFacultades(){
-        Iterable<FacultadEntidad> facultades = repoFacultad.findAll();
-        /*List<FacultadEntidad> list = new ArrayList<FacultadEntidad>();
-        facultades.forEach(list::add);
-        System.out.println("este es tamaño: "+list.size());*/
+    public List<Facultad> obtenerFacultades() {
+        List<Facultad> facultades = facultadGateway.obtenerFacultades();
+        if (facultades.isEmpty()) {
+            throw new ListadoVacioExcepcion("No hay facultades registradas");
+        }
         return facultades;
     }
+
+    @Override
+    public Facultad obtenerFacultad(String nombre) {
+        return facultadGateway.obtenerFacultad(nombre).orElseThrow(() -> new NoExisteExcepcion());
+    }
+
+    @Override
+    public Facultad insertarFacultad(Facultad datosFacultad) {
+        if (!facultadGateway.existeFacultad(datosFacultad.getNombre())) {
+            throw new NoExisteExcepcion("No existe la facultad");
+        }
+        return facultadGateway.insertarFacultad(datosFacultad);
+    }
+
+    @Override
+    public Facultad eliminarFacultad(String nombre) {
+        if (!facultadGateway.existeFacultad(nombre)) {
+            throw new NoExisteExcepcion("No existe la facultad");
+        }
+        return facultadGateway.eliminarFacultad(nombre);
+    }
+
 }

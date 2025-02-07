@@ -1,22 +1,62 @@
 package co.edu.unicauca.deporteParaTodos.dominio.servicios;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import co.edu.unicauca.deporteParaTodos.aplicacion.puertosEntrada.IPerfilServicio;
-import co.edu.unicauca.deporteParaTodos.aplicacion.puertosSalida.baseDatos.IPerfilRepositorio;
-import co.edu.unicauca.deporteParaTodos.dominio.modelo.PerfilEntidad;
+import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IPerfilServicio;
+import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IperfilGateway;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Perfil;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.InsercionFallidaExepcion;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ListadoVacioExcepcion;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
 
 @Service
-public class PerfilServicio implements IPerfilServicio{
-    
+public class PerfilServicio implements IPerfilServicio {
+
     @Autowired
-    private IPerfilRepositorio repoPerfil;
+    private IperfilGateway perfilGateway;
 
     @Override
-    public Iterable<PerfilEntidad> obtenerPerfiles() {
-        Iterable<PerfilEntidad> perfiles = repoPerfil.findAll();
-        return perfiles;
+    public List<Perfil> obtenerPerfiles() {
+        List<Perfil> listaPerfiles = perfilGateway.obtenerPerfiles();
+        if (listaPerfiles.isEmpty()) {
+            throw new ListadoVacioExcepcion("No hay perfiles registrados");
+        }
+        return listaPerfiles;
+    }
+
+    @Override
+    public Perfil insertarPerfil(Perfil perfil) {
+        Perfil perfilInsertado = perfilGateway.insertarPerfil(perfil);
+        if (perfilInsertado == null) {
+            throw new InsercionFallidaExepcion("No se pudo realizar la insersion");
+        }
+        return perfilInsertado;
+    }
+
+    @Override
+    public Perfil obtenerPerfil(String perfilId) {
+        return perfilGateway.obtenerPerfil(perfilId)
+                .orElseThrow(() -> new NoExisteExcepcion("No existe el perfil con el identificador " + perfilId));
+    }
+
+    @Override
+    public Perfil actualizarPerfil(String perfilId, Perfil datosPerfil) {
+       Optional<Perfil> perfilExistente = perfilGateway.obtenerPerfil(perfilId);
+       if (perfilExistente == null) {
+        throw new NoExisteExcepcion("No existe el perfil con el identificador " + perfilId);
+       }
+       return perfilGateway.actualizarPerfil(perfilId, datosPerfil);
+    }
+
+    @Override
+    public Perfil eliminarPerfil(String perfilId) {
+       if(!perfilGateway.existePerfil(perfilId)){
+        throw new NoExisteExcepcion("No existe el perfil con el identificador " + perfilId);
+       }
+       return perfilGateway.eliminarPerfil(perfilId);
     }
 
 }

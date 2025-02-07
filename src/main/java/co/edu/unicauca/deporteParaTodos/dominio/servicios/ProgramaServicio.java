@@ -1,21 +1,56 @@
 package co.edu.unicauca.deporteParaTodos.dominio.servicios;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import co.edu.unicauca.deporteParaTodos.aplicacion.puertosEntrada.IProgramaServicio;
-import co.edu.unicauca.deporteParaTodos.aplicacion.puertosSalida.baseDatos.IProgramaRepositorio;
-import co.edu.unicauca.deporteParaTodos.dominio.modelo.ProgramaEntidad;
+import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IProgramaServicio;
+import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IProgramaGateway;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Programa;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ListadoVacioExcepcion;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.YaExisteElementoExcepcion;
 
 @Service
-public class ProgramaServicio implements IProgramaServicio{
+public class ProgramaServicio implements IProgramaServicio {
 
     @Autowired
-    private IProgramaRepositorio repoPrograma;
+    private IProgramaGateway programaGateway;
 
     @Override
-    public Iterable<ProgramaEntidad> obtenerProgramas() {
-        return repoPrograma.findAll();
+    public List<Programa> obtenerProgramas() {
+        List<Programa> lista = programaGateway.obtenerProgramas();
+        if (lista.isEmpty()) {
+            throw new ListadoVacioExcepcion("No hay programas registrados");
+        }
+        return lista;
     }
-    
+
+    @Override
+    public Programa obtenerPrograma(String nombrePrograma) {
+        return programaGateway.obtenerPrograma(nombrePrograma)
+                .orElseThrow(() -> new NoExisteExcepcion("No existe el progrma con el nombre " + nombrePrograma));
+    }
+
+    @Override
+    public Programa insertarPrograma(Programa datosPrograma) {
+        if (programaGateway.existePrograma(datosPrograma.getPrg_nombre())) {
+            throw new YaExisteElementoExcepcion("El programa ta está registrado");
+        }
+        return programaGateway.insertarPrograma(datosPrograma);
+    }
+
+    @Override
+    public Programa actualizarPrograma(Programa datosPrograma) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'actualizarPrograma'");
+    }
+
+    @Override
+    public Programa eliminarPrograma(String nombrePrograma) {
+        if (!programaGateway.existePrograma(nombrePrograma)) {
+            throw new NoExisteExcepcion("No existe el progrma con el nombre " + nombrePrograma);
+        }
+        return programaGateway.eliminarPrograma(nombrePrograma);
+    }
+
 }

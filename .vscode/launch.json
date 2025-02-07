@@ -29,6 +29,16 @@
             "projectName": "desarrolloprueba",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-deporteParaTodos<deporteParaTodos>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "co.edu.unicauca.deporteParaTodos.deporteParaTodos",
+            "projectName": "deporteParaTodos",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }
