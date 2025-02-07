@@ -102,17 +102,11 @@ public class CategoriaGateway implements ICategoriaCursoGateway {
         if (existeCategoria(datosCategoria.getTitulo())) {
             throw new YaExisteElementoExcepcion(null);
         }
-
         CategoriaCursoEntidad entidadInsertar = mapper.map(datosCategoria, CategoriaCursoEntidad.class);
         ImagenEntidad imgEntidad = mapper.map(datosCategoria.getImagen(), ImagenEntidad.class);
         entidadInsertar.setObjImagenCategoria(imgEntidad);
-        repoCategoria.save(entidadInsertar);
-
-        Categoria categoriacreada = mapper.map(entidadInsertar, Categoria.class);
-        Imagen  ent = categoriacreada.getImagen();
-        System.out.println("--NOMBRE DE CATEGORÍA INSERTADA: "+categoriacreada.getTitulo() +" , "+ categoriacreada.getDescripcion());
-        System.out.println("--ID IMAGEN INSERTADA: "+ ent.getId() + ", "+ ent.getNombre()+ " , "+ ent.getTipoArchivo());
-        System.out.println("--Longitud IMAGEN INSERTADA: "+ categoriacreada.getImagen().getLongitud() );
+        CategoriaCursoEntidad entidadInsertada = repoCategoria.save(entidadInsertar);
+        Categoria categoriacreada = mapper.map(entidadInsertada, Categoria.class);
         return categoriacreada;
     }
 }
