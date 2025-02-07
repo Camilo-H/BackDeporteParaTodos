@@ -18,5 +18,5 @@ public class CategoriaDTO {
     private ImagenDTO imagen;
 
     //@JsonIgnore
-    private List<CursoDTO> cursos;
+    //private List<CursoDTO> cursos;
 }
