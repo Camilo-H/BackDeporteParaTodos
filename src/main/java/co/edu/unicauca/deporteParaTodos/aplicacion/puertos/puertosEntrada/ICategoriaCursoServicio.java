@@ -15,6 +15,6 @@ public interface ICategoriaCursoServicio {
 
     public CategoriaDTO actualizarCategoria(String titulo, CategoriaInDTO datosCategoria);
 
-    public Categoria eliminarCategoria(String tituloCategoria);
+    public CategoriaDTO eliminarCategoria(String tituloCategoria);
 
 }

@@ -73,14 +73,8 @@ public class CategoriaCursoRestControlador {
 
     @DeleteMapping("/categorias/{titulo}")
     public ResponseEntity<CategoriaDTO> deleteCategoria(@PathVariable String titulo) {
-        System.out.println("Me llego peticion de eliminar con el parámetro " + titulo);
-        Categoria respuesta = servicio.obtenerCategoriaCursoPorId(titulo);
-        if (respuesta == null) {
-            throw new NoExisteExcepcion("La categoría con el título " + titulo + " no existe.");
-        }
-        Categoria categoriaEliminada = servicio.eliminarCategoria(titulo);
-        CategoriaDTO categoriaEliminadaDTO = mapper.map(categoriaEliminada, CategoriaDTO.class);
-        return new ResponseEntity<CategoriaDTO>(categoriaEliminadaDTO, HttpStatus.OK);
+        CategoriaDTO categoriaEliminada = servicio.eliminarCategoria(titulo);
+        return new ResponseEntity<CategoriaDTO>(categoriaEliminada, HttpStatus.OK);
     }
 
 }

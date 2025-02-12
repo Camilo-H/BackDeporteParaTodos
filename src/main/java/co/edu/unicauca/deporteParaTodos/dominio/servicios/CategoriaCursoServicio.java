@@ -98,13 +98,11 @@ public class CategoriaCursoServicio implements ICategoriaCursoServicio {
     }
 
     @Override
-    public Categoria eliminarCategoria(String tituloCategoria) {
-        // TODO Auto-generated method stub
+    public CategoriaDTO eliminarCategoria(String tituloCategoria) {
         if (!categoriaCursoGateway.existeCategoria(tituloCategoria)) {
             throw new NoExisteExcepcion("La categoría con el título " + tituloCategoria + " no existe.");
         }
-        // Procede a eliminar
-        return categoriaCursoGateway.eliminarCategoria(tituloCategoria);
+        return mapper.map(categoriaCursoGateway.eliminarCategoria(tituloCategoria), CategoriaDTO.class);
     }
 
 }
