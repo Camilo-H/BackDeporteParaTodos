@@ -12,8 +12,6 @@ public interface ICategoriaCursoGateway {
 
     public Optional<Categoria> obtenerCategoria(String nombreCategoria);
 
-    public Categoria insertarCategoria(Categoria categoria);
-
     public Categoria actualizarCategoria(String titulo, Categoria categoria);
 
     public Categoria eliminarCategoria(String nombreCategoria);
