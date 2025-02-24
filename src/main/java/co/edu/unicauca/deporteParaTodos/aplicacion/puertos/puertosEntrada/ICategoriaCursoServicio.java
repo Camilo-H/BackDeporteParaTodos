@@ -5,16 +5,16 @@ import co.edu.unicauca.deporteParaTodos.dominio.modelo.Categoria;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.comunes.CategoriaDTO;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.peticion.CategoriaInDTO;
 
-public interface ICategoriaCursoServicio  {
-    public List<Categoria> recuperarCategoriasCurso();
+public interface ICategoriaCursoServicio {
 
-    public Categoria insertarCategoria(Categoria datosCategoria);
+    public List<Categoria> recuperarCategoriasCurso();
 
     public Categoria obtenerCategoriaCursoPorId(String tituloCategoria);
 
-    public Categoria actualizarCategoria(String titulo, Categoria datosCategoria);
+    public CategoriaDTO registrarCategoria(CategoriaInDTO datos);
 
-    public Categoria eliminarCategoria(String tituloCategoria);
+    public CategoriaDTO actualizarCategoria(String titulo, CategoriaInDTO datosCategoria);
 
-    public CategoriaDTO registrarCategoria (CategoriaInDTO datos);
+    public CategoriaDTO eliminarCategoria(String tituloCategoria);
+
 }

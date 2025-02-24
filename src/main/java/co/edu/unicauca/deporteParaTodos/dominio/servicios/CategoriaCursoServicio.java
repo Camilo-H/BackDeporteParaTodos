@@ -1,7 +1,6 @@
 package co.edu.unicauca.deporteParaTodos.dominio.servicios;
 
 import java.util.List;
-import java.util.Optional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,12 +12,9 @@ import co.edu.unicauca.deporteParaTodos.dominio.modelo.Imagen;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.comunes.CategoriaDTO;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.comunes.ImagenDTO;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.peticion.CategoriaInDTO;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.InsercionFallidaExepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ListadoVacioExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.mappers.MapperImagen;
-
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CategoriaCursoServicio implements ICategoriaCursoServicio {
@@ -42,51 +38,12 @@ public class CategoriaCursoServicio implements ICategoriaCursoServicio {
     }
 
     @Override
-    @Transactional
-    public Categoria insertarCategoria(Categoria datosCategoria) {
-        Categoria categoriaInsertada = categoriaCursoGateway.insertarCategoria(datosCategoria);
-        if (categoriaInsertada == null) {
-            throw new InsercionFallidaExepcion("La insercion no se pudo realizar con exito");
-        }
-        return categoriaInsertada;
-    }
-
-    @Override
-    public Categoria obtenerCategoriaCursoPorId(String tituloCategoria) {
-        // TODO Auto-generated method stub
-        return categoriaCursoGateway.obtenerCategoria(tituloCategoria)
-                .orElseThrow(
-                        () -> new NoExisteExcepcion("La categoria con el titulo " + tituloCategoria + " no existe"));
-    }
-
-    @Override
-    @Transactional
-    public Categoria actualizarCategoria(String titulo, Categoria datosCategoria) {
-        // TODO Auto-generated method stub
-        Optional<Categoria> entidadExistente = categoriaCursoGateway.obtenerCategoria(titulo);
-        if (entidadExistente.isEmpty()) {
-            throw new NoExisteExcepcion("La categoría con el título " + titulo + " no existe.");
-        }
-        return categoriaCursoGateway.actualizarCategoria(titulo, datosCategoria);
-    }
-
-    @Override
-    public Categoria eliminarCategoria(String tituloCategoria) {
-        // TODO Auto-generated method stub
-        if (!categoriaCursoGateway.existeCategoria(tituloCategoria)) {
-            throw new NoExisteExcepcion("La categoría con el título " + tituloCategoria + " no existe.");
-        }
-        // Procede a eliminar
-        return categoriaCursoGateway.eliminarCategoria(tituloCategoria);
-    }
-
-    @Override
     public CategoriaDTO registrarCategoria(CategoriaInDTO datos) {
         Categoria categoriaModelo = new Categoria();
         ImagenDTO imagenDTO = new ImagenDTO();
         Imagen imagenModelo;
         ImagenDTO dtoimagenRetorno = null;
-        if (datos.getImagen() != null || datos.getImagen().isEmpty()) {
+        if (datos.getImagen() != null || !datos.getImagen().isEmpty()) {
             imagenDTO = MapperImagen.multiparfileToImagenDTO(datos.getImagen());
             imagenModelo = mapper.map(imagenDTO, Imagen.class);
             categoriaModelo.setImagen(imagenModelo);
@@ -96,7 +53,7 @@ public class CategoriaCursoServicio implements ICategoriaCursoServicio {
         categoriaModelo.setTitulo(datos.getTitulo());
         categoriaModelo.setDescripcion(datos.getDescripcion());
         Categoria regitro = categoriaCursoGateway.registrarCategoria(categoriaModelo);
-        
+
         if (regitro.getImagen() != null) {
             dtoimagenRetorno = mapper.map(regitro.getImagen(), ImagenDTO.class);
             dtoimagenRetorno.setId(regitro.getImagen().getId());
@@ -108,4 +65,44 @@ public class CategoriaCursoServicio implements ICategoriaCursoServicio {
         catRetorno.setImagen(dtoimagenRetorno);
         return catRetorno;
     }
+
+    @Override
+    public Categoria obtenerCategoriaCursoPorId(String tituloCategoria) {
+        // TODO Auto-generated method stub
+        return categoriaCursoGateway.obtenerCategoria(tituloCategoria)
+                .orElseThrow(
+                        () -> new NoExisteExcepcion("La categoria con el titulo " + tituloCategoria + " no existe"));
+    }
+
+    @Override
+    public CategoriaDTO actualizarCategoria(String titulo, CategoriaInDTO datosCategoria) {
+        if (!categoriaCursoGateway.existeCategoria(titulo)) {
+            throw new NoExisteExcepcion("No se encuentra el registro de la categoria ");
+        }
+        System.out.println("---DTO"+datosCategoria.getDescripcion());
+        Categoria categoriaModelo = new Categoria();
+        categoriaModelo.setDescripcion(datosCategoria.getDescripcion());
+        if (datosCategoria.getImagen() != null) {
+            ImagenDTO imagenDTO = MapperImagen.multiparfileToImagenDTO(datosCategoria.getImagen());
+            Imagen imagenModelo = mapper.map(imagenDTO, Imagen.class);
+            categoriaModelo.setImagen(imagenModelo);
+        }
+
+        Categoria regitro = categoriaCursoGateway.actualizarCategoria(titulo, categoriaModelo);
+        CategoriaDTO catRetorno = mapper.map(regitro, CategoriaDTO.class);
+        if (regitro.getImagen() != null) {
+            ImagenDTO dtoimagenRetorno = mapper.map(regitro.getImagen(), ImagenDTO.class);
+            catRetorno.setImagen(dtoimagenRetorno);
+        }
+        return catRetorno;
+    }
+
+    @Override
+    public CategoriaDTO eliminarCategoria(String tituloCategoria) {
+        if (!categoriaCursoGateway.existeCategoria(tituloCategoria)) {
+            throw new NoExisteExcepcion("La categoría con el título " + tituloCategoria + " no existe.");
+        }
+        return mapper.map(categoriaCursoGateway.eliminarCategoria(tituloCategoria), CategoriaDTO.class);
+    }
+
 }

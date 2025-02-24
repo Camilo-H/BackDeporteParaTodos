@@ -1,6 +1,6 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.comunes;
 
-import java.util.List;
+//import java.util.List;
 import lombok.*;
 
 @Getter
