@@ -1,0 +1,348 @@
+DELETE FROM "TEST"."NOTIFICACION_ENTRADA";
+DELETE FROM "TEST"."TBL_ALERTA";
+DELETE FROM "TEST"."TBL_INTERMEDIA_ALUMNO_PROGRAMA";
+DELETE FROM "TEST"."TBL_ASISTENCIA";
+DELETE FROM "TEST"."TBL_INSCRIPCION";
+DELETE FROM "TEST"."TBL_ALUMNO"; 
+DELETE FROM "TEST"."TBL_BANDEJA_ENTRADA";
+DELETE FROM "TEST"."TBL_BANDEJA_SALIDA";
+DELETE FROM "TEST"."TBL_CLASE";
+DELETE FROM "TEST"."TBL_HORARIO";
+DELETE FROM "TEST"."TBL_GRUPO";
+DELETE FROM "TEST"."TBL_CURSO"; 
+DELETE FROM "TEST"."TBL_CATEGORIA_CURSO";
+DELETE FROM "TEST"."TBL_COORDINADOR";
+DELETE FROM "TEST"."TBL_DEPORTE";
+DELETE FROM "TEST"."TBL_PROGRAMA";
+DELETE FROM "TEST"."TBL_FACULTAD";
+DELETE FROM "TEST"."TBL_IMAGEN";
+DELETE FROM "TEST"."TBL_INSTRUCTOR";
+DELETE FROM "TEST"."TBL_NOTIFICACION";
+DELETE FROM "TEST"."TBL_PERFIL";
+
+INSERT INTO TBL_DEPORTE (META_ELIMINADO, DEPT_NOMBRE) VALUES (0, 'Fútbol');
+INSERT INTO TBL_DEPORTE (META_ELIMINADO, DEPT_NOMBRE) VALUES (0, 'Baloncesto');
+INSERT INTO TBL_DEPORTE (META_ELIMINADO, DEPT_NOMBRE) VALUES (0, 'Voleibol');
+INSERT INTO TBL_DEPORTE (META_ELIMINADO, DEPT_NOMBRE) VALUES (0, 'Natación');
+INSERT INTO TBL_DEPORTE (META_ELIMINADO, DEPT_NOMBRE) VALUES (0, 'Atletismo');
+INSERT INTO TBL_DEPORTE (META_ELIMINADO, DEPT_NOMBRE) VALUES (0, 'Gimnasia');
+INSERT INTO TBL_DEPORTE (META_ELIMINADO, DEPT_NOMBRE) VALUES (0, 'Béisbol');
+INSERT INTO TBL_DEPORTE (META_ELIMINADO, DEPT_NOMBRE) VALUES (0, 'Tenis');
+INSERT INTO TBL_DEPORTE (META_ELIMINADO, DEPT_NOMBRE) VALUES (0, 'Ciclismo');
+INSERT INTO TBL_DEPORTE (META_ELIMINADO, DEPT_NOMBRE) VALUES (0, 'Taekwondo');
+
+INSERT INTO TBL_CATEGORIA_CURSO (META_ELIMINADO, CAT_TITULO, CAT_DESCRIPCION) 
+VALUES (0, 'Semillero', 'Categoría enfocada en la iniciación y desarrollo básico de habilidades deportivas.');
+
+INSERT INTO TBL_CATEGORIA_CURSO (META_ELIMINADO, CAT_TITULO, CAT_DESCRIPCION) 
+VALUES (0, 'Seleccionado', 'Categoría para deportistas avanzados que representan al programa en competencias.');
+
+INSERT INTO TBL_CATEGORIA_CURSO (META_ELIMINADO, CAT_TITULO, CAT_DESCRIPCION) 
+VALUES (0, 'Formativo', 'Categoría orientada al aprendizaje y fortalecimiento de habilidades deportivas.');
+
+
+-- Cursos para la categoría Semillero
+INSERT INTO TBL_CURSO (META_ELIMINADO, CUR_NOMBRE, DEPT_NOMBRE, CAT_TITULO, CUR_DESCRIPCION) 
+VALUES (0, 'Fútbol Base', 'Fútbol', 'Semillero', 'Curso de iniciación al fútbol para niños y jóvenes.');
+
+INSERT INTO TBL_CURSO (META_ELIMINADO, CUR_NOMBRE, DEPT_NOMBRE, CAT_TITULO, CUR_DESCRIPCION) 
+VALUES (0, 'Natación Infantil', 'Natación', 'Semillero', 'Curso para aprender las bases de la natación en niños.');
+
+INSERT INTO TBL_CURSO (META_ELIMINADO, CUR_NOMBRE, DEPT_NOMBRE, CAT_TITULO, CUR_DESCRIPCION) 
+VALUES (0, 'Béisbol Juvenil', 'Béisbol', 'Semillero', 'Curso introductorio al béisbol para jóvenes.');
+
+-- Cursos para la categoría Seleccionado
+INSERT INTO TBL_CURSO (META_ELIMINADO, CUR_NOMBRE, DEPT_NOMBRE, CAT_TITULO, CUR_DESCRIPCION) 
+VALUES (0, 'Fútbol Competitivo', 'Fútbol', 'Seleccionado', 'Entrenamiento avanzado para jugadores de alto rendimiento.');
+
+INSERT INTO TBL_CURSO (META_ELIMINADO, CUR_NOMBRE, DEPT_NOMBRE, CAT_TITULO, CUR_DESCRIPCION) 
+VALUES (0, 'Natación Profesional', 'Natación', 'Seleccionado', 'Programa para nadadores que compiten en torneos.');
+
+INSERT INTO TBL_CURSO (META_ELIMINADO, CUR_NOMBRE, DEPT_NOMBRE, CAT_TITULO, CUR_DESCRIPCION) 
+VALUES (0, 'Béisbol Avanzado', 'Béisbol', 'Seleccionado', 'Curso especializado para beisbolistas de alto nivel.');
+
+-- Cursos para la categoría Formativo
+INSERT INTO TBL_CURSO (META_ELIMINADO, CUR_NOMBRE, DEPT_NOMBRE, CAT_TITULO, CUR_DESCRIPCION) 
+VALUES (0, 'Técnica de Fútbol', 'Fútbol', 'Formativo', 'Desarrollo de habilidades técnicas y tácticas en fútbol.');
+
+INSERT INTO TBL_CURSO (META_ELIMINADO, CUR_NOMBRE, DEPT_NOMBRE, CAT_TITULO, CUR_DESCRIPCION) 
+VALUES (0, 'Natación para Adultos', 'Natación', 'Formativo', 'Curso de natación para adultos principiantes y avanzados.');
+
+INSERT INTO TBL_CURSO (META_ELIMINADO, CUR_NOMBRE, DEPT_NOMBRE, CAT_TITULO, CUR_DESCRIPCION) 
+VALUES (0, 'Béisbol Recreativo', 'Béisbol', 'Formativo', 'Programa de béisbol para todas las edades con enfoque recreativo.');
+
+
+
+
+-- Grupos para Fútbol Base (Semillero)
+INSERT INTO TBL_GRUPO (META_ELIMINADO, GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO, GRP_CUPOS, GRP_FECHACREACION) 
+VALUES (0, 2025, 1, 'Fútbol Base', 'Semillero', 30, SYSDATE);
+INSERT INTO TBL_GRUPO (META_ELIMINADO, GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO, GRP_CUPOS, GRP_FECHACREACION) 
+VALUES (0, 2025, 2, 'Fútbol Base', 'Semillero', 25, SYSDATE);
+INSERT INTO TBL_GRUPO (META_ELIMINADO, GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO, GRP_CUPOS, GRP_FECHACREACION) 
+VALUES (0, 2025, 3, 'Fútbol Base', 'Semillero', 20, SYSDATE);
+
+-- Grupos para Natación Infantil (Semillero)
+INSERT INTO TBL_GRUPO (META_ELIMINADO, GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO, GRP_CUPOS, GRP_FECHACREACION) 
+VALUES (0, 2025, 1, 'Natación Infantil', 'Semillero', 15, SYSDATE);
+INSERT INTO TBL_GRUPO (META_ELIMINADO, GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO, GRP_CUPOS, GRP_FECHACREACION) 
+VALUES (0, 2025, 2, 'Natación Infantil', 'Semillero', 20, SYSDATE);
+INSERT INTO TBL_GRUPO (META_ELIMINADO, GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO, GRP_CUPOS, GRP_FECHACREACION) 
+VALUES (0, 2025, 3, 'Natación Infantil', 'Semillero', 18, SYSDATE);
+
+-- Grupos para Béisbol Juvenil (Semillero)
+INSERT INTO TBL_GRUPO (META_ELIMINADO, GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO, GRP_CUPOS, GRP_FECHACREACION) 
+VALUES (0, 2025, 1, 'Béisbol Juvenil', 'Semillero', 12, SYSDATE);
+INSERT INTO TBL_GRUPO (META_ELIMINADO, GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO, GRP_CUPOS, GRP_FECHACREACION) 
+VALUES (0, 2025, 2, 'Béisbol Juvenil', 'Semillero', 14, SYSDATE);
+INSERT INTO TBL_GRUPO (META_ELIMINADO, GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO, GRP_CUPOS, GRP_FECHACREACION) 
+VALUES (0, 2025, 3, 'Béisbol Juvenil', 'Semillero', 16, SYSDATE);
+
+-- Grupos para Fútbol Competitivo (Seleccionado)
+INSERT INTO TBL_GRUPO (META_ELIMINADO, GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO, GRP_CUPOS, GRP_FECHACREACION) 
+VALUES (0, 2025, 1, 'Fútbol Competitivo', 'Seleccionado', 25, SYSDATE);
+INSERT INTO TBL_GRUPO (META_ELIMINADO, GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO, GRP_CUPOS, GRP_FECHACREACION) 
+VALUES (0, 2025, 2, 'Fútbol Competitivo', 'Seleccionado', 30, SYSDATE);
+INSERT INTO TBL_GRUPO (META_ELIMINADO, GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO, GRP_CUPOS, GRP_FECHACREACION) 
+VALUES (0, 2025, 3, 'Fútbol Competitivo', 'Seleccionado', 28, SYSDATE);
+
+-- Grupos para Natación Profesional (Seleccionado)
+INSERT INTO TBL_GRUPO (META_ELIMINADO, GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO, GRP_CUPOS, GRP_FECHACREACION) 
+VALUES (0, 2025, 1, 'Natación Profesional', 'Seleccionado', 20, SYSDATE);
+INSERT INTO TBL_GRUPO (META_ELIMINADO, GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO, GRP_CUPOS, GRP_FECHACREACION) 
+VALUES (0, 2025, 2, 'Natación Profesional', 'Seleccionado', 18, SYSDATE);
+INSERT INTO TBL_GRUPO (META_ELIMINADO, GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO, GRP_CUPOS, GRP_FECHACREACION) 
+VALUES (0, 2025, 3, 'Natación Profesional', 'Seleccionado', 22, SYSDATE);
+
+-- Grupos para Béisbol Avanzado (Seleccionado)
+INSERT INTO TBL_GRUPO (META_ELIMINADO, GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO, GRP_CUPOS, GRP_FECHACREACION) 
+VALUES (0, 2025, 1, 'Béisbol Avanzado', 'Seleccionado', 12, SYSDATE);
+INSERT INTO TBL_GRUPO (META_ELIMINADO, GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO, GRP_CUPOS, GRP_FECHACREACION) 
+VALUES (0, 2025, 2, 'Béisbol Avanzado', 'Seleccionado', 14, SYSDATE);
+INSERT INTO TBL_GRUPO (META_ELIMINADO, GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO, GRP_CUPOS, GRP_FECHACREACION) 
+VALUES (0, 2025, 3, 'Béisbol Avanzado', 'Seleccionado', 16, SYSDATE);
+
+-- Grupos para Técnica de Fútbol (Formativo)
+INSERT INTO TBL_GRUPO (META_ELIMINADO, GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO, GRP_CUPOS, GRP_FECHACREACION) 
+VALUES (0, 2025, 1, 'Técnica de Fútbol', 'Formativo', 25, SYSDATE);
+INSERT INTO TBL_GRUPO (META_ELIMINADO, GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO, GRP_CUPOS, GRP_FECHACREACION) 
+VALUES (0, 2025, 2, 'Técnica de Fútbol', 'Formativo', 20, SYSDATE);
+INSERT INTO TBL_GRUPO (META_ELIMINADO, GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO, GRP_CUPOS, GRP_FECHACREACION) 
+VALUES (0, 2025, 3, 'Técnica de Fútbol', 'Formativo', 22, SYSDATE);
+
+-- Grupos para Natación para Adultos (Formativo)
+INSERT INTO TBL_GRUPO (META_ELIMINADO, GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO, GRP_CUPOS, GRP_FECHACREACION) 
+VALUES (0, 2025, 1, 'Natación para Adultos', 'Formativo', 15, SYSDATE);
+INSERT INTO TBL_GRUPO (META_ELIMINADO, GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO, GRP_CUPOS, GRP_FECHACREACION) 
+VALUES (0, 2025, 2, 'Natación para Adultos', 'Formativo', 18, SYSDATE);
+INSERT INTO TBL_GRUPO (META_ELIMINADO, GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO, GRP_CUPOS, GRP_FECHACREACION) 
+VALUES (0, 2025, 3, 'Natación para Adultos', 'Formativo', 16, SYSDATE);
+
+--INSERT PERFIL
+INSERT INTO TBL_PERFIL (META_ELIMINADO, PERF_ID, PERF_NOMBRE, PERF_CORREO, PERF_IMAGEN, PERF_TIPOID, PERF_SEXO) VALUES 
+(0, '1234567890', 'Carlos Pérez', 'carlos.perez@email.com', NULL, 'CC', 'M');
+
+INSERT INTO TBL_PERFIL (META_ELIMINADO, PERF_ID, PERF_NOMBRE, PERF_CORREO, PERF_IMAGEN, PERF_TIPOID, PERF_SEXO) VALUES 
+(0, '2345678901', 'María Gómez', 'maria.gomez@email.com', NULL, 'TI', 'F');
+
+INSERT INTO TBL_PERFIL (META_ELIMINADO, PERF_ID, PERF_NOMBRE, PERF_CORREO, PERF_IMAGEN, PERF_TIPOID, PERF_SEXO) VALUES 
+(0, '3456789012', 'Andrés Ramírez', 'andres.ramirez@email.com', NULL, 'CE', 'M');
+
+INSERT INTO TBL_PERFIL (META_ELIMINADO, PERF_ID, PERF_NOMBRE, PERF_CORREO, PERF_IMAGEN, PERF_TIPOID, PERF_SEXO) VALUES 
+(0, '4567890123', 'Laura Rodríguez', 'laura.rodriguez@email.com', NULL, 'PP', 'F');
+
+INSERT INTO TBL_PERFIL (META_ELIMINADO, PERF_ID, PERF_NOMBRE, PERF_CORREO, PERF_IMAGEN, PERF_TIPOID, PERF_SEXO) VALUES 
+(0, '5678901234', 'Juan Martínez', 'juan.martinez@email.com', NULL, 'PEP', 'M');
+
+INSERT INTO TBL_PERFIL (META_ELIMINADO, PERF_ID, PERF_NOMBRE, PERF_CORREO, PERF_IMAGEN, PERF_TIPOID, PERF_SEXO) VALUES 
+(0, '6789012345', 'Diana Fernández', 'diana.fernandez@email.com', NULL, 'DIE', 'F');
+
+INSERT INTO TBL_PERFIL (META_ELIMINADO, PERF_ID, PERF_NOMBRE, PERF_CORREO, PERF_IMAGEN, PERF_TIPOID, PERF_SEXO) VALUES 
+(0, '7890123456', 'Jorge Castillo', 'jorge.castillo@email.com', NULL, 'CC', 'M');
+
+INSERT INTO TBL_PERFIL (META_ELIMINADO, PERF_ID, PERF_NOMBRE, PERF_CORREO, PERF_IMAGEN, PERF_TIPOID, PERF_SEXO) VALUES 
+(0, '8901234567', 'Carolina Méndez', 'carolina.mendez@email.com', NULL, 'TI', 'F');
+
+INSERT INTO TBL_PERFIL (META_ELIMINADO, PERF_ID, PERF_NOMBRE, PERF_CORREO, PERF_IMAGEN, PERF_TIPOID, PERF_SEXO) VALUES 
+(0, '9012345678', 'Ricardo Torres', 'ricardo.torres@email.com', NULL, 'CE', 'M');
+
+INSERT INTO TBL_PERFIL (META_ELIMINADO, PERF_ID, PERF_NOMBRE, PERF_CORREO, PERF_IMAGEN, PERF_TIPOID, PERF_SEXO) VALUES 
+(0, '0123456789', 'Valeria Suárez', 'valeria.suarez@email.com', NULL, 'PP', 'F');
+
+
+--INSTRUCTOR
+
+INSERT INTO TBL_INSTRUCTOR (META_ELIMINADO, PERF_ID) VALUES 
+(0, '1234567890'); -- Carlos Pérez
+
+INSERT INTO TBL_INSTRUCTOR (META_ELIMINADO, PERF_ID) VALUES 
+(0, '5678901234'); -- Juan Martínez
+
+INSERT INTO TBL_INSTRUCTOR (META_ELIMINADO, PERF_ID) VALUES 
+(0, '9012345678'); -- Ricardo Torres
+
+
+--CLASES
+
+-- Clase 1 para el grupo (2025, 1, 'Fútbol Base', 'Semillero')
+INSERT INTO TBL_CLASE (META_ELIMINADO, CLS_CODIGO, PERF_ID, CLS_FECHA, CLS_DURACION_HORAS, CLS_DURACION_MINUTOS, CLS_OBSERVACION, 
+                       GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO) 
+VALUES (0, 101, '1234567890', TO_DATE('2025-02-10 15:00:00', 'YYYY-MM-DD HH24:MI:SS'), 
+        2,0, 'Introducción al fútbol base', 
+        2025, 1, 'Fútbol Base', 'Semillero');
+
+-- Clase 2 para el grupo (2025, 1, 'Fútbol Base', 'Semillero')
+INSERT INTO TBL_CLASE (META_ELIMINADO, CLS_CODIGO, PERF_ID, CLS_FECHA, CLS_DURACION_HORAS, CLS_DURACION_MINUTOS, CLS_OBSERVACION, 
+                       GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO) 
+VALUES (0, 102, '1234567890', TO_DATE('2025-02-12 16:00:00', 'YYYY-MM-DD HH24:MI:SS'), 
+        2,0, 'Entrenamiento de coordinación', 
+        2025, 1, 'Fútbol Base', 'Semillero');
+
+-- Clase 1 para el grupo (2025, 2, 'Natación Infantil', 'Semillero')
+INSERT INTO TBL_CLASE (META_ELIMINADO, CLS_CODIGO, PERF_ID, CLS_FECHA, CLS_DURACION_HORAS, CLS_DURACION_MINUTOS, CLS_OBSERVACION, 
+                       GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO) 
+VALUES (0, 103, '5678901234', TO_DATE('2025-02-11 17:30:00', 'YYYY-MM-DD HH24:MI:SS'), 
+        2,0, 'Técnicas básicas de nado', 
+        2025, 2, 'Natación Infantil', 'Semillero');
+
+-- Clase 2 para el grupo (2025, 2, 'Natación Infantil', 'Semillero')
+INSERT INTO TBL_CLASE (META_ELIMINADO, CLS_CODIGO, PERF_ID, CLS_FECHA, CLS_DURACION_HORAS, CLS_DURACION_MINUTOS, CLS_OBSERVACION, 
+                       GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO) 
+VALUES (0, 104, '5678901234', TO_DATE('2025-02-13 18:00:00', 'YYYY-MM-DD HH24:MI:SS'), 
+        2,30, 'Ejercicios de flotación', 
+        2025, 2, 'Natación Infantil', 'Semillero');
+
+-- Clase 1 para el grupo (2025, 3, 'Béisbol Juvenil', 'Semillero')
+INSERT INTO TBL_CLASE (META_ELIMINADO, CLS_CODIGO, PERF_ID, CLS_FECHA, CLS_DURACION_HORAS, CLS_DURACION_MINUTOS, CLS_OBSERVACION, 
+                       GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO) 
+VALUES (0, 105, '9012345678', TO_DATE('2025-02-14 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 
+        2,30, 'Manejo del bate y postura', 
+        2025, 3, 'Béisbol Juvenil', 'Semillero');
+
+-- Clase 2 para el grupo (2025, 3, 'Béisbol Juvenil', 'Semillero')
+INSERT INTO TBL_CLASE (META_ELIMINADO, CLS_CODIGO, PERF_ID, CLS_FECHA, CLS_DURACION_HORAS, CLS_DURACION_MINUTOS, CLS_OBSERVACION, 
+                       GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO) 
+VALUES (0, 106, '9012345678', TO_DATE('2025-02-16 11:00:00', 'YYYY-MM-DD HH24:MI:SS'), 
+        2,30, 'Lanzamientos y atrapadas', 
+        2025, 3, 'Béisbol Juvenil', 'Semillero');
+		
+insert into tbl_clase(cls_codigo, perf_id, cls_fecha, meta_eliminado, cls_duracion_horas, cls_duracion_minutos, grp_anio, grp_iterable, cur_nombre, cat_titulo)
+                values(107,'5678901234',to_date('01,01,2025', 'MM,DD,YYYY'),0,         3,                   15, 2025, 2,'Técnica de Fútbol', 'Formativo');
+
+--ALUMNOS
+INSERT INTO TBL_ALUMNO (META_ELIMINADO, PERF_ID, ALM_CODIGO, ALM_TIPO, ALM_ESTADO) VALUES (0, '2345678901', 'A001', 'Estudiante', 1);
+INSERT INTO TBL_ALUMNO (META_ELIMINADO, PERF_ID, ALM_CODIGO, ALM_TIPO, ALM_ESTADO) VALUES (0, '3456789012', 'A002', 'Estudiante', 1);
+INSERT INTO TBL_ALUMNO (META_ELIMINADO, PERF_ID, ALM_CODIGO, ALM_TIPO, ALM_ESTADO) VALUES (0, '4567890123', 'A003', 'Administrativo', 1);
+INSERT INTO TBL_ALUMNO (META_ELIMINADO, PERF_ID, ALM_CODIGO, ALM_TIPO, ALM_ESTADO) VALUES (0, '5678901234', 'A004', 'Docente', 1);
+INSERT INTO TBL_ALUMNO (META_ELIMINADO, PERF_ID, ALM_CODIGO, ALM_TIPO, ALM_ESTADO) VALUES (0, '6789012345', 'A005', 'Estudiante', 0);
+INSERT INTO TBL_ALUMNO (META_ELIMINADO, PERF_ID, ALM_CODIGO, ALM_TIPO, ALM_ESTADO) VALUES (0, '7890123456', 'A006', 'Administrativo', 1);
+INSERT INTO TBL_ALUMNO (META_ELIMINADO, PERF_ID, ALM_CODIGO, ALM_TIPO, ALM_ESTADO) VALUES (0, '8901234567', 'A007', 'Docente', 0);
+
+--FACULTADES
+
+INSERT INTO TBL_FACULTAD (META_ELIMINADO, FAC_NOMBRE) VALUES (0, 'Facultad de Ingeniería Electrónica y Telecomunicaciones');
+INSERT INTO TBL_FACULTAD (META_ELIMINADO, FAC_NOMBRE) VALUES (0, 'Facultad de Ciencias Humanas');
+INSERT INTO TBL_FACULTAD (META_ELIMINADO, FAC_NOMBRE) VALUES (0, 'Facultad de Ciencias de la Salud');
+
+--PROGRAMAS
+-- Programas de la Facultad de Ingeniería
+INSERT INTO TBL_PROGRAMA (META_ELIMINADO, PRG_NOMBRE, FAC_NOMBRE) VALUES (0, 'Ingeniería de Sistemas', 'Facultad de Ingeniería Electrónica y Telecomunicaciones');
+INSERT INTO TBL_PROGRAMA (META_ELIMINADO, PRG_NOMBRE, FAC_NOMBRE) VALUES (0, 'Ingeniería Electrónica', 'Facultad de Ingeniería Electrónica y Telecomunicaciones');
+INSERT INTO TBL_PROGRAMA (META_ELIMINADO, PRG_NOMBRE, FAC_NOMBRE) VALUES (0, 'Ingeniería Civil', 'Facultad de Ingeniería Electrónica y Telecomunicaciones');
+
+-- Programas de la Facultad de Ciencias Humanas
+INSERT INTO TBL_PROGRAMA (META_ELIMINADO, PRG_NOMBRE, FAC_NOMBRE) VALUES (0, 'Antropología', 'Facultad de Ciencias Humanas');
+INSERT INTO TBL_PROGRAMA (META_ELIMINADO, PRG_NOMBRE, FAC_NOMBRE) VALUES (0, 'Filosofía', 'Facultad de Ciencias Humanas');
+INSERT INTO TBL_PROGRAMA (META_ELIMINADO, PRG_NOMBRE, FAC_NOMBRE) VALUES (0, 'Licenciatura en Lenguas Modernas', 'Facultad de Ciencias Humanas');
+
+-- Programas de la Facultad de Ciencias de la Salud
+INSERT INTO TBL_PROGRAMA (META_ELIMINADO, PRG_NOMBRE, FAC_NOMBRE) VALUES (0, 'Medicina', 'Facultad de Ciencias de la Salud');
+INSERT INTO TBL_PROGRAMA (META_ELIMINADO, PRG_NOMBRE, FAC_NOMBRE) VALUES (0, 'Enfermería', 'Facultad de Ciencias de la Salud');
+INSERT INTO TBL_PROGRAMA (META_ELIMINADO, PRG_NOMBRE, FAC_NOMBRE) VALUES (0, 'Fisioterapia', 'Facultad de Ciencias de la Salud');
+
+-- Relacionar alumnos con programas (asignaciones de ejemplo)
+INSERT INTO TBL_INTERMEDIA_ALUMNO_PROGRAMA (META_ELIMINADO, PERF_ID, PRG_NOMBRE) VALUES (0, '8901234567', 'Ingeniería de Sistemas'); -- A001
+INSERT INTO TBL_INTERMEDIA_ALUMNO_PROGRAMA (META_ELIMINADO, PERF_ID, PRG_NOMBRE) VALUES (0, '7890123456', 'Ingeniería Electrónica'); -- A002
+INSERT INTO TBL_INTERMEDIA_ALUMNO_PROGRAMA (META_ELIMINADO, PERF_ID, PRG_NOMBRE) VALUES (0, '6789012345', 'Medicina'); -- A003 (Administrativo)
+INSERT INTO TBL_INTERMEDIA_ALUMNO_PROGRAMA (META_ELIMINADO, PERF_ID, PRG_NOMBRE) VALUES (0, '5678901234', 'Antropología'); -- A004 (Docente)
+INSERT INTO TBL_INTERMEDIA_ALUMNO_PROGRAMA (META_ELIMINADO, PERF_ID, PRG_NOMBRE) VALUES (0, '4567890123', 'Filosofía'); -- A005 (Estudiante Inactivo)
+INSERT INTO TBL_INTERMEDIA_ALUMNO_PROGRAMA (META_ELIMINADO, PERF_ID, PRG_NOMBRE) VALUES (0, '3456789012', 'Ingeniería Civil'); -- A006 (Administrativo)
+INSERT INTO TBL_INTERMEDIA_ALUMNO_PROGRAMA (META_ELIMINADO, PERF_ID, PRG_NOMBRE) VALUES (0, '2345678901', 'Fisioterapia'); -- A007 (Docente)
+INSERT INTO TBL_INTERMEDIA_ALUMNO_PROGRAMA (META_ELIMINADO, PERF_ID, PRG_NOMBRE) VALUES (0, '2345678901', 'Medicina'); -- A007 (Docente)
+
+-- Asistencias de estudiantes en clases de Fútbol Base
+INSERT INTO TBL_ASISTENCIA (META_ELIMINADO, PERF_ID, CLS_CODIGO) VALUES (0, '2345678901', 101);
+INSERT INTO TBL_ASISTENCIA (META_ELIMINADO, PERF_ID, CLS_CODIGO) VALUES (0, '3456789012', 101);
+INSERT INTO TBL_ASISTENCIA (META_ELIMINADO, PERF_ID, CLS_CODIGO) VALUES (0, '2345678901', 102);
+INSERT INTO TBL_ASISTENCIA (META_ELIMINADO, PERF_ID, CLS_CODIGO) VALUES (0, '3456789012', 102);
+
+-- Asistencias en clases de Natación Infantil
+INSERT INTO TBL_ASISTENCIA (META_ELIMINADO, PERF_ID, CLS_CODIGO) VALUES (0, '5678901234', 103); -- Instructor Docente
+INSERT INTO TBL_ASISTENCIA (META_ELIMINADO, PERF_ID, CLS_CODIGO) VALUES (0, '4567890123', 103);
+INSERT INTO TBL_ASISTENCIA (META_ELIMINADO, PERF_ID, CLS_CODIGO) VALUES (0, '5678901234', 104); -- Instructor Docente
+INSERT INTO TBL_ASISTENCIA (META_ELIMINADO, PERF_ID, CLS_CODIGO) VALUES (0, '4567890123', 104);
+
+-- Asistencias en clases de Béisbol Juvenil
+INSERT INTO TBL_ASISTENCIA (META_ELIMINADO, PERF_ID, CLS_CODIGO) VALUES (0, '7890123456', 105);
+INSERT INTO TBL_ASISTENCIA (META_ELIMINADO, PERF_ID, CLS_CODIGO) VALUES (0, '7890123456', 106);
+
+--horario
+-- Horarios para Fútbol Base (Semillero)
+INSERT INTO TBL_HORARIO (META_ELIMINADO, HR_ID, CAT_TITULO, CUR_NOMBRE, GRP_ANIO, GRP_ITERABLE, HR_DIA, HR_HORAINICIO, HR_HORAFIN, HR_ESCENARIO) 
+VALUES (0, 1, 'Semillero', 'Fútbol Base', 2025, 1, 'Lunes', '16:00', '18:00', 'Cancha Principal');
+INSERT INTO TBL_HORARIO VALUES (0, 2, 'Semillero', 'Fútbol Base', 2025, 2, 'Miércoles', '15:00', '17:00', 'Cancha Principal');
+INSERT INTO TBL_HORARIO VALUES (0, 3, 'Semillero', 'Fútbol Base', 2025, 3, 'Viernes', '17:00', '19:00', 'Cancha Principal');
+
+-- Horarios para Natación Infantil (Semillero)
+INSERT INTO TBL_HORARIO VALUES (0, 4, 'Semillero', 'Natación Infantil', 2025, 1, 'Martes', '10:00', '11:30', 'Piscina Olímpica');
+INSERT INTO TBL_HORARIO VALUES (0, 5, 'Semillero', 'Natación Infantil', 2025, 2, 'Jueves', '14:00', '15:30', 'Piscina Olímpica');
+INSERT INTO TBL_HORARIO VALUES (0, 6, 'Semillero', 'Natación Infantil', 2025, 3, 'Sábado', '08:00', '09:30', 'Piscina Olímpica');
+
+-- Horarios para Béisbol Juvenil (Semillero)
+INSERT INTO TBL_HORARIO VALUES (0, 7, 'Semillero', 'Béisbol Juvenil', 2025, 1, 'Lunes', '18:00', '20:00', 'Diamante de Béisbol');
+INSERT INTO TBL_HORARIO VALUES (0, 8, 'Semillero', 'Béisbol Juvenil', 2025, 2, 'Miércoles', '16:00', '18:00', 'Diamante de Béisbol');
+INSERT INTO TBL_HORARIO VALUES (0, 9, 'Semillero', 'Béisbol Juvenil', 2025, 3, 'Viernes', '19:00', '21:00', 'Diamante de Béisbol');
+
+-- Horarios para Fútbol Competitivo (Seleccionado)
+INSERT INTO TBL_HORARIO VALUES (0, 10, 'Seleccionado', 'Fútbol Competitivo', 2025, 1, 'Martes', '18:00', '20:00', 'Cancha de Alto Rendimiento');
+INSERT INTO TBL_HORARIO VALUES (0, 11, 'Seleccionado', 'Fútbol Competitivo', 2025, 2, 'Jueves', '18:00', '20:00', 'Cancha de Alto Rendimiento');
+INSERT INTO TBL_HORARIO VALUES (0, 12, 'Seleccionado', 'Fútbol Competitivo', 2025, 3, 'Sábado', '09:00', '11:00', 'Cancha de Alto Rendimiento');
+
+-- Horarios para Natación Profesional (Seleccionado)
+INSERT INTO TBL_HORARIO VALUES (0, 13, 'Seleccionado', 'Natación Profesional', 2025, 1, 'Lunes', '06:00', '08:00', 'Piscina Olímpica');
+INSERT INTO TBL_HORARIO VALUES (0, 14, 'Seleccionado', 'Natación Profesional', 2025, 2, 'Miércoles', '06:00', '08:00', 'Piscina Olímpica');
+INSERT INTO TBL_HORARIO VALUES (0, 15, 'Seleccionado', 'Natación Profesional', 2025, 3, 'Viernes', '06:00', '08:00', 'Piscina Olímpica');
+
+-- Horarios para Béisbol Avanzado (Seleccionado)
+INSERT INTO TBL_HORARIO VALUES (0, 16, 'Seleccionado', 'Béisbol Avanzado', 2025, 1, 'Martes', '16:00', '18:00', 'Diamante de Béisbol');
+INSERT INTO TBL_HORARIO VALUES (0, 17, 'Seleccionado', 'Béisbol Avanzado', 2025, 2, 'Jueves', '16:00', '18:00', 'Diamante de Béisbol');
+INSERT INTO TBL_HORARIO VALUES (0, 18, 'Seleccionado', 'Béisbol Avanzado', 2025, 3, 'Sábado', '10:00', '12:00', 'Diamante de Béisbol');
+
+-- Horarios para Técnica de Fútbol (Formativo)
+INSERT INTO TBL_HORARIO VALUES (0, 19, 'Formativo', 'Técnica de Fútbol', 2025, 1, 'Lunes', '17:00', '19:00', 'Cancha de Entrenamiento');
+INSERT INTO TBL_HORARIO VALUES (0, 20, 'Formativo', 'Técnica de Fútbol', 2025, 2, 'Miércoles', '17:00', '19:00', 'Cancha de Entrenamiento');
+INSERT INTO TBL_HORARIO VALUES (0, 21, 'Formativo', 'Técnica de Fútbol', 2025, 3, 'Viernes', '17:00', '19:00', 'Cancha de Entrenamiento');
+
+-- Horarios para Natación para Adultos (Formativo)
+INSERT INTO TBL_HORARIO VALUES (0, 22, 'Formativo', 'Natación para Adultos', 2025, 1, 'Martes', '19:00', '20:30', 'Piscina Olímpica');
+INSERT INTO TBL_HORARIO VALUES (0, 23, 'Formativo', 'Natación para Adultos', 2025, 2, 'Jueves', '19:00', '20:30', 'Piscina Olímpica');
+INSERT INTO TBL_HORARIO VALUES (0, 24, 'Formativo', 'Natación para Adultos', 2025, 3, 'Sábado', '08:30', '10:00', 'Piscina Olímpica');
+
+
+-- Inscripciones de estudiantes en grupos de Fútbol Base (Semillero)
+INSERT INTO TBL_INSCRIPCION (META_ELIMINADO, INSCR_FECHAINSCRIPCION, INSCR_FECHADESVINCULACION, GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO, PERF_ID)
+VALUES (0, SYSDATE, NULL, 2025, 1, 'Fútbol Base', 'Semillero', '2345678901');
+
+INSERT INTO TBL_INSCRIPCION (META_ELIMINADO, INSCR_FECHAINSCRIPCION, INSCR_FECHADESVINCULACION, GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO, PERF_ID)
+VALUES (0, SYSDATE, NULL, 2025, 2, 'Fútbol Base', 'Semillero', '3456789012');
+
+-- Inscripciones en Natación Infantil (Semillero)
+INSERT INTO TBL_INSCRIPCION (META_ELIMINADO, INSCR_FECHAINSCRIPCION, INSCR_FECHADESVINCULACION, GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO, PERF_ID)
+VALUES (0, SYSDATE, NULL, 2025, 1, 'Natación Infantil', 'Semillero', '5678901234');
+
+INSERT INTO TBL_INSCRIPCION (META_ELIMINADO, INSCR_FECHAINSCRIPCION, INSCR_FECHADESVINCULACION, GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO, PERF_ID)
+VALUES (0, SYSDATE, NULL, 2025, 2, 'Natación Infantil', 'Semillero', '4567890123');
+
+-- Inscripciones en Béisbol Juvenil (Semillero)
+INSERT INTO TBL_INSCRIPCION (META_ELIMINADO, INSCR_FECHAINSCRIPCION, INSCR_FECHADESVINCULACION, GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO, PERF_ID)
+VALUES (0, SYSDATE, NULL, 2025, 1, 'Béisbol Juvenil', 'Semillero', '7890123456');
