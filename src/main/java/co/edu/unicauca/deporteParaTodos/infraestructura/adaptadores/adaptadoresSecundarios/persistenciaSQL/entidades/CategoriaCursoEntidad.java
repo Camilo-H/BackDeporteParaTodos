@@ -34,16 +34,9 @@ public class CategoriaCursoEntidad {
     @Column(name = "cat_descripcion", length = 1000, nullable = false)
     private String descripcion;
 
-    @Column(name = "cat_url_imagen", length = 1000, nullable = true)
-    private String rutaImagen;
+    @Column(name = "cat_imagen", nullable = false)
+    private Integer cat_imagen;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "cat_imagen", referencedColumnName = "IMG_ID")
-    private ImagenEntidad objImagenCategoria;
-
-    // Relación uno a muchos con CursoEntidad
-    @OneToMany(mappedBy = "categoriaCurso", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
-    private List<CursoEntidad> cursos = new ArrayList<>();
-
+    @Column(name = "meta_eliminado")
+    private int eliminado;
 }

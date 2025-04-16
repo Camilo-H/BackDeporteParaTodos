@@ -42,9 +42,9 @@ public class CursoGateway implements ICursoGateway{
     @Override
     public Optional<Curso> obtenerCurso(String nombreCurso) {
         Optional<CursoEntidad> resultado = repoCurso.findById(nombreCurso);
-        List<GrupoEntidad> grupos = resultado.get().getGrupos();
+        //List<GrupoEntidad> grupos = resultado.get().getGrupos();
         System.out.println(" ");
-        System.out.println("GRUPO 1 DEL CURSO "+grupos.get(0).getNombre());
+        //System.out.println("GRUPO 1 DEL CURSO "+grupos.get(0).getNombre());
         System.out.println(" ");
         return resultado.map(cursoEntidad -> mapper.map(cursoEntidad, Curso.class));
         
@@ -56,7 +56,7 @@ public class CursoGateway implements ICursoGateway{
         CursoEntidad entidad = mapper.map(curso, CursoEntidad.class);
         if (curso.getObjImagen() != null) {
             ImagenEntidad imagenEntidad = mapper.map(curso.getObjImagen(), ImagenEntidad.class);
-            entidad.setObjImagen(imagenEntidad);
+            //entidad.setObjImagen(imagenEntidad);
         }
         CursoEntidad entidadGuardada = repoCurso.save(entidad);
         return mapper.map(entidadGuardada, Curso.class);

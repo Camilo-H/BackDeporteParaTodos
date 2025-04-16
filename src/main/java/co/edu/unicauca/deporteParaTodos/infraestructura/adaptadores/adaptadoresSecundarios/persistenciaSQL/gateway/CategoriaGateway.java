@@ -53,7 +53,7 @@ public class CategoriaGateway implements ICategoriaCursoGateway {
         }
         CategoriaCursoEntidad entidadInsertar = mapper.map(datosCategoria, CategoriaCursoEntidad.class);
         ImagenEntidad imgEntidad = mapper.map(datosCategoria.getImagen(), ImagenEntidad.class);
-        entidadInsertar.setObjImagenCategoria(imgEntidad);
+        //entidadInsertar.setObjImagenCategoria(imgEntidad);
         CategoriaCursoEntidad entidadInsertada = repoCategoria.save(entidadInsertar);
         Categoria categoriacreada = mapper.map(entidadInsertada, Categoria.class);
         return categoriacreada;
@@ -75,7 +75,7 @@ public class CategoriaGateway implements ICategoriaCursoGateway {
         System.out.println("---"+prmcategoria.getImagen().getTipoArchivo());
 
         if (prmcategoria.getImagen() != null) {
-            if (entidadCategoriaExistente.getObjImagenCategoria() != null) {
+            /*if (entidadCategoriaExistente.getObjImagenCategoria() != null) {
 
                 ImagenEntidad entidadImagenExistente = entidadCategoriaExistente.getObjImagenCategoria();
                 
@@ -88,7 +88,7 @@ public class CategoriaGateway implements ICategoriaCursoGateway {
             } else {
                 ImagenEntidad nuevaImagen = mapper.map(prmcategoria.getImagen(), ImagenEntidad.class);
                 entidadCategoriaExistente.setObjImagenCategoria(nuevaImagen);
-            }
+            }*/
         }
 
         CategoriaCursoEntidad entidadActualizada = repoCategoria.save(entidadCategoriaExistente);

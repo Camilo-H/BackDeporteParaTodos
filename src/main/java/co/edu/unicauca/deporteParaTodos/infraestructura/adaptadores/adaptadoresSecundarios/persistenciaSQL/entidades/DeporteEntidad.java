@@ -28,6 +28,6 @@ public class DeporteEntidad {
     private String nombre;
 
     // Relación con CursoEntidad
-    @OneToMany(mappedBy = "deporte", cascade = CascadeType.ALL)
-    private List<CursoEntidad> cursos = new ArrayList<>();
+    //@OneToMany(mappedBy = "deporte", cascade = CascadeType.ALL)
+    //private List<CursoEntidad> cursos = new ArrayList<>();
 }

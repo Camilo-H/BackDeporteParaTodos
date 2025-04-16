@@ -32,7 +32,7 @@ public class HorarioEntidad {
 
     @ManyToOne
     @JoinColumns({
-            @JoinColumn(name = "GRP_NOMBRE", referencedColumnName = "GRP_NOMBRE"),
+            //@JoinColumn(name = "GRP_NOMBRE", referencedColumnName = "GRP_NOMBRE"),
             @JoinColumn(name = "GRP_ANIO", referencedColumnName = "GRP_ANIO"),
             @JoinColumn(name = "GRP_ITERABLE", referencedColumnName = "GRP_ITERABLE") })
     private GrupoEntidad grupo;

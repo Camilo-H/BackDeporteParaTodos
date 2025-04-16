@@ -39,7 +39,7 @@ public class GrupoGateway implements IGrupoGateway {
     public boolean existeGrupo(String nombre, int anio, int iterable) {
 
         GrupoId grupoId = new GrupoId();
-        grupoId.setNombre(nombre);
+        //grupoId.setNombre(nombre);
         grupoId.setAnio(anio);
         grupoId.setIterable(iterable);
         return repoGrupo.existsById(grupoId);
@@ -50,7 +50,7 @@ public class GrupoGateway implements IGrupoGateway {
         GrupoEntidad entidad = mapper.map(datosGrupo, GrupoEntidad.class);
         if (datosGrupo.getImagen() != null) {
             ImagenEntidad imagen = mapper.map(datosGrupo.getImagen(), ImagenEntidad.class);
-            entidad.setImagenGrupo(imagen);
+            //entidad.setImagenGrupo(imagen);
         }
         GrupoEntidad entidadGuardada = repoGrupo.save(entidad);
         return mapper.map(entidadGuardada, Grupo.class);
@@ -59,7 +59,7 @@ public class GrupoGateway implements IGrupoGateway {
     @Override
     public Optional<Grupo> obtenerGrupoPorId(String nombre, int anio, int iterable) {
         GrupoId grupoId = new GrupoId();
-        grupoId.setNombre(nombre);
+        //grupoId.setNombre(nombre);
         grupoId.setAnio(anio);
         grupoId.setIterable(iterable);
 
@@ -71,7 +71,7 @@ public class GrupoGateway implements IGrupoGateway {
     public Grupo actualizarGrupo(String nombre, int anio, int iterable, Grupo datosGrupo) {
 
         GrupoId grupoId = new GrupoId();
-        grupoId.setNombre(nombre);
+        //grupoId.setNombre(nombre);
         grupoId.setAnio(anio);
         grupoId.setIterable(iterable);
 
@@ -81,12 +81,12 @@ public class GrupoGateway implements IGrupoGateway {
             GrupoEntidad entidadActualizar = entidadExistente.get();
             // Actualizar los campos de la entidad con los datos de datosGrupo
             entidadActualizar.setCupos(datosGrupo.getCupos());
-            entidadActualizar.setEstado(datosGrupo.getEstado());
+            //entidadActualizar.setEstado(datosGrupo.getEstado());
             entidadActualizar.setFechaCreacion(datosGrupo.getFechaCreacion());
             entidadActualizar.setFechaFinalizacion(datosGrupo.getFechaFinalizacion());
             if (datosGrupo.getImagen() != null) {
                 ImagenEntidad imagenEntidad = mapper.map(datosGrupo.getImagen(), ImagenEntidad.class);
-                entidadActualizar.setImagenGrupo(imagenEntidad);
+                //entidadActualizar.setImagenGrupo(imagenEntidad);
             }
 
             GrupoEntidad grupoActualizado = repoGrupo.save(entidadActualizar);
@@ -98,7 +98,7 @@ public class GrupoGateway implements IGrupoGateway {
     @Override
     public Grupo eliminarGrupo(String nombre, int anio, int iterable) {
         GrupoId grupoId = new GrupoId();
-        grupoId.setNombre(nombre);
+        //grupoId.setNombre(nombre);
         grupoId.setAnio(anio);
         grupoId.setIterable(iterable);
         Optional<GrupoEntidad> entidadExistente = repoGrupo.findById(grupoId);

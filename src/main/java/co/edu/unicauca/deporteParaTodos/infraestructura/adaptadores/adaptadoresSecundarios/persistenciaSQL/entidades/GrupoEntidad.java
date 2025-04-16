@@ -32,10 +32,14 @@ import lombok.Setter;
 public class GrupoEntidad {
     /*@EmbeddedId
     private GrupoId id;*/
+////CAT_TITULO, CUR_NOMBRE, GRP_ANIO, GRP_ITERABLE
+    @Id
+    @Column(name = "CAT_TITULO")
+    private String cat_titulo;
 
     @Id
-    @Column(name = "GRP_NOMBRE")
-    private String nombre;
+    @Column(name = "CUR_NOMBRE")
+    private String cur_nombre;
 
     @Id
     @Column(name = "GRP_ANIO")
@@ -45,20 +49,14 @@ public class GrupoEntidad {
     @Column(name = "GRP_ITERABLE")
     private int iterable;
 
-    @ManyToOne
-    @JoinColumn(name = "CUR_NOMBRE", referencedColumnName = "CUR_NOMBRE")
-    //@JsonBackReference
-    private CursoEntidad curso;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "GRP_IMAGEN", referencedColumnName = "IMG_ID")
-    private ImagenEntidad imagenGrupo;
+    @Column(name = "GRP_IMAGEN")
+    private Integer imagenGrupo;
 
     @Column(name = "GRP_CUPOS")
     private int cupos;
 
-    @Column(name = "GRP_ESTADO")
-    private String estado;
+    //@Column(name = "GRP_ESTADO")
+    //private String estado;
 
     @Column(name = "GRP_FECHACREACION")
     private Date fechaCreacion;
@@ -66,13 +64,7 @@ public class GrupoEntidad {
     @Column(name = "GRP_FECHA_FINALIZACION")
     private Date fechaFinalizacion;
 
-    @OneToMany(mappedBy = "grupo", cascade = CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval = true)
-    @JsonManagedReference
-    private List<HorarioEntidad> horarios = new ArrayList<>();
-
-    @OneToMany(mappedBy = "grupoInscripcion", cascade = CascadeType.ALL,  fetch = FetchType.LAZY, orphanRemoval = true)
-    @JsonManagedReference
-    private List<InscripcionEntidad> inscripciones = new ArrayList<>();
-
+    @Column(name = "META_ELIMINADO")
+    private Integer eliminado;
 }
 // fetch = FetchType.EAGER fetch = FetchType.LAZY,

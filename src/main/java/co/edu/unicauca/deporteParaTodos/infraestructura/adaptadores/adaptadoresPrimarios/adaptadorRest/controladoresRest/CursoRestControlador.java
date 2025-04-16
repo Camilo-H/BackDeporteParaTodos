@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.ICursoServicio;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Curso;
@@ -34,7 +35,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @CrossOrigin(origins= {"*"}, maxAge = 4200, allowCredentials = "false")
 @Validated
 public class CursoRestControlador {
-    
+    /*
     @Autowired
     private ICursoServicio servicio;
 
@@ -78,8 +79,8 @@ public class CursoRestControlador {
     }
 
     //Obtener un curso
-    @GetMapping("/cursos/{nombre}")
-    public ResponseEntity<CursoDTO> obtenerCurso(@PathVariable String nombre) {
+    @GetMapping("/cursos")
+    public ResponseEntity<CursoDTO> obtenerCurso(@RequestParam String nombre) {
         Curso curso = servicio.obtenerCurso(nombre);
         if(curso== null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -111,5 +112,5 @@ public class CursoRestControlador {
         CursoDTO respuestaDto = mapper.map(cursoEliminado, CursoDTO.class);
         return new ResponseEntity<CursoDTO>(respuestaDto, HttpStatus.OK);
     }
-    
+    */
 }

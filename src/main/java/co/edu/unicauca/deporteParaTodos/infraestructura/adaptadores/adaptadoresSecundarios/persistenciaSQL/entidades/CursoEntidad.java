@@ -32,27 +32,22 @@ public class CursoEntidad {
     @Column(name = "CUR_NOMBRE")
     private String nombre;
 
-    // Relación con DeporteEntidad
-    @ManyToOne
-    @JoinColumn(name = "DEPT_NOMBRE", referencedColumnName = "dept_nombre")
-    private DeporteEntidad deporte;
+    @Column(name = "dept_nombre")
+    private String deporte;
 
-    // Relación con CategoriaCursoEntidad
-    @ManyToOne
-    @JoinColumn(name = "CAT_TITULO", referencedColumnName = "cat_titulo")
-    @JsonBackReference
-    private CategoriaCursoEntidad categoriaCurso;
+    @Column(name = "cat_titulo")
+    private String categoriaCurso;
 
     @Column(name = "CUR_DESCRIPCION")
     private String descripcion;
 
-    // relacion con entidad imagen //join column debe ser emplementado en la tabla
-    // que contiene la columna de clave foranea
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "CUR_IMAGEN", referencedColumnName = "IMG_ID")
-    private ImagenEntidad objImagen;
+    @Column(name = "CUR_IMAGEN")
+    private Integer objImagen;
 
-    @OneToMany(mappedBy = "curso", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
-    private List<GrupoEntidad> grupos= new ArrayList<>();
+    @Column(name = "meta_eliminado")
+    private Integer eliminado;
+
+    //@OneToMany(mappedBy = "curso", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    //@JsonManagedReference
+    //private List<GrupoEntidad> grupos= new ArrayList<>();
 }

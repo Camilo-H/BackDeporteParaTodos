@@ -3,7 +3,10 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadores
 import org.springframework.data.repository.CrudRepository;
 
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CategoriaCursoEntidad;
+import java.util.List;
+
 
 public interface ICategoriaCursoRepositorio extends CrudRepository<CategoriaCursoEntidad, String>{
-    
+    //List<CursoEntidad> findByCategoriaCursoAndEliminado(String nombreCategoria, Integer eliminado);
+    List<CategoriaCursoEntidad> findByEliminado(int eliminado);
 }

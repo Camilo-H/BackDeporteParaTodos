@@ -14,8 +14,12 @@ import lombok.Setter;
 @Setter
 //@Embeddable
 public class GrupoId implements Serializable{
-    @Column(name = "GRP_NOMBRE")
-    private String nombre;
+    //CAT_TITULO, CUR_NOMBRE, GRP_ANIO, GRP_ITERABLE
+    @Column(name = "CAT_TITULO")
+    private String cat_titulo;
+    
+    @Column(name = "CUR_NOMBRE")
+    private String cur_nombre;
 
     @Column(name = "GRP_ANIO")
     private int anio;
@@ -31,11 +35,12 @@ public class GrupoId implements Serializable{
         GrupoId grupoId = (GrupoId) o;
         return anio == grupoId.anio && 
                iterable == grupoId.iterable && 
-               Objects.equals(nombre, grupoId.nombre);
+               Objects.equals(cat_titulo, grupoId.cat_titulo) &&
+               Objects.equals(cur_nombre, grupoId.cur_nombre);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nombre, anio, iterable);
+        return Objects.hash(cat_titulo, cur_nombre, anio, iterable);
     }
 }
