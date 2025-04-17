@@ -35,11 +35,11 @@ public class GrupoEntidad {
 ////CAT_TITULO, CUR_NOMBRE, GRP_ANIO, GRP_ITERABLE
     @Id
     @Column(name = "CAT_TITULO")
-    private String cat_titulo;
+    private String categoria;
 
     @Id
     @Column(name = "CUR_NOMBRE")
-    private String cur_nombre;
+    private String curso;
 
     @Id
     @Column(name = "GRP_ANIO")

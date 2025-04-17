@@ -16,10 +16,10 @@ import lombok.Setter;
 public class GrupoId implements Serializable{
     //CAT_TITULO, CUR_NOMBRE, GRP_ANIO, GRP_ITERABLE
     @Column(name = "CAT_TITULO")
-    private String cat_titulo;
+    private String categoria;
     
     @Column(name = "CUR_NOMBRE")
-    private String cur_nombre;
+    private String curso;
 
     @Column(name = "GRP_ANIO")
     private int anio;
@@ -35,12 +35,12 @@ public class GrupoId implements Serializable{
         GrupoId grupoId = (GrupoId) o;
         return anio == grupoId.anio && 
                iterable == grupoId.iterable && 
-               Objects.equals(cat_titulo, grupoId.cat_titulo) &&
-               Objects.equals(cur_nombre, grupoId.cur_nombre);
+               Objects.equals(categoria, grupoId.categoria) &&
+               Objects.equals(curso, grupoId.curso);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(cat_titulo, cur_nombre, anio, iterable);
+        return Objects.hash(categoria, curso, anio, iterable);
     }
 }
