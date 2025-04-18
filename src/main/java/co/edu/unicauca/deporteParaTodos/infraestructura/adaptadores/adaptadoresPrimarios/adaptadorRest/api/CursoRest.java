@@ -35,4 +35,9 @@ public class CursoRest {
         return repositorio.findByCategoriaCursoAndEliminado(prmCategoria, 0);
     }
 
+    @GetMapping("/curso")
+    public CursoEntidad obtenerCurso(@RequestParam String prmCategoria, @RequestParam String prmCurso) {
+        return repositorio.findByCategoriaCursoAndNombre(prmCategoria, prmCurso);
+    }
+    
 }

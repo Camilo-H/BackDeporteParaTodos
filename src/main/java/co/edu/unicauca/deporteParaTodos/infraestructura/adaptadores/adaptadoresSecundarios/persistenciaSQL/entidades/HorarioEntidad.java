@@ -20,6 +20,19 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 
+/*
+     * META_ELIMINADO
+HR_ID
+CAT_TITULO
+CUR_NOMBRE
+GRP_ANIO
+GRP_ITERABLE
+HR_DIA
+HR_HORAINICIO
+HR_HORAFIN
+HR_ESCENARIO
+     */
+
 @Entity
 @Table(name = "tbl_horario")
 public class HorarioEntidad {
@@ -30,12 +43,17 @@ public class HorarioEntidad {
     @Column(name = "hr_id")
     private Integer id;
 
-    @ManyToOne
-    @JoinColumns({
-            //@JoinColumn(name = "GRP_NOMBRE", referencedColumnName = "GRP_NOMBRE"),
-            @JoinColumn(name = "GRP_ANIO", referencedColumnName = "GRP_ANIO"),
-            @JoinColumn(name = "GRP_ITERABLE", referencedColumnName = "GRP_ITERABLE") })
-    private GrupoEntidad grupo;
+    @Column(name = "CAT_TITULO")
+    private String categoria;
+
+    @Column(name = "CUR_NOMBRE")
+    private String curso;
+
+    @Column(name = "GRP_ANIO")
+    private int anio;
+
+    @Column(name = "GRP_ITERABLE")
+    private int iterable;
 
     @Column(name = "hr_dia")
     private String dia;
@@ -48,4 +66,7 @@ public class HorarioEntidad {
 
     @Column(name = "hr_escenario")
     private String escenario;
+
+    @Column(name = "meta_eliminado")
+    private Integer eliminado;
 }
