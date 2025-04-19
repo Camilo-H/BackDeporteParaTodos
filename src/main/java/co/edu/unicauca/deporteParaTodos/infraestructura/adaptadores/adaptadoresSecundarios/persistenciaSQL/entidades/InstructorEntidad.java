@@ -36,7 +36,7 @@ public class InstructorEntidad {
     @JoinColumn(name = "perf_id", referencedColumnName = "perf_id")
     private PerfilEntidad perfil;
 
-    @OneToMany(mappedBy = "instructor", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ClaseEntidad> clases = new ArrayList<>();
+    //@OneToMany(mappedBy = "instructor", cascade = CascadeType.ALL, orphanRemoval = true)
+    //private List<ClaseEntidad> clases = new ArrayList<>();
 
 }

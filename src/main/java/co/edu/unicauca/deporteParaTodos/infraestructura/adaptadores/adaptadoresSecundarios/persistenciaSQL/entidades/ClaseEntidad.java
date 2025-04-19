@@ -35,23 +35,34 @@ public class ClaseEntidad {
     @Column(name = "CLS_CODIGO")
     private Integer codigo;
 
-    @ManyToOne
-    @JoinColumn(name = "perf_id", referencedColumnName = "perf_id")
-    private InstructorEntidad instructor;
+    @Column(name ="cat_titulo")
+    private String idGrupoCategoria;
+
+    @Column(name="cur_nombre")
+    private String idGrupoCurso;
+
+    @Column(name = "grp_anio")
+    private Integer idGrupoAnio;
+
+    @Column(name = "grp_iterable")
+    private Integer idGrupoIterable;
+
+    @Column(name="perf_id")
+    private String idInstructor;
 
     @Column(name = "CLS_FECHA")
     private Date fecha;
 
-    @Column(name = "CLS_HORA_INICIO")
-    private Timestamp horaInicio;
+    @Column(name="cls_duracion_horas")
+    private Integer horas;
 
-    @Column(name = "CLS_HORA_FIN")
-    private Timestamp horaFin;
+    @Column(name="cls_duracion_minutos")
+    private Integer minutos;
 
     @Column(name = "CLS_OBSERVACION")
     private String observacion;
 
-    @ManyToMany(mappedBy = "clases")
-    private List<AlumnoEntidad> alumnos = new ArrayList<>();
+    @Column(name="META_ELIMINADO")
+    private Integer eliminado;
 
 }
