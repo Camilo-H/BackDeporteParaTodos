@@ -24,12 +24,9 @@ public class ClaseRest {
 
     @GetMapping("/clasesGrupo")
     public List<ClaseEntidad> getClasesGrupo(@RequestParam String categoria, @RequestParam String curso, @RequestParam Integer anio, @RequestParam Integer iterable) {
-        /*String idGrupoCategoria,
-        String idGrupoCurso,
-        Integer idGrupoAnio,
-        Integer idGrupoIterable,
-        Integer eliminado */
         return repositorio.findByIdGrupoCategoriaAndIdGrupoCursoAndIdGrupoAnioAndIdGrupoIterableAndEliminado(categoria,curso,anio,iterable,0);
     }
+
+    
     
 }

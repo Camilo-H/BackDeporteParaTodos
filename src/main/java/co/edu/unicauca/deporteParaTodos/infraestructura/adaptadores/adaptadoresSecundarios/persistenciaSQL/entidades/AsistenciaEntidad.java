@@ -30,12 +30,6 @@ public class AsistenciaEntidad {
     @Column(name = "CLS_CODIGO")
     private Integer claseCodigo;
 
-    @ManyToOne
-    @JoinColumn(name = "perf_id", referencedColumnName = "perf_id", insertable = false, updatable = false)
-    private AlumnoEntidad alumno;
-
-    @ManyToOne
-    @JoinColumn(name = "CLS_CODIGO", referencedColumnName = "CLS_CODIGO", insertable = false, updatable = false)
-    private ClaseEntidad clase;
-
+    @Column(name = "META_ELIMINADO")
+    private Integer eliminado;
 }
