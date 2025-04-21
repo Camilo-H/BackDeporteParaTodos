@@ -31,7 +31,7 @@ public class ClaseEntidad {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_entidad_clase")
-    @SequenceGenerator(name = "seq_entidad_clase", sequenceName = "SEQ_ID_CLASE", allocationSize = 1)
+    @SequenceGenerator(name = "seq_entidad_clase", sequenceName = "SEQ_CLS_CODIGO", allocationSize = 1)
     @Column(name = "CLS_CODIGO")
     private Integer codigo;
 

@@ -1,8 +1,13 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios;
 
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ClaseEntidad;
+import jakarta.transaction.Transactional;
+
 import java.util.List;
 
 
@@ -15,4 +20,9 @@ public interface IClaseRepositorio extends CrudRepository<ClaseEntidad,Integer>{
         Integer idGrupoIterable,
         Integer eliminado
         );
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE ClaseEntidad c SET c.eliminado = 1 WHERE c.codigo =:codigo")
+    int marcarComoEliminado(@Param("codigo") Integer codigo);
 }
