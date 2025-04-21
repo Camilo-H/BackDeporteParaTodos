@@ -66,7 +66,7 @@ public class ClaseRest {
         //No se debe hacer delete sobre la clase, lo apropiado es realizar el cambio de estado la metadato meta_eliminado, de 0 a 1
         Integer respuesta = repositorio.marcarComoEliminado(id);
         //no es relevante el body, el codigo es lo importante en este espacio, al manejar con entidades y excepciones, puede que si se vuelva relevante el body
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
     
     
