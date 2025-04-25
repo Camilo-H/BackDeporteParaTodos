@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.dtoProcedimientos.alumnoDTO;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.dtoProcedimientos.atencionDTO;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.v2DTO.V2AlumnoDTO;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.v2DTO.V2AtencionDTO;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.AsistenciaEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ids.AsistenciaId;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IAlumnoRepositorio;
@@ -37,15 +37,15 @@ public class AtencionesRest {
     private IAsistenciaRepositorio repositorioAsistencias;
 
     @GetMapping("/atencionesporclase")
-    public List<atencionDTO> getatenciones(String categoria, String curso, int anio, int iterable, int claseid) {
+    public List<V2AtencionDTO> getatenciones(String categoria, String curso, int anio, int iterable, int claseid) {
         //lista total alumnos clase
-        List<alumnoDTO> listaAlumnos = getAlumnosGrupo(categoria, curso, anio, iterable);
+        List<V2AlumnoDTO> listaAlumnos = getAlumnosGrupo(categoria, curso, anio, iterable);
         //lista asistencias, solo id asistentes
         List<AsistenciaEntidad> listaAsistencia = getAsistenciasClase(claseid);
         //atenciones inicializadas en false
-        List<atencionDTO> list = new ArrayList<>();
-        for(alumnoDTO alumno: listaAlumnos){
-            list.add(new atencionDTO(alumno,claseid,false));
+        List<V2AtencionDTO> list = new ArrayList<>();
+        for(V2AlumnoDTO alumno: listaAlumnos){
+            list.add(new V2AtencionDTO(alumno,claseid,false));
         }
         for(AsistenciaEntidad asistencia: listaAsistencia){
             for(int i=0; i < list.size(); i++){
@@ -65,10 +65,10 @@ public class AtencionesRest {
      * @return TODO: se deberia retornar un acuse para la aperacion, pendiente
      */
     @PostMapping("/atenciones")
-    public String postAtenciones(@RequestBody List<atencionDTO> atenciones, @RequestParam int idclase) {
+    public String postAtenciones(@RequestBody List<V2AtencionDTO> atenciones, @RequestParam int idclase) {
         boolean estado = true;
         //se recorre el listado de atenciones para evaluar cada atencion.
-        for(atencionDTO atencion: atenciones){
+        for(V2AtencionDTO atencion: atenciones){
             //Para construir una atencion se necesita una clase ID
             AsistenciaId idAsistencia = new AsistenciaId(atencion.getAlumno().getId(), atencion.getIdClase());
             //a partir de la id se crea una asistencia, marcada con eliminado 0, de modo que se parte de todas las asistencias no eliminadas
@@ -100,12 +100,12 @@ public class AtencionesRest {
     
     
 
-    public List<alumnoDTO> getAlumnosGrupo(String categoria, String curso, int anio, int iterable) {
+    public List<V2AlumnoDTO> getAlumnosGrupo(String categoria, String curso, int anio, int iterable) {
         List<Object[]> objetos = repositorioAlumnos.buscarAlumnosGrupoRaw(categoria, curso, anio, iterable,0);
-        List<alumnoDTO> alumnoDTOs = new ArrayList<>();
+        List<V2AlumnoDTO> alumnoDTOs = new ArrayList<>();
         for (Object[] objects : objetos) {
-            alumnoDTO alumno = new alumnoDTO();
-            alumno = alumnoDTO.fromObjectSQL(objects); //uso de static fabrica
+            V2AlumnoDTO alumno = new V2AlumnoDTO();
+            alumno = V2AlumnoDTO.fromObjectSQL(objects); //uso de static fabrica
             alumnoDTOs.add(alumno);
         }
         return alumnoDTOs;

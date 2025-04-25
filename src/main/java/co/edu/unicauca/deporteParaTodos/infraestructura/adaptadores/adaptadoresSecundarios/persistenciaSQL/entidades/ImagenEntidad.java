@@ -41,4 +41,7 @@ public class ImagenEntidad {
     @Lob
     private byte[] datos;
 
+    @Column(name = "META_ELIMINADO")
+    private int eliminado;
+
 }

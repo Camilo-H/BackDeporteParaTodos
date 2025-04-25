@@ -1,4 +1,4 @@
-package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.dtoProcedimientos;
+package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.v2DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @NoArgsConstructor
-public class alumnoDTO {
+public class V2AlumnoDTO {
     private Integer eliminadoestado;
     private String id;
     private String codigo; 
@@ -19,7 +19,7 @@ public class alumnoDTO {
     private String tipoid;
     private Integer imagen;
    
-    public alumnoDTO(Integer eliminadoestado, String id, String codigo, String tipo,
+    public V2AlumnoDTO(Integer eliminadoestado, String id, String codigo, String tipo,
                      String nombre, String correo, String sexo, String tipoid, Integer imagen) {
         this.eliminadoestado = eliminadoestado;
         this.id = id;
@@ -33,8 +33,8 @@ public class alumnoDTO {
                      }
 
     //Metodo fabrica estatica
-    public static alumnoDTO fromObjectSQL(Object[] objects){
-        alumnoDTO alumno = new alumnoDTO();
+    public static V2AlumnoDTO fromObjectSQL(Object[] objects){
+        V2AlumnoDTO alumno = new V2AlumnoDTO();
             try{
                 alumno.setEliminadoestado(Integer.parseInt(objects[0].toString()));
                 alumno.setId(objects[1].toString());

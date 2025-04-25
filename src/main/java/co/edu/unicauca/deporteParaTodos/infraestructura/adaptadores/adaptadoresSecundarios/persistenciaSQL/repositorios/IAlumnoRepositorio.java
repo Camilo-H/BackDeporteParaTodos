@@ -7,12 +7,12 @@ import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.dtoProcedimientos.alumnoDTO;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.v2DTO.V2AlumnoDTO;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.AlumnoEntidad;
 
 public interface IAlumnoRepositorio extends CrudRepository<AlumnoEntidad,String>{
     @Procedure(procedureName = "pro_obtener_alumnos_grupo")
-    List<alumnoDTO> obtenerAlumnosGrupo(
+    List<V2AlumnoDTO> obtenerAlumnosGrupo(
         @Param("categoria") String categoria, 
         @Param("curso") String curso, 
         @Param("anio") double anio, 

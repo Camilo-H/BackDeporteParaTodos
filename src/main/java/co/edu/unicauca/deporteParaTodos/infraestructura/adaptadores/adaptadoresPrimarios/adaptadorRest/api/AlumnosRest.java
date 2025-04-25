@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.comunes.AlumnoDTO;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.dtoProcedimientos.alumnoDTO;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.v2DTO.V2AlumnoDTO;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.HorarioEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IAlumnoRepositorio;
 
@@ -27,12 +27,12 @@ public class AlumnosRest {
     private IAlumnoRepositorio repositorio;
 
     @GetMapping("/alumnosGrupo")
-    public List<alumnoDTO> getAlumnosGrupo(@RequestParam String categoria, @RequestParam String curso, @RequestParam int anio, @RequestParam int iterable) {
+    public List<V2AlumnoDTO> getAlumnosGrupo(@RequestParam String categoria, @RequestParam String curso, @RequestParam int anio, @RequestParam int iterable) {
         List<Object[]> objetos = repositorio.buscarAlumnosGrupoRaw(categoria, curso, anio, iterable,0);
-        List<alumnoDTO> alumnoDTOs = new ArrayList<>();
+        List<V2AlumnoDTO> alumnoDTOs = new ArrayList<>();
         for (Object[] objects : objetos) {
-            alumnoDTO alumno = new alumnoDTO();
-            alumno = alumnoDTO.fromObjectSQL(objects); //uso de static fabrica
+            V2AlumnoDTO alumno = new V2AlumnoDTO();
+            alumno = V2AlumnoDTO.fromObjectSQL(objects); //uso de static fabrica
             alumnoDTOs.add(alumno);
         }
         return alumnoDTOs;
