@@ -22,6 +22,9 @@ import io.micrometer.core.ipc.http.HttpSender.Response;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 
 @RestController
@@ -55,6 +58,19 @@ public class CategoriaRest {
         return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
     
+    @PutMapping("/categoria")
+    public ResponseEntity<V2CategoriaDTO> putCategoria(@RequestParam String titulo, @RequestBody V2CategoriaDTO dto) {
+        boolean existe = repositorioCategoria.existsById(titulo);
+        if(!existe){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        CategoriaCursoEntidad entidad = new CategoriaCursoEntidad(titulo, dto.getDescripcion(), dto.getImagenId(), 0);
+        CategoriaCursoEntidad entidadGuardada;
+        entidadGuardada = repositorioCategoria.save(entidad);
+        V2CategoriaDTO respuesta = new V2CategoriaDTO(entidad.getTitulo(), entidadGuardada.getDescripcion(), entidadGuardada.getCat_imagen());
+        return new ResponseEntity<>(respuesta, HttpStatus.OK);
+    }
+
     @DeleteMapping("/categoria")
     public ResponseEntity<Integer> deleteCategoria(@RequestParam String titulo){
         Optional<CategoriaCursoEntidad> op = repositorioCategoria.findById(titulo);
