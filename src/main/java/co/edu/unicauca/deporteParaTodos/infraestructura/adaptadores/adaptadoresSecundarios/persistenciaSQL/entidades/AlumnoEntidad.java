@@ -33,25 +33,12 @@ public class AlumnoEntidad {
     @Column(name = "perf_id")
     private String idPerfil;
 
-    @Column(name = "ALM_CODIGO", unique = true, length = 20, nullable = false)
+    @Column(name = "ALM_CODIGO", unique = true, length = 20, nullable = true)
     private String alm_codigo;
 
-    @ManyToOne
-    @JoinColumn(name = "fac_nombre", referencedColumnName = "fac_nombre")
-    private FacultadEntidad Facultad;
+    @Column(name = "fac_nombre")
+    private String Facultad;
 
     @Column(name = "ALM_TIPO")
     private String tipoAlumno;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "perf_id", referencedColumnName = "perf_id")
-    private PerfilEntidad perfil;
-   
-    @OneToMany(mappedBy = "alumno", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<InscripcionEntidad> inscripciones = new ArrayList<>();
-
-    @ManyToMany
-    @JoinTable(name = "tbl_asistencia", joinColumns = @JoinColumn(name = "PERF_ID", referencedColumnName = "perf_id"), inverseJoinColumns = @JoinColumn(name = "CLS_CODIGO", referencedColumnName = "CLS_CODIGO"))
-    private List<ClaseEntidad> clases = new ArrayList<>();
-
 }

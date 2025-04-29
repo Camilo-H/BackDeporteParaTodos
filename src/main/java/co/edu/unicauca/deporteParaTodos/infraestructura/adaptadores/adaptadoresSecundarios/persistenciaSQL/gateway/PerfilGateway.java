@@ -66,7 +66,7 @@ public class PerfilGateway implements IperfilGateway {
                 .orElseThrow(() -> new NoExisteExcepcion("No exoste el perfil"));
 
         entidadExistente.setPerf_nombre(datosPerfil.getPerf_nombre());
-        entidadExistente.setPerf_correo(datosPerfil.getPerf_correo());
+        entidadExistente.setPerfcorreo(datosPerfil.getPerf_correo());
         if (datosPerfil.getPerf_imagen() != null) {
             ImagenEntidad perfimagen = mapper.map(datosPerfil.getPerf_imagen(), ImagenEntidad.class);
             entidadExistente.setPerf_imagen(perfimagen);

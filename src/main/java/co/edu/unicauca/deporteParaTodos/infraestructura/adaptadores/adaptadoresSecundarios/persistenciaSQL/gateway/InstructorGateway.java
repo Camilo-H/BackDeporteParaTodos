@@ -66,7 +66,7 @@ public class InstructorGateway implements IInstructorGateway {
         if (entidadExistente.isPresent()) {
             InstructorEntidad entidad = entidadExistente.get();
             entidad.getPerfil().setPerf_nombre(datosInstructor.getPerfil().getPerf_nombre());
-            entidad.getPerfil().setPerf_correo(datosInstructor.getPerfil().getPerf_correo());
+            entidad.getPerfil().setPerfcorreo(datosInstructor.getPerfil().getPerf_correo());
             entidad.getPerfil().setPerf_tipo(datosInstructor.getPerfil().getPerf_tipo());
             entidad.getPerfil().setPerf_Sexo(datosInstructor.getPerfil().getPerf_Sexo());
             if (datosInstructor.getPerfil().getPerf_imagen() != null) {

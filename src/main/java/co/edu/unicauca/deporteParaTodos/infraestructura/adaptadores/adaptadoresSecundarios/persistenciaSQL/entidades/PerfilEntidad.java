@@ -26,7 +26,7 @@ public class PerfilEntidad {
     private String perf_nombre;
 
     @Column(name = "perf_correo", length = 100, nullable = false)
-    private String perf_correo;
+    private String perfcorreo;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "perf_imagen", referencedColumnName = "IMG_ID")
@@ -37,13 +37,4 @@ public class PerfilEntidad {
 
     @Column(name = "perf_sexo", length = 10, nullable = false)
     private String perf_Sexo;
-
-    @OneToOne (mappedBy = "perfil")
-    private InstructorEntidad instructor;
-
-    @OneToOne (mappedBy = "perfil")
-    private AlumnoEntidad alumno;
-
-    @OneToOne (mappedBy = "perfil")
-    private CoordinadorEntidad coordinador;
 }
