@@ -35,4 +35,10 @@ public class GrupoRest {
     public List<GrupoEntidad> obtenerGruposDe(@RequestParam String prmCategoria, @RequestParam String prmCurso){
         return repositorio.findByCategoriaAndCursoAndEliminado(prmCategoria, prmCurso, 0);
     }
+
+    @GetMapping("/gruposInscripcion")
+    public List<GrupoEntidad> obtenerGruposInscripcion() {
+        return repositorio.obtenerGruposConInscripcionDisponibleNativo();
+    }
+    
 }

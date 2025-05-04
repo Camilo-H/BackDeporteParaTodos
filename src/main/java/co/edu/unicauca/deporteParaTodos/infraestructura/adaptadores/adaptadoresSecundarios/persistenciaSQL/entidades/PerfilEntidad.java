@@ -37,4 +37,7 @@ public class PerfilEntidad {
 
     @Column(name = "perf_sexo", length = 10, nullable = false)
     private String perf_Sexo;
+
+    @Column(name ="META_ELIMINADO")
+    private Integer eliminado;
 }

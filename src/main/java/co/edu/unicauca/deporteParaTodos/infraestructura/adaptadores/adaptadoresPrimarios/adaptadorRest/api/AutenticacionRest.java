@@ -50,15 +50,15 @@ public class AutenticacionRest {
             PerfilEntidad entidad = entidades.get(0);
             V2PerfilDTO dto = V2PerfilDTO.fabricaFromPerfilEntidad(entidad);
             if(repositorioCoordinador.existsById(entidad.getPerf_id())){
-                dto.setRole("C");
+                dto.setRole("Coordinador");
                 return new ResponseEntity<>(dto,HttpStatus.OK);
             }
             if(repositorioInstructor.existsById(entidad.getPerf_id())){
-                dto.setRole("I");
+                dto.setRole("Instructor");
                 return new ResponseEntity<>(dto,HttpStatus.OK);
             }
             if(repositorioAlumno.existsById(entidad.getPerf_id())){
-                dto.setSexo("A");
+                dto.setRole("Alumno");
                 return new ResponseEntity<>(dto,HttpStatus.OK);
             }
         }
@@ -69,6 +69,7 @@ public class AutenticacionRest {
     public ResponseEntity<V2PerfilDTO> postRegistroPerfilAlumno(@RequestBody V2PerfilDTO dto) {
         //TODO: process POST request
         PerfilEntidad entidad = new PerfilEntidad();
+        entidad.setEliminado(0);
         entidad.setPerf_id(dto.getId());
         entidad.setPerf_nombre(dto.getNombre());
         entidad.setPerf_tipo(dto.getTipoId());
@@ -77,13 +78,12 @@ public class AutenticacionRest {
         PerfilEntidad entidadPerfilGuardado = repositorioPerfil.save(entidad);
         //ALM_TIPO IN('Estudiante','Administrativo','Docente')
         AlumnoEntidad entidadAlumno = new AlumnoEntidad();
-        entidadAlumno.setFacultad(dto.getFacultad());
+        entidadAlumno.setEliminado(0);
         entidadAlumno.setIdPerfil(dto.getId());
         entidadAlumno.setTipoAlumno(dto.getTipoAlumno());
         AlumnoEntidad entidadAlumnoGuardado = repositorioAlumno.save(entidadAlumno);
         V2PerfilDTO respuestaDTO = V2PerfilDTO.fabricaFromPerfilEntidad(entidadPerfilGuardado);
         respuestaDTO.setRole("Alumno");
-        respuestaDTO.setFacultad(entidadAlumno.getFacultad());
         respuestaDTO.setTipoAlumno(entidadAlumnoGuardado.getTipoAlumno());
         return new ResponseEntity<>(respuestaDTO, HttpStatus.CREATED);
     }

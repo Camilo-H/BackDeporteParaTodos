@@ -36,7 +36,6 @@ public class V2PerfilDTO{
             dto.setId(entidad.getPerf_id());
             dto.setCorreo(entidad.getPerfcorreo());
             dto.setNombre(entidad.getPerf_nombre());
-            dto.setRole("e");
             dto.setSexo(entidad.getPerf_Sexo());
             dto.setTipoId(entidad.getPerf_tipo());
             return dto;

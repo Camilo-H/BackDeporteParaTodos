@@ -28,7 +28,6 @@ import lombok.Setter;
 @Entity
 @Table(name = "tbl_alumno")
 public class AlumnoEntidad {
-
     @Id
     @Column(name = "perf_id")
     private String idPerfil;
@@ -36,9 +35,9 @@ public class AlumnoEntidad {
     @Column(name = "ALM_CODIGO", unique = true, length = 20, nullable = true)
     private String alm_codigo;
 
-    @Column(name = "fac_nombre")
-    private String Facultad;
-
     @Column(name = "ALM_TIPO")
     private String tipoAlumno;
+
+    @Column(name= "META_ELIMINADO")
+    private Integer eliminado;
 }

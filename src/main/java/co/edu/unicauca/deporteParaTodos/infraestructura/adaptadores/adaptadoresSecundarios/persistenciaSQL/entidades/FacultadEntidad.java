@@ -25,9 +25,6 @@ public class FacultadEntidad {
     @Column(name = "fac_nombre")
     private String nombre;
 
-    @OneToMany(mappedBy = "Facultad", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AlumnoEntidad> alumnos = new ArrayList<>();
-
     @OneToMany(mappedBy = "facultad", cascade =  CascadeType.ALL, orphanRemoval = true)
     private List<ProgramaEntidad> programas = new ArrayList<>();
 }
