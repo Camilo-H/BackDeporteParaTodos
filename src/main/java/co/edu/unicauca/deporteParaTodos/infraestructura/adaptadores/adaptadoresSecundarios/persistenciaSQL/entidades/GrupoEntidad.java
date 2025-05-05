@@ -55,6 +55,9 @@ public class GrupoEntidad {
     @Column(name = "GRP_CUPOS")
     private int cupos;
 
+    @Column(name="PERF_ID")
+    private String idInstructor;
+
     //@Column(name = "GRP_ESTADO")
     //private String estado;
 

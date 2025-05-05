@@ -3,6 +3,8 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadores
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,6 +41,12 @@ public class GrupoRest {
     @GetMapping("/gruposInscripcion")
     public List<GrupoEntidad> obtenerGruposInscripcion() {
         return repositorio.obtenerGruposConInscripcionDisponibleNativo();
+    }
+    
+    @GetMapping("/gruposInstructor")
+    public ResponseEntity<List<GrupoEntidad>> obtnerGruposInscripcion(@RequestParam String idInstructor) {
+        List<GrupoEntidad> resultado = repositorio.findByIdInstructor(idInstructor);
+        return new ResponseEntity<>(resultado,HttpStatus.OK);
     }
     
 }
