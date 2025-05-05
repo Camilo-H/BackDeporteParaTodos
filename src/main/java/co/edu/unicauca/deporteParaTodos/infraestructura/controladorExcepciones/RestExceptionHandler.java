@@ -15,6 +15,7 @@ import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.e
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.InsercionFallidaExepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ListadoVacioExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoImplementadoException;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.YaExisteElementoExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.formatoError.CodigoError;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.formatoError.ErrorUtils;
@@ -124,5 +125,16 @@ public class RestExceptionHandler {
                                                 HttpStatus.CONFLICT.value())
                                 .setUrl(req.getRequestURL().toString()).setMetodo(req.getMethod());
                 return new ResponseEntity<Error>(error, HttpStatus.CONFLICT);
+        }
+
+        @ExceptionHandler(NoImplementadoException.class)
+        public ResponseEntity<Error> GenericException(final HttpServletRequest req,
+                        final NoImplementadoException ex) {
+                final Error error = ErrorUtils
+                                .crearError(ex.getCodigo(),
+                                                String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage()),
+                                                HttpStatus.NOT_IMPLEMENTED.value())
+                                .setUrl(req.getRequestURL().toString()).setMetodo(req.getMethod());
+                return new ResponseEntity<Error>(error, HttpStatus.NOT_IMPLEMENTED);
         }
 }

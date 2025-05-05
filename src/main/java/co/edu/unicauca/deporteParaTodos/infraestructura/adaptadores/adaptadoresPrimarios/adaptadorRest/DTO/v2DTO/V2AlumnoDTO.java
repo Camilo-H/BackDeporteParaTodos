@@ -38,7 +38,9 @@ public class V2AlumnoDTO {
             try{
                 alumno.setEliminadoestado(Integer.parseInt(objects[0].toString()));
                 alumno.setId(objects[1].toString());
-                alumno.setCodigo(objects[2].toString());
+                if(objects[2]!=null){
+                    alumno.setCodigo(objects[2].toString());
+                }
                 alumno.setTipo(objects[3].toString());
                 alumno.setNombre(objects[4].toString());
                 alumno.setCorreo(objects[5].toString());

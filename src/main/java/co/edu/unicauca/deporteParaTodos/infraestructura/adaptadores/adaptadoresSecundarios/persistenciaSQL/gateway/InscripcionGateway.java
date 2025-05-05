@@ -13,6 +13,8 @@ import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IInscri
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Inscripcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.InscripcionEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IInscripcionRepositorio;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoImplementadoException;
+import jakarta.servlet.UnavailableException;
 
 @Service
 public class InscripcionGateway implements IInscripcionGateway {
@@ -24,8 +26,11 @@ public class InscripcionGateway implements IInscripcionGateway {
     @Autowired
     private ModelMapper mapper;
 
-    public boolean existeInscripcion(Timestamp fecha) {
-        return repoInscrp.existsById(fecha);
+    public boolean existeInscripcion(Timestamp fecha) throws Exception{
+        //TODO: modificar por cambio en base
+        //return false;
+        throw new NoImplementadoException();
+        //return repoInscrp.existsById(fecha);
     }
 
     @Override
@@ -38,11 +43,12 @@ public class InscripcionGateway implements IInscripcionGateway {
 
     @Override
     public Optional<Inscripcion> obteneInscripcion(Timestamp fecha) {
-        if (existeInscripcion(fecha)) {
+        throw new NoImplementadoException();
+        /*if (existeInscripcion(fecha)) {
             Optional<InscripcionEntidad> entidad = repoInscrp.findById(fecha);
             return entidad.map(inscripcionEntidad -> mapper.map(inscripcionEntidad, Inscripcion.class));
         }
-        return Optional.empty();
+        return Optional.empty();*/
     }
 
     @Override
@@ -54,14 +60,15 @@ public class InscripcionGateway implements IInscripcionGateway {
 
     @Override
     public Inscripcion eliminarInscripcion(Timestamp fecha) {
-        Optional<InscripcionEntidad> entidadExistente = repoInscrp.findById(fecha);
+        throw new NoImplementadoException();
+        /*Optional<InscripcionEntidad> entidadExistente = repoInscrp.findById(fecha);
         if (entidadExistente.isPresent()) {
             InscripcionEntidad entidad = entidadExistente.get();
             repoInscrp.delete(entidad);
             return mapper.map(entidad, Inscripcion.class);
         }
         Inscripcion retorno = null;
-        return retorno;
+        return retorno;*/
     }
 
 }

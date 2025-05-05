@@ -5,10 +5,11 @@ import java.util.List;
 import java.util.Optional;
 
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Inscripcion;
+import jakarta.servlet.UnavailableException;
 
 public interface IInscripcionGateway {
 
-    public boolean existeInscripcion(Timestamp fecha);
+    public boolean existeInscripcion(Timestamp fecha) throws UnavailableException, Exception;
 
     public List<Inscripcion> obtenerInscripciones();
 

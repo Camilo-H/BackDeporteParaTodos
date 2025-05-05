@@ -8,6 +8,7 @@ import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IInscr
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IInscripcionGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Inscripcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoImplementadoException;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.YaExisteElementoExcepcion;
 
 @Service
@@ -29,17 +30,19 @@ public class InscripcionServicio implements IInscripcionServicio {
 
     @Override
     public Inscripcion insertarInscripcion(Inscripcion datosInscripcion) {
-        if (inscrGateway.existeInscripcion(datosInscripcion.getFechaInscripcion())) {
+        /* if (inscrGateway.existeInscripcion(datosInscripcion.getFechaInscripcion())) {
             throw new YaExisteElementoExcepcion(null);
         }
-        return inscrGateway.insertarInscripcion(datosInscripcion);
+        return inscrGateway.insertarInscripcion(datosInscripcion); */
+        throw new NoImplementadoException();
     }
 
     @Override
     public Inscripcion eliminarInscripcion(Timestamp fecha) {
-        if (inscrGateway.existeInscripcion(fecha)) {
+        /* if (inscrGateway.existeInscripcion(fecha)) {
             return inscrGateway.eliminarInscripcion(fecha);
         }
-        throw new NoExisteExcepcion();
+        throw new NoExisteExcepcion(); */
+        throw new NoImplementadoException();
     }
 }

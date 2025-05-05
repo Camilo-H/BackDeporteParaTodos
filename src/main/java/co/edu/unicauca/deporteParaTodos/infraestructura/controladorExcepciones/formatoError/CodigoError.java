@@ -12,6 +12,7 @@ public enum CodigoError {
         NO_EXISTE("GC-0003","No se encuentra registrado el elemento"),
         ARCHIVO_NO_CONVERTIBLE("GC-0004","El archivo no puede ser transformado"),
         INSERCION_FALLIDA("GC-0005", "El elemento no pudo ser insertado en la base de datos"),
+        NO_IMPLEMENTADO("GC-0006", "El recurso no ha sido implementado aun"),
         YA_EXISTE("GC-0006", "Ya existe es mismo registro en el sistema");
 
         private final String codigo;
