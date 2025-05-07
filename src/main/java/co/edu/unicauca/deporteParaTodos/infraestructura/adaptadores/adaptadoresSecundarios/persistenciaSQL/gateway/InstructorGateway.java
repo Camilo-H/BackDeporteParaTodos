@@ -15,6 +15,7 @@ import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresS
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.InstructorEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IInstructorRepositorio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoImplementadoException;
 
 @Service
 public class InstructorGateway implements IInstructorGateway {
@@ -42,13 +43,14 @@ public class InstructorGateway implements IInstructorGateway {
 
     @Override
     public Instructor insertarInstructor(Instructor datosInstructor) {
-        InstructorEntidad entidad = mapper.map(datosInstructor, InstructorEntidad.class);
+        throw new NoImplementadoException();
+        /* InstructorEntidad entidad = mapper.map(datosInstructor, InstructorEntidad.class);
         if (datosInstructor.getPerfil().getPerf_imagen() != null) {
             ImagenEntidad imagen = mapper.map(datosInstructor.getPerfil().getPerf_imagen(), ImagenEntidad.class);
             entidad.getPerfil().setPerf_imagen(imagen);
         }
         InstructorEntidad entidadGuardada = repoInstructor.save(entidad);
-        return mapper.map(entidadGuardada, Instructor.class);
+        return mapper.map(entidadGuardada, Instructor.class); */
     }
 
     @Override
@@ -62,7 +64,8 @@ public class InstructorGateway implements IInstructorGateway {
 
     @Override
     public Instructor actualizarInstructor(String instructorId, Instructor datosInstructor) {
-        Optional<InstructorEntidad> entidadExistente = repoInstructor.findById(instructorId);
+        throw new NoImplementadoException();
+        /* Optional<InstructorEntidad> entidadExistente = repoInstructor.findById(instructorId);
         if (entidadExistente.isPresent()) {
             InstructorEntidad entidad = entidadExistente.get();
             entidad.getPerfil().setPerf_nombre(datosInstructor.getPerfil().getPerf_nombre());
@@ -76,7 +79,7 @@ public class InstructorGateway implements IInstructorGateway {
             InstructorEntidad actulizado = repoInstructor.save(entidad);
             return mapper.map(actulizado, Instructor.class);
         }
-        throw new NoExisteExcepcion();
+        throw new NoExisteExcepcion(); */
 
     }
 

@@ -29,12 +29,8 @@ public class InstructorEntidad {
     @Column(name = "perf_id")
     private String idPerfil;
 
-    @Column(name = "inst_codigo", unique = true, length = 20, nullable = false)
-    private String inst_codigo;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "perf_id", referencedColumnName = "perf_id")
-    private PerfilEntidad perfil;
+    @Column(name = "META_ELIMINADO")
+    private int eliminado;
 
     //@OneToMany(mappedBy = "instructor", cascade = CascadeType.ALL, orphanRemoval = true)
     //private List<ClaseEntidad> clases = new ArrayList<>();
