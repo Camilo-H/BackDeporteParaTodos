@@ -26,5 +26,4 @@ public class HorarioRest {
     public List<HorarioEntidad> getHorarios(@RequestParam String categoria, @RequestParam String curso, @RequestParam int anio, @RequestParam int iterable) {
         return repositorio.findByCategoriaAndCursoAndAnioAndIterableAndEliminado(categoria, curso, anio, iterable, 0);
     }
-    
 }
