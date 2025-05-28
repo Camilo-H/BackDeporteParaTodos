@@ -38,16 +38,34 @@ public class CategoriaRest {
     @Autowired
     private IImagenRepositorio repositorioImagen;
     
+    /**
+     * Expone todas las categorias existentes en el sistema
+     * TODO: No se debe usar para uso regular de los usuario puesto que no se filtra su contenido.
+     * @return
+     */
     @GetMapping("/categorias")
     public Iterable<CategoriaCursoEntidad> obtenerCategorias(){
         return repositorioCategoria.findAll();
     }
-
+    
+    /***
+     * Expone todas las categorias existentes en el sistema
+     * que se encuentren disponibles
+     * usese para exponer estas entidades a los usuarios finales.
+     * @return TODO: eventualmente debe retornar una lista de DTO, no entities
+     */
     @GetMapping("/categorias2")
     public Iterable<CategoriaCursoEntidad> obtenerCategoriasExistentes(){
         return repositorioCategoria.findByEliminado(0);
     }
 
+    /***
+     * Inserta una categoria en el sistema
+     * La dependencia en la categoria asociada a la imagen debe ser gestionada previamente.
+     * TODO: opcionalmente se puede crear una sobrecarga que gestione ambas cosas en una peticion.
+     * @param dto informacion a guardar TODO: aplicar restricciones al dto para integridad de los datos.
+     * @return Retorna la categoria guardada en caso de exito, estado conflict en caso de fallo.
+     */
     @PostMapping("/categoria")
     public ResponseEntity<CategoriaCursoEntidad> postCategoria(@RequestBody V2CategoriaDTO dto) {
         CategoriaCursoEntidad entidad = new CategoriaCursoEntidad(dto.getTitulo(), dto.getDescripcion(), dto.getImagenId(), 0);
@@ -58,6 +76,13 @@ public class CategoriaRest {
         return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
     
+    //TODO: revisar algoritmo
+    /***
+     * Actualiza la informacion de una cateogira idendificada con "titulo"
+     * @param titulo identificador de la categoria
+     * @param dto informacion actualizada de la categoria.
+     * @return retorna un objeto dto con el contenido actualizado, codigo not found en caso de no encontrar el objetivo de actualizacion.
+     */
     @PutMapping("/categoria")
     public ResponseEntity<V2CategoriaDTO> putCategoria(@RequestParam String titulo, @RequestBody V2CategoriaDTO dto) {
         boolean existe = repositorioCategoria.existsById(titulo);
@@ -71,6 +96,11 @@ public class CategoriaRest {
         return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
 
+    /***
+     * Para una categoria identificada con "titulo", cambia el estado para que no sea accesible la categoria en cuestion.
+     * @param titulo identificador de la categoria.
+     * @return cantidad de filas afectadas en la peticion, 1 representa exito en la operacion.
+     */
     @DeleteMapping("/categoria")
     public ResponseEntity<Integer> deleteCategoria(@RequestParam String titulo){
         Optional<CategoriaCursoEntidad> op = repositorioCategoria.findById(titulo);
