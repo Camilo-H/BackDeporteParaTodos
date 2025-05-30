@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ArchivoNoConvertibleExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.InsercionFallidaExepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ListadoVacioExcepcion;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoConvertibleException;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoImplementadoException;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.YaExisteElementoExcepcion;
@@ -136,5 +138,18 @@ public class RestExceptionHandler {
                                                 HttpStatus.NOT_IMPLEMENTED.value())
                                 .setUrl(req.getRequestURL().toString()).setMetodo(req.getMethod());
                 return new ResponseEntity<Error>(error, HttpStatus.NOT_IMPLEMENTED);
+        }
+
+        @ExceptionHandler(NoConvertibleException.class)
+        public ResponseEntity<Error> GenericException(final HttpServletRequest req, final NoConvertibleException ex){
+                HttpStatusCode codigoHttp = HttpStatus.NOT_ACCEPTABLE;
+                String mensaje = String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage());
+
+                final Error error = ErrorUtils.crearError(ex.getCodigo(),mensaje,codigoHttp.value());
+
+                error.setUrl(req.getRequestURL().toString());
+                error.setMetodo(req.getMethod());
+                
+                return new ResponseEntity<Error>(error, codigoHttp);
         }
 }

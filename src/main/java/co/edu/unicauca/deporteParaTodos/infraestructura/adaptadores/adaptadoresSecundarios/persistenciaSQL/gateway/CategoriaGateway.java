@@ -10,6 +10,7 @@ import co.edu.unicauca.deporteParaTodos.dominio.modelo.Categoria;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CategoriaCursoEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ImagenEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.ICategoriaCursoRepositorio;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoConvertibleException;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.YaExisteElementoExcepcion;
 import java.util.List;
@@ -31,13 +32,21 @@ public class CategoriaGateway implements ICategoriaCursoGateway {
         return repoCategoria.existsById(nombreCategoria);
     }
 
+    /***
+     * Retorna una lista de categorias disponibles en el sistema
+     * @return lista de categorias encontradas
+     */
     @Override
     public List<Categoria> obtenerCategorias() {
-        Iterable<CategoriaCursoEntidad> categoriasEntidad = repoCategoria.findAll();
-        List<Categoria> categorias = new ArrayList<Categoria>();
-        categorias = mapper.map(categoriasEntidad, new TypeToken<List<Categoria>>() {
-        }.getType());
-        return categorias;
+        List<CategoriaCursoEntidad> listaEntidades = repoCategoria.findByEliminado(0);
+        List<Categoria> listaCategorias = new ArrayList<>();
+        listaEntidades.forEach(entidad ->{
+            Categoria categoria = Categoria.fabricarDeEntidad(entidad);
+            if(categoria!=null){
+                listaCategorias.add(categoria);
+            }
+        });
+        return listaCategorias;
     }
 
     @Override
@@ -48,14 +57,22 @@ public class CategoriaGateway implements ICategoriaCursoGateway {
 
     @Override
     public Categoria registrarCategoria(Categoria datosCategoria) {
+        //verificacion a la insercion
         if (existeCategoria(datosCategoria.getTitulo())) {
             throw new YaExisteElementoExcepcion(null);
         }
-        CategoriaCursoEntidad entidadInsertar = mapper.map(datosCategoria, CategoriaCursoEntidad.class);
-        ImagenEntidad imgEntidad = mapper.map(datosCategoria.getImagen(), ImagenEntidad.class);
-        //entidadInsertar.setObjImagenCategoria(imgEntidad);
+        //conversion de datos
+        CategoriaCursoEntidad entidadInsertar = CategoriaCursoEntidad.fabricarDeModelo(datosCategoria, 0);
+        if(entidadInsertar == null){
+            throw new NoConvertibleException();
+        }
+
+        //insertar
         CategoriaCursoEntidad entidadInsertada = repoCategoria.save(entidadInsertar);
-        Categoria categoriacreada = mapper.map(entidadInsertada, Categoria.class);
+
+        //conversion
+        Categoria categoriacreada = Categoria.fabricarDeEntidad(entidadInsertada);
+
         return categoriacreada;
     }
 
@@ -70,26 +87,7 @@ public class CategoriaGateway implements ICategoriaCursoGateway {
 
         entidadCategoriaExistente.setDescripcion(prmcategoria.getDescripcion());
 
-        System.out.println("---"+prmcategoria.getDescripcion());
-        System.out.println("---"+prmcategoria.getImagen().getNombre());
-        System.out.println("---"+prmcategoria.getImagen().getTipoArchivo());
-
-        if (prmcategoria.getImagen() != null) {
-            /*if (entidadCategoriaExistente.getObjImagenCategoria() != null) {
-
-                ImagenEntidad entidadImagenExistente = entidadCategoriaExistente.getObjImagenCategoria();
-                
-                entidadImagenExistente.setNombre(prmcategoria.getImagen().getNombre());
-                entidadImagenExistente.setTipoArchivo(prmcategoria.getImagen().getTipoArchivo());
-                entidadImagenExistente.setLongitud(prmcategoria.getImagen().getLongitud());
-                entidadImagenExistente.setDatos(prmcategoria.getImagen().getDatos());
-                System.out.println("----ID IMAGEN ENTIDAD "+entidadImagenExistente.getId());
-                entidadCategoriaExistente.setObjImagenCategoria(entidadImagenExistente);
-            } else {
-                ImagenEntidad nuevaImagen = mapper.map(prmcategoria.getImagen(), ImagenEntidad.class);
-                entidadCategoriaExistente.setObjImagenCategoria(nuevaImagen);
-            }*/
-        }
+       
 
         CategoriaCursoEntidad entidadActualizada = repoCategoria.save(entidadCategoriaExistente);
         return mapper.map(entidadActualizada, Categoria.class);

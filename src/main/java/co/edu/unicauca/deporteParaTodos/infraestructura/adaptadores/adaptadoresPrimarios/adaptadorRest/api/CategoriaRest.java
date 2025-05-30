@@ -1,5 +1,7 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.api;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.ICategoriaCursoServicio;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Categoria;
+import co.edu.unicauca.deporteParaTodos.dominio.servicios.CategoriaCursoServicio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.v2DTO.V2CategoriaDTO;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CategoriaDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CategoriaCursoEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.ICategoriaCursoRepositorio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IImagenRepositorio;
@@ -26,23 +32,34 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 
-
 @RestController
 @RequestMapping("api/v2")
 @CrossOrigin(origins = { "*" }, maxAge = 4200, allowCredentials = "false")
 @Validated
 public class CategoriaRest {
+
+    private final CategoriaCursoServicio categoriaCursoServicio;
+    //TODO: eliminar dependencia del repositorio cuando finalice la normalizacion
     @Autowired
     private ICategoriaCursoRepositorio repositorioCategoria;
 
+    //TODO: eliminar depenciencia del repositorio cuando finalice
     @Autowired
     private IImagenRepositorio repositorioImagen;
+
+    @Autowired
+    private ICategoriaCursoServicio servicioCategoria;
+
+    CategoriaRest(CategoriaCursoServicio categoriaCursoServicio) {
+        this.categoriaCursoServicio = categoriaCursoServicio;
+    }
     
     /**
      * Expone todas las categorias existentes en el sistema
      * TODO: No se debe usar para uso regular de los usuario puesto que no se filtra su contenido.
      * @return
      */
+    @Deprecated
     @GetMapping("/categorias")
     public Iterable<CategoriaCursoEntidad> obtenerCategorias(){
         return repositorioCategoria.findAll();
@@ -52,11 +69,14 @@ public class CategoriaRest {
      * Expone todas las categorias existentes en el sistema
      * que se encuentren disponibles
      * usese para exponer estas entidades a los usuarios finales.
-     * @return TODO: eventualmente debe retornar una lista de DTO, no entities
+     * @return Lista de entidades formato DTO
      */
     @GetMapping("/categorias2")
-    public Iterable<CategoriaCursoEntidad> obtenerCategoriasExistentes(){
-        return repositorioCategoria.findByEliminado(0);
+    public ResponseEntity<List<CategoriaDto>> obtenerCategoriasExistentes(){        
+
+        List<CategoriaDto> listaDtos = servicioCategoria.recuperarCategoriasCurso();
+        return new ResponseEntity<>(listaDtos, HttpStatus.OK);
+
     }
 
     /***
@@ -67,13 +87,9 @@ public class CategoriaRest {
      * @return Retorna la categoria guardada en caso de exito, estado conflict en caso de fallo.
      */
     @PostMapping("/categoria")
-    public ResponseEntity<CategoriaCursoEntidad> postCategoria(@RequestBody V2CategoriaDTO dto) {
-        CategoriaCursoEntidad entidad = new CategoriaCursoEntidad(dto.getTitulo(), dto.getDescripcion(), dto.getImagenId(), 0);
-        CategoriaCursoEntidad respuesta = repositorioCategoria.save(entidad);
-        if(repositorioCategoria.existsById(entidad.getTitulo())){
-            return new ResponseEntity<>(respuesta, HttpStatus.CREATED);
-        }
-        return new ResponseEntity<>(HttpStatus.CONFLICT);
+    public ResponseEntity<CategoriaDto> postCategoria(@RequestBody CategoriaDto dto) {
+        CategoriaDto respuesta = servicioCategoria.insertarCategoria(dto);
+        return new ResponseEntity<>(respuesta, HttpStatus.CREATED);
     }
     
     //TODO: revisar algoritmo

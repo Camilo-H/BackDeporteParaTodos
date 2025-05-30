@@ -19,6 +19,8 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Categoria;
+
 @Setter
 @Getter
 @AllArgsConstructor
@@ -39,4 +41,17 @@ public class CategoriaCursoEntidad {
 
     @Column(name = "meta_eliminado")
     private int eliminado;
+
+    public static CategoriaCursoEntidad fabricarDeModelo(Categoria modelo, int eliminado){
+        try{
+            CategoriaCursoEntidad entidad = new CategoriaCursoEntidad();
+            entidad.setTitulo(modelo.getTitulo());
+            entidad.setDescripcion(modelo.getDescripcion());
+            entidad.setCat_imagen(modelo.getImagen());
+            entidad.setEliminado(eliminado);
+            return entidad;
+        }catch(Exception e){
+            return null;
+        }
+    }
 }

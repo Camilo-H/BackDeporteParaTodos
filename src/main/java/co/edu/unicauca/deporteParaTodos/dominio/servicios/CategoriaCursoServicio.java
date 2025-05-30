@@ -1,7 +1,9 @@
 package co.edu.unicauca.deporteParaTodos.dominio.servicios;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.internal.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -12,7 +14,11 @@ import co.edu.unicauca.deporteParaTodos.dominio.modelo.Imagen;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.comunes.CategoriaDTO;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.comunes.ImagenDTO;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.peticion.CategoriaInDTO;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CategoriaDto;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.ICategoriaCursoRepositorio;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.InsercionFallidaExepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ListadoVacioExcepcion;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoConvertibleException;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.mappers.MapperImagen;
 
@@ -28,36 +34,55 @@ public class CategoriaCursoServicio implements ICategoriaCursoServicio {
     @Autowired
     private ICategoriaCursoGateway categoriaCursoGateway;
 
+    /**
+     * Obtiene retorna las categorias disponibles en el sistema.
+     * @return lista de categorias
+     */
     @Override
-    public List<Categoria> recuperarCategoriasCurso() {
+    public List<CategoriaDto> recuperarCategoriasCurso() {
+        //no es necesario generar excepcion cuando la lista esta vacia
         List<Categoria> categorias = categoriaCursoGateway.obtenerCategorias();
-        if (categorias.isEmpty()) {
-            throw new ListadoVacioExcepcion("No se encuentran categorias registradas");
-        }
-        return categorias;
+        List<CategoriaDto> listaDtos = new ArrayList<>();
+        //Transformacion de datos
+        categorias.forEach(modelo ->{
+            CategoriaDto dto = CategoriaDto.fabricarDeModelo(modelo);
+            listaDtos.add(dto);
+        });
+        return listaDtos;
     }
 
+    @Override
+    public CategoriaDto insertarCategoria(CategoriaDto dto) {
+        //transformacion de datos
+        Categoria modelo = Categoria.fabricarDeDto(dto);
+        if(modelo==null){
+            throw new NoConvertibleException();
+        }
+        //uso del gate
+        Categoria retorno = categoriaCursoGateway.registrarCategoria(modelo);
+        if(retorno==null){
+            throw new InsercionFallidaExepcion("ha fallado el proceso");
+        }
+        //transformacion de datos
+        CategoriaDto respuesta = CategoriaDto.fabricarDeModelo(retorno);
+        //retorno
+        return respuesta;
+    }
+
+    @Deprecated
     @Override
     public CategoriaDTO registrarCategoria(CategoriaInDTO datos) {
         Categoria categoriaModelo = new Categoria();
         ImagenDTO imagenDTO = new ImagenDTO();
         Imagen imagenModelo;
         ImagenDTO dtoimagenRetorno = null;
-        if (datos.getImagen() != null || !datos.getImagen().isEmpty()) {
-            imagenDTO = MapperImagen.multiparfileToImagenDTO(datos.getImagen());
-            imagenModelo = mapper.map(imagenDTO, Imagen.class);
-            categoriaModelo.setImagen(imagenModelo);
-
-        }
+      
 
         categoriaModelo.setTitulo(datos.getTitulo());
         categoriaModelo.setDescripcion(datos.getDescripcion());
         Categoria regitro = categoriaCursoGateway.registrarCategoria(categoriaModelo);
 
-        if (regitro.getImagen() != null) {
-            dtoimagenRetorno = mapper.map(regitro.getImagen(), ImagenDTO.class);
-            dtoimagenRetorno.setId(regitro.getImagen().getId());
-        }
+       
 
         CategoriaDTO catRetorno = new CategoriaDTO();
         catRetorno.setTitulo(regitro.getTitulo());
@@ -82,18 +107,11 @@ public class CategoriaCursoServicio implements ICategoriaCursoServicio {
         System.out.println("---DTO"+datosCategoria.getDescripcion());
         Categoria categoriaModelo = new Categoria();
         categoriaModelo.setDescripcion(datosCategoria.getDescripcion());
-        if (datosCategoria.getImagen() != null) {
-            ImagenDTO imagenDTO = MapperImagen.multiparfileToImagenDTO(datosCategoria.getImagen());
-            Imagen imagenModelo = mapper.map(imagenDTO, Imagen.class);
-            categoriaModelo.setImagen(imagenModelo);
-        }
+       
 
         Categoria regitro = categoriaCursoGateway.actualizarCategoria(titulo, categoriaModelo);
         CategoriaDTO catRetorno = mapper.map(regitro, CategoriaDTO.class);
-        if (regitro.getImagen() != null) {
-            ImagenDTO dtoimagenRetorno = mapper.map(regitro.getImagen(), ImagenDTO.class);
-            catRetorno.setImagen(dtoimagenRetorno);
-        }
+       
         return catRetorno;
     }
 
@@ -104,5 +122,7 @@ public class CategoriaCursoServicio implements ICategoriaCursoServicio {
         }
         return mapper.map(categoriaCursoGateway.eliminarCategoria(tituloCategoria), CategoriaDTO.class);
     }
+
+    
 
 }

@@ -13,7 +13,8 @@ public enum CodigoError {
         ARCHIVO_NO_CONVERTIBLE("GC-0004","El archivo no puede ser transformado"),
         INSERCION_FALLIDA("GC-0005", "El elemento no pudo ser insertado en la base de datos"),
         NO_IMPLEMENTADO("GC-0006", "El recurso no ha sido implementado aun"),
-        YA_EXISTE("GC-0006", "Ya existe es mismo registro en el sistema");
+        YA_EXISTE("GC-0007", "Ya existe es mismo registro en el sistema"),
+        NO_CONVERTIBLE("GC-0008", "Datos no son compatibles, no pueden ser transformados");
 
         private final String codigo;
         private final String llaveMensaje;

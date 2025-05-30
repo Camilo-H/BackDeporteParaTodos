@@ -40,12 +40,13 @@ public class CategoriaCursoRestControlador {
 
     @GetMapping("/categorias")
     public ResponseEntity<List<CategoriaDTO>> recuperarCategoriasCurso() {
-        List<Categoria> resultado = servicio.recuperarCategoriasCurso();
+        /*List<Categoria> resultado = servicio.recuperarCategoriasCurso();
         List<CategoriaDTO> listDTO = mapper.map(resultado, new TypeToken<List<CategoriaDTO>>() {
         }.getType());
         ResponseEntity<List<CategoriaDTO>> response;
         response = new ResponseEntity<List<CategoriaDTO>>(listDTO, HttpStatus.OK);
-        return response;
+        return response;*/
+        return null;
     }
 
     @PostMapping("/categoriass")
