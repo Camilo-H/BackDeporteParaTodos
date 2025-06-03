@@ -10,6 +10,7 @@ import co.edu.unicauca.deporteParaTodos.dominio.modelo.Categoria;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CategoriaCursoEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ImagenEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.ICategoriaCursoRepositorio;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ErrorInternoException;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoConvertibleException;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.YaExisteElementoExcepcion;
@@ -50,9 +51,11 @@ public class CategoriaGateway implements ICategoriaCursoGateway {
     }
 
     @Override
-    public Optional<Categoria> obtenerCategoria(String nombreCategoria) {
-        Optional<CategoriaCursoEntidad> entidadRecuperada = repoCategoria.findById(nombreCategoria);
-        return entidadRecuperada.map(categoriaEntidad -> mapper.map(categoriaEntidad, Categoria.class));
+    public Categoria obtenerCategoria(String nombreCategoria) {
+        CategoriaCursoEntidad entidadRecuperada = repoCategoria.findById(nombreCategoria).orElseThrow(
+            () -> new NoExisteExcepcion()
+        );
+        return Categoria.fabricarDeEntidad(entidadRecuperada);
     }
 
     @Override

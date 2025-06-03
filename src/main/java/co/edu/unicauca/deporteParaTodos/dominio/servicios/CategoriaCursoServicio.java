@@ -2,6 +2,8 @@ package co.edu.unicauca.deporteParaTodos.dominio.servicios;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import org.modelmapper.ModelMapper;
 import org.modelmapper.internal.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,11 +95,16 @@ public class CategoriaCursoServicio implements ICategoriaCursoServicio {
     }
 
     @Override
-    public Categoria obtenerCategoriaCursoPorId(String tituloCategoria) {
-        // TODO Auto-generated method stub
-        return categoriaCursoGateway.obtenerCategoria(tituloCategoria)
-                .orElseThrow(
-                        () -> new NoExisteExcepcion("La categoria con el titulo " + tituloCategoria + " no existe"));
+    public CategoriaDto obtenerCategoriaCursoPorId(String tituloCategoria) {
+        
+        Categoria op = categoriaCursoGateway.obtenerCategoria(tituloCategoria);
+
+        CategoriaDto respuesta = CategoriaDto.fabricarDeModelo(op);
+
+        if(respuesta==null){
+            throw new ErrorInternoException();
+        }
+        return respuesta;
     }
 
     @Override

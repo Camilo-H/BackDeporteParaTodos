@@ -21,7 +21,7 @@ public interface ICategoriaCursoServicio {
      */
     public CategoriaDto insertarCategoria(CategoriaDto categoria);
 
-    public Categoria obtenerCategoriaCursoPorId(String tituloCategoria);
+    public CategoriaDto obtenerCategoriaCursoPorId(String tituloCategoria);
 
     public CategoriaDTO registrarCategoria(CategoriaInDTO datos);
 

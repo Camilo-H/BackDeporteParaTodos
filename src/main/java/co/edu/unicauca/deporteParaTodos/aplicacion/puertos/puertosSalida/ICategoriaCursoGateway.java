@@ -10,7 +10,7 @@ public interface ICategoriaCursoGateway {
 
     public List<Categoria> obtenerCategorias();
 
-    public Optional<Categoria> obtenerCategoria(String nombreCategoria);
+    public Categoria obtenerCategoria(String nombreCategoria);
 
     public Categoria actualizarCategoria(String titulo, Categoria categoria);
 

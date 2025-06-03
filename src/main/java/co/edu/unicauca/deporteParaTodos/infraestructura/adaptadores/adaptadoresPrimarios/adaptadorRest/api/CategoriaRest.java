@@ -25,6 +25,10 @@ import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresS
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.ICategoriaCursoRepositorio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IImagenRepositorio;
 import io.micrometer.core.ipc.http.HttpSender.Response;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -78,6 +82,21 @@ public class CategoriaRest {
         return new ResponseEntity<>(listaDtos, HttpStatus.OK);
 
     }
+
+    @Operation(summary = "Obtener categoria por titulo")
+    @ApiResponses(value ={
+        @ApiResponse(responseCode = "200", description = "Elemento encontrado"),
+        @ApiResponse(responseCode = "404", description = "Elemento no encontrado")
+    })
+    @GetMapping("/categoria")
+    public ResponseEntity<CategoriaDto> getMethodName(
+            @Parameter(description = "identificador de la categoria, titulo")
+            @RequestParam String titulo
+        ) {
+        CategoriaDto dto = servicioCategoria.obtenerCategoriaCursoPorId(titulo);
+        return new ResponseEntity<>(dto,HttpStatus.OK);
+    }
+    
 
     /***
      * Inserta una categoria en el sistema

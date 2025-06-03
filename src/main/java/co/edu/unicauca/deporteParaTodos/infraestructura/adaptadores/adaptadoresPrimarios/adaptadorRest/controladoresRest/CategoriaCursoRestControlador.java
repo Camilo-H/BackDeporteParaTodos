@@ -60,7 +60,7 @@ public class CategoriaCursoRestControlador {
 
     @GetMapping("/categorias/{titulo}")
     public ResponseEntity<CategoriaDTO> obtenerCategoriaCurso(@PathVariable String titulo) {
-        Categoria respuesta = servicio.obtenerCategoriaCursoPorId(titulo);
+        CategoriaDto respuesta = servicio.obtenerCategoriaCursoPorId(titulo);
         if (respuesta == null) {
             throw new NoExisteExcepcion("La categoría con el título " + titulo + " no existe.");
         }
