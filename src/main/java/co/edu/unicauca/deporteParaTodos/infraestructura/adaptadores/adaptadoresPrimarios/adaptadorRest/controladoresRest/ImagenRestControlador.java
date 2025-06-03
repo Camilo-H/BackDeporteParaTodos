@@ -17,6 +17,7 @@ import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IImage
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Imagen;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.comunes.ImagenDTO;
 import co.edu.unicauca.deporteParaTodos.infraestructura.mappers.MapperImagen;
+import io.swagger.v3.oas.annotations.Hidden;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+@Hidden
 @RestController
 // Notacion a nivel de clase para validacion de los argumentos de los endpoints
 @CrossOrigin(origins = { "*" }, maxAge = 4200, allowCredentials = "false")

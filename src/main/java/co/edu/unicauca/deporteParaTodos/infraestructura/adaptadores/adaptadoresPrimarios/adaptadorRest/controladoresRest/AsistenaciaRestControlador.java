@@ -18,9 +18,12 @@ import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IAsist
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Asistencia;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.comunes.AsistenciaDTO;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
+import io.swagger.v3.oas.annotations.Hidden;
+
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 
+@Hidden
 @RestController
 @CrossOrigin(origins = { "*" }, maxAge = 4200, allowCredentials = "false")
 @RequestMapping("api")

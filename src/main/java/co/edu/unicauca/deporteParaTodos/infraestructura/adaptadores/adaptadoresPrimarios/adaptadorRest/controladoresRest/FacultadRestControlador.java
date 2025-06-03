@@ -7,6 +7,7 @@ import co.edu.unicauca.deporteParaTodos.dominio.modelo.Facultad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.comunes.FacultadDTO;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.YaExisteElementoExcepcion;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.Valid;
 
 import java.util.List;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
 
+@Hidden
 @RestController
 @CrossOrigin(origins = { "*" }, maxAge = 4200, allowCredentials = "false")
 @RequestMapping("api")

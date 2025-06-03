@@ -78,19 +78,15 @@ public class CategoriaGateway implements ICategoriaCursoGateway {
 
     @Override
     public Categoria actualizarCategoria(String titulo, Categoria prmcategoria) {
-        if (!existeCategoria(titulo)) {
-            throw new NoExisteExcepcion("No se encuentra el registro de la categoria ");
-        }
-
+        //encuentro el item objetivo - lanzar excepcion en caso de no encontrarlo
         CategoriaCursoEntidad entidadCategoriaExistente = repoCategoria.findById(titulo)
                 .orElseThrow(() -> new NoExisteExcepcion("No se encuentra el registro de la categoria"));
-
+        //fijo las propiedades a editar
         entidadCategoriaExistente.setDescripcion(prmcategoria.getDescripcion());
-
-       
-
+        entidadCategoriaExistente.setCat_imagen(prmcategoria.getImagen());
+        //actualizo
         CategoriaCursoEntidad entidadActualizada = repoCategoria.save(entidadCategoriaExistente);
-        return mapper.map(entidadActualizada, Categoria.class);
+        return Categoria.fabricarDeEntidad(entidadActualizada);
     }
 
     @Override

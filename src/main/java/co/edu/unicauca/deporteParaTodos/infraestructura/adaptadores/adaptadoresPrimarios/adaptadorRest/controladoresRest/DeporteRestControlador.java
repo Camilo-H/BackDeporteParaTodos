@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IDeporteServicio;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Deporte;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.comunes.DeporteDTO;
+import io.swagger.v3.oas.annotations.Hidden;
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +25,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import java.util.List;
 
+@Hidden
 @RestController
 @CrossOrigin(origins = { "*" }, maxAge = 4200, allowCredentials = "false")
 @RequestMapping("api")

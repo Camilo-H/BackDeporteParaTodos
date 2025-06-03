@@ -13,7 +13,9 @@ import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.ICateg
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Categoria;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.comunes.CategoriaDTO;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.peticion.CategoriaInDTO;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CategoriaDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
+@Hidden
 @RestController
 @RequestMapping("api")
 @CrossOrigin(origins = { "*" }, maxAge = 4200, allowCredentials = "false")
@@ -63,13 +66,6 @@ public class CategoriaCursoRestControlador {
         }
         CategoriaDTO respuestaDTO = mapper.map(respuesta, CategoriaDTO.class);
         return new ResponseEntity<CategoriaDTO>(respuestaDTO, HttpStatus.OK);
-    }
-
-    @PutMapping("/categorias/{titulo}")
-    public ResponseEntity<CategoriaDTO> actualizarCategoria(@PathVariable String titulo,
-            @Valid @ModelAttribute CategoriaInDTO categoria) {
-        CategoriaDTO categoriaActualizada = servicio.actualizarCategoria(titulo, categoria);
-        return new ResponseEntity<CategoriaDTO>(categoriaActualizada, HttpStatus.OK);
     }
 
     @DeleteMapping("/categorias/{titulo}")

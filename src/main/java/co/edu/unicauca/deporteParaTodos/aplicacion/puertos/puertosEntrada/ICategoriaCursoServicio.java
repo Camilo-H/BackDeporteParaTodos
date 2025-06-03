@@ -25,7 +25,13 @@ public interface ICategoriaCursoServicio {
 
     public CategoriaDTO registrarCategoria(CategoriaInDTO datos);
 
-    public CategoriaDTO actualizarCategoria(String titulo, CategoriaInDTO datosCategoria);
+    /**
+     * actualiza la infomracion de la categoria y retorna sus datos actualizados
+     * @param titulo
+     * @param datosCategoria
+     * @return
+     */
+    public CategoriaDto actualizarCategoria(String titulo, CategoriaDto datosCategoria);
 
     public CategoriaDTO eliminarCategoria(String tituloCategoria);
 

@@ -16,6 +16,7 @@ import co.edu.unicauca.deporteParaTodos.dominio.modelo.Horario;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.comunes.HorarioDTO;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.comunes.NoExisteElementoDTO;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 
+@Hidden
 @RestController
 @CrossOrigin(origins = { "*" }, maxAge = 4200, allowCredentials = "false")
 @RequestMapping("api")

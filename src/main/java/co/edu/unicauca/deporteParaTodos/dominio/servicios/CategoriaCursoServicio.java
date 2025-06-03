@@ -16,6 +16,7 @@ import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresP
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.peticion.CategoriaInDTO;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CategoriaDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.ICategoriaCursoRepositorio;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ErrorInternoException;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.InsercionFallidaExepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ListadoVacioExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoConvertibleException;
@@ -100,18 +101,20 @@ public class CategoriaCursoServicio implements ICategoriaCursoServicio {
     }
 
     @Override
-    public CategoriaDTO actualizarCategoria(String titulo, CategoriaInDTO datosCategoria) {
+    public CategoriaDto actualizarCategoria(String titulo, CategoriaDto datosCategoria) {
         if (!categoriaCursoGateway.existeCategoria(titulo)) {
             throw new NoExisteExcepcion("No se encuentra el registro de la categoria ");
         }
-        System.out.println("---DTO"+datosCategoria.getDescripcion());
-        Categoria categoriaModelo = new Categoria();
-        categoriaModelo.setDescripcion(datosCategoria.getDescripcion());
-       
+
+        Categoria categoriaModelo = Categoria.fabricarDeDto(datosCategoria);
+
+        if(categoriaModelo == null){
+            throw new ErrorInternoException();
+        }
 
         Categoria regitro = categoriaCursoGateway.actualizarCategoria(titulo, categoriaModelo);
-        CategoriaDTO catRetorno = mapper.map(regitro, CategoriaDTO.class);
-       
+        CategoriaDto catRetorno = CategoriaDto.fabricarDeModelo(regitro);
+        
         return catRetorno;
     }
 

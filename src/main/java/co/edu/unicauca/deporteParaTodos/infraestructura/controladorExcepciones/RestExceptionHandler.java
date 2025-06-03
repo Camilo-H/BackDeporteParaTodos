@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ArchivoNoConvertibleExcepcion;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ErrorInternoException;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.InsercionFallidaExepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ListadoVacioExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoConvertibleException;
@@ -143,6 +144,19 @@ public class RestExceptionHandler {
         @ExceptionHandler(NoConvertibleException.class)
         public ResponseEntity<Error> GenericException(final HttpServletRequest req, final NoConvertibleException ex){
                 HttpStatusCode codigoHttp = HttpStatus.NOT_ACCEPTABLE;
+                String mensaje = String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage());
+
+                final Error error = ErrorUtils.crearError(ex.getCodigo(),mensaje,codigoHttp.value());
+
+                error.setUrl(req.getRequestURL().toString());
+                error.setMetodo(req.getMethod());
+                
+                return new ResponseEntity<Error>(error, codigoHttp);
+        }
+
+         @ExceptionHandler(ErrorInternoException.class)
+        public ResponseEntity<Error> GenericException(final HttpServletRequest req, final ErrorInternoException ex){
+                HttpStatusCode codigoHttp = HttpStatus.INTERNAL_SERVER_ERROR;
                 String mensaje = String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage());
 
                 final Error error = ErrorUtils.crearError(ex.getCodigo(),mensaje,codigoHttp.value());

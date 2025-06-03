@@ -95,20 +95,14 @@ public class CategoriaRest {
     //TODO: revisar algoritmo
     /***
      * Actualiza la informacion de una cateogira idendificada con "titulo"
+     * El uso de este metodo requiere la que el id de imagen anexado ya exista en el sistema
      * @param titulo identificador de la categoria
      * @param dto informacion actualizada de la categoria.
      * @return retorna un objeto dto con el contenido actualizado, codigo not found en caso de no encontrar el objetivo de actualizacion.
      */
     @PutMapping("/categoria")
-    public ResponseEntity<V2CategoriaDTO> putCategoria(@RequestParam String titulo, @RequestBody V2CategoriaDTO dto) {
-        boolean existe = repositorioCategoria.existsById(titulo);
-        if(!existe){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        CategoriaCursoEntidad entidad = new CategoriaCursoEntidad(titulo, dto.getDescripcion(), dto.getImagenId(), 0);
-        CategoriaCursoEntidad entidadGuardada;
-        entidadGuardada = repositorioCategoria.save(entidad);
-        V2CategoriaDTO respuesta = new V2CategoriaDTO(entidad.getTitulo(), entidadGuardada.getDescripcion(), entidadGuardada.getCat_imagen());
+    public ResponseEntity<CategoriaDto> putCategoria(@RequestParam String titulo, @RequestBody CategoriaDto dto) {
+        CategoriaDto respuesta = servicioCategoria.actualizarCategoria(titulo, dto);
         return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
 
