@@ -97,4 +97,27 @@ public interface IAsistenciaRepositorio extends CrudRepository<AsistenciaEntidad
             g.grp_iterable
             """,nativeQuery = true)
     List<Object[]>  estadisticasGrupos(@Param("fechaInicio") LocalDate fechaInicio, @Param("fechaFin") LocalDate fechaFin);
+
+    /**
+     * Retorna el numero de asistencias y sumatoria de horas de un alumno
+     * @param fechaInicio
+     * @param fechaFin
+     * @param alumno identificador del alumno
+     * @return
+     */
+    @Query(value = """
+        select 
+            asis.perf_id,
+            count(*) as total_asistencias,
+            sum(cla.cls_duracion_horas) as total_horas
+        from 
+            tbl_asistencia asis
+            inner join tbl_clase cla on asis.cls_codigo=cla.cls_codigo
+        where 
+            asis.perf_id = :alumno and
+            cla.cls_fecha BETWEEN TO_DATE(:fechaInicio, 'DD/MM/YY') 
+                            AND TO_DATE(:fechaFin, 'DD/MM/YY')
+        group by asis.perf_id""", 
+        nativeQuery = true)
+    Object[] estadisticasAlumno(@Param("fechaInicio") LocalDate fechaInicio, @Param("fechaFin") LocalDate fechaFin, @Param("alumno") String alumno);
 }

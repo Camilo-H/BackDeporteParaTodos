@@ -6,13 +6,16 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ArchivoNoConvertibleExcepcion;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.DependenciaFallida;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ErrorInternoException;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.InsercionFallidaExepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ListadoVacioExcepcion;
@@ -25,7 +28,7 @@ import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.f
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.formatoError.Error;
 import jakarta.servlet.http.HttpServletRequest;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class RestExceptionHandler {
         /***
          * Captura las excepciones generadas por los argumentos en los endpoint al no
@@ -50,6 +53,20 @@ public class RestExceptionHandler {
                 });
 
                 return new ResponseEntity<Map<String, String>>(errores, HttpStatus.BAD_REQUEST);
+        }
+
+        /**
+         * Captura excepcion por json mal formados que ingresan como peticion,
+         * es un error del usuario al introducir de forma inadecuada los datos
+         * @param ex
+         * @return
+         */
+        @ExceptionHandler(HttpMessageNotReadableException.class)
+                public ResponseEntity<Map<String, String>> handleJsonParseError(HttpMessageNotReadableException ex) {
+                Map<String, String> error = new HashMap<>();
+                error.put("mensaje", "El cuerpo de la solicitud contiene JSON mal formado o datos no válidos.");
+                error.put("detalle", ex.getMostSpecificCause().getMessage());
+                return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
         }
 
         /**
@@ -157,6 +174,19 @@ public class RestExceptionHandler {
          @ExceptionHandler(ErrorInternoException.class)
         public ResponseEntity<Error> GenericException(final HttpServletRequest req, final ErrorInternoException ex){
                 HttpStatusCode codigoHttp = HttpStatus.INTERNAL_SERVER_ERROR;
+                String mensaje = String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage());
+
+                final Error error = ErrorUtils.crearError(ex.getCodigo(),mensaje,codigoHttp.value());
+
+                error.setUrl(req.getRequestURL().toString());
+                error.setMetodo(req.getMethod());
+                
+                return new ResponseEntity<Error>(error, codigoHttp);
+        }
+
+        @ExceptionHandler(DependenciaFallida.class)
+        public ResponseEntity<Error> GenericException(final HttpServletRequest req, final DependenciaFallida ex){
+                HttpStatusCode codigoHttp = HttpStatus.FAILED_DEPENDENCY;
                 String mensaje = String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage());
 
                 final Error error = ErrorUtils.crearError(ex.getCodigo(),mensaje,codigoHttp.value());

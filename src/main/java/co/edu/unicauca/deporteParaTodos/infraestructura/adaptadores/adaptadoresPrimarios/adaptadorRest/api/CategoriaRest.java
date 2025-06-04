@@ -29,6 +29,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -58,23 +60,21 @@ public class CategoriaRest {
         this.categoriaCursoServicio = categoriaCursoServicio;
     }
     
-    /**
-     * Expone todas las categorias existentes en el sistema
-     * TODO: No se debe usar para uso regular de los usuario puesto que no se filtra su contenido.
-     * @return
-     */
+    @Operation(summary = "Obtener todas las categorias sin discriminar disponibles y no disponibles")
+    @ApiResponses(value ={
+        @ApiResponse(responseCode = "200", description = "Elemento encontrado"),
+        @ApiResponse(responseCode = "404", description = "Elemento no encontrado")
+    })
     @Deprecated
     @GetMapping("/categorias")
     public Iterable<CategoriaCursoEntidad> obtenerCategorias(){
         return repositorioCategoria.findAll();
     }
     
-    /***
-     * Expone todas las categorias existentes en el sistema
-     * que se encuentren disponibles
-     * usese para exponer estas entidades a los usuarios finales.
-     * @return Lista de entidades formato DTO
-     */
+    @Operation(summary = "Obtener todas las categorias disponibles en el sistema")
+    @ApiResponses(value ={
+        @ApiResponse(responseCode = "200", description = "listado de categorias"),
+    })
     @GetMapping("/categorias2")
     public ResponseEntity<List<CategoriaDto>> obtenerCategoriasExistentes(){        
 
@@ -89,7 +89,7 @@ public class CategoriaRest {
         @ApiResponse(responseCode = "404", description = "Elemento no encontrado")
     })
     @GetMapping("/categoria")
-    public ResponseEntity<CategoriaDto> getMethodName(
+    public ResponseEntity<CategoriaDto> obtenerCategoria(
             @Parameter(description = "identificador de la categoria, titulo")
             @RequestParam String titulo
         ) {
@@ -98,29 +98,22 @@ public class CategoriaRest {
     }
     
 
-    /***
-     * Inserta una categoria en el sistema
-     * La dependencia en la categoria asociada a la imagen debe ser gestionada previamente.
-     * TODO: opcionalmente se puede crear una sobrecarga que gestione ambas cosas en una peticion.
-     * @param dto informacion a guardar TODO: aplicar restricciones al dto para integridad de los datos.
-     * @return Retorna la categoria guardada en caso de exito, estado conflict en caso de fallo.
-     */
+    @Operation(summary = "Inserta una categoria en el sistema, el id de la imagen debe corresponder a uno ya existente en el sistema")
+    @ApiResponses(value ={
+        @ApiResponse(responseCode = "201", description = "Operacion exitosa"),
+    })
     @PostMapping("/categoria")
-    public ResponseEntity<CategoriaDto> postCategoria(@RequestBody CategoriaDto dto) {
+    public ResponseEntity<CategoriaDto> postCategoria(@RequestBody @Valid CategoriaDto dto) {
         CategoriaDto respuesta = servicioCategoria.insertarCategoria(dto);
         return new ResponseEntity<>(respuesta, HttpStatus.CREATED);
     }
     
-    //TODO: revisar algoritmo
-    /***
-     * Actualiza la informacion de una cateogira idendificada con "titulo"
-     * El uso de este metodo requiere la que el id de imagen anexado ya exista en el sistema
-     * @param titulo identificador de la categoria
-     * @param dto informacion actualizada de la categoria.
-     * @return retorna un objeto dto con el contenido actualizado, codigo not found en caso de no encontrar el objetivo de actualizacion.
-     */
+    @Operation(summary = "Actualiza una categoria en el sistema, el id de la imagen debe corresponder a uno ya existente en el sistema")
+    @ApiResponses(value ={
+        @ApiResponse(responseCode = "200", description = "Operacion exitosa"),
+    })
     @PutMapping("/categoria")
-    public ResponseEntity<CategoriaDto> putCategoria(@RequestParam String titulo, @RequestBody CategoriaDto dto) {
+    public ResponseEntity<CategoriaDto> putCategoria(@RequestParam @NotBlank String titulo, @RequestBody @Valid CategoriaDto dto) {
         CategoriaDto respuesta = servicioCategoria.actualizarCategoria(titulo, dto);
         return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
@@ -130,6 +123,7 @@ public class CategoriaRest {
      * @param titulo identificador de la categoria.
      * @return cantidad de filas afectadas en la peticion, 1 representa exito en la operacion.
      */
+    @Operation(summary = "Pendiente por refactorizar")
     @DeleteMapping("/categoria")
     public ResponseEntity<Integer> deleteCategoria(@RequestParam String titulo){
         Optional<CategoriaCursoEntidad> op = repositorioCategoria.findById(titulo);
