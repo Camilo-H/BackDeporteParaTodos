@@ -1,9 +1,7 @@
 package co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada;
 
 import java.util.List;
-import co.edu.unicauca.deporteParaTodos.dominio.modelo.Categoria;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.comunes.CategoriaDTO;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.peticion.CategoriaInDTO;
+
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CategoriaDto;
 
 public interface ICategoriaCursoServicio {
@@ -21,9 +19,12 @@ public interface ICategoriaCursoServicio {
      */
     public CategoriaDto insertarCategoria(CategoriaDto categoria);
 
+    /**
+     * Recupera una categoria a partir de su identificador
+     * @param tituloCategoria identificador
+     * @return categoria recuperada
+     */
     public CategoriaDto obtenerCategoriaCursoPorId(String tituloCategoria);
-
-    public CategoriaDTO registrarCategoria(CategoriaInDTO datos);
 
     /**
      * actualiza la infomracion de la categoria y retorna sus datos actualizados
@@ -33,6 +34,11 @@ public interface ICategoriaCursoServicio {
      */
     public CategoriaDto actualizarCategoria(String titulo, CategoriaDto datosCategoria);
 
-    public CategoriaDTO eliminarCategoria(String tituloCategoria);
+    /**
+     * elimina o marca como eliminada una categoria, dependiendo de sus dependencias asociadas
+     * @param tituloCategoria identificador de la categoria
+     * @return categoria eliminada o marcada
+     */
+    public CategoriaDto eliminarCategoria(String tituloCategoria);
 
 }

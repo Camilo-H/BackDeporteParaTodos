@@ -1,19 +1,14 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.gateway;
 
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.ICategoriaCursoGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Categoria;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CategoriaCursoEntidad;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ImagenEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.ICategoriaCursoRepositorio;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.ICursoRepositorio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IImagenRepositorio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.DependenciaFallida;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ErrorInternoException;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.InsercionFallidaExepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoConvertibleException;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.YaExisteElementoExcepcion;
@@ -30,19 +25,14 @@ public class CategoriaGateway implements ICategoriaCursoGateway {
     @Autowired
     private IImagenRepositorio repoImagen;
 
-    @Qualifier("modelMapperGenerico")
     @Autowired
-    private ModelMapper mapper;
+    private ICursoRepositorio repoCurso;
 
     @Override
     public boolean existeCategoria(String nombreCategoria) {
         return repoCategoria.existsById(nombreCategoria);
     }
 
-    /***
-     * Retorna una lista de categorias disponibles en el sistema
-     * @return lista de categorias encontradas
-     */
     @Override
     public List<Categoria> obtenerCategorias() {
         List<CategoriaCursoEntidad> listaEntidades = repoCategoria.findByEliminado(0);
@@ -113,17 +103,29 @@ public class CategoriaGateway implements ICategoriaCursoGateway {
 
     @Override
     public Categoria eliminarCategoria(String nombreCategoria) {
+        
+        //verificar si existe la categoria
         Optional<CategoriaCursoEntidad> entidadExistente = repoCategoria.findById(nombreCategoria);
-        if (entidadExistente.isPresent()) {
-            // Si existe, obtenemos la entidad y la eliminamos
-            CategoriaCursoEntidad entidad = entidadExistente.get();
-            repoCategoria.delete(entidad);
-            // Devuelve la categoría eliminada mapeada a modelo
-            return mapper.map(entidad, Categoria.class);
-        } else {
-            // Si no existe, puedes lanzar una excepción o retornar null
-            throw new NoExisteExcepcion("La categoría con el título " + nombreCategoria + " no existe.");
+        if(entidadExistente.isEmpty()){
+            throw new NoExisteExcepcion("La categoria con el titulo "+nombreCategoria+" no existe.");
         }
+        CategoriaCursoEntidad entidad = entidadExistente.get();
+        Categoria respuesta = Categoria.fabricarDeEntidad(entidad);
+
+        //verificar si poseen cursos asociados
+        long cantidadCursos = repoCurso.countByCategoriaCurso(nombreCategoria);
+        
+        //si no posee eliminamos todos
+        if(cantidadCursos==0){
+                //eliminamos imagen
+            repoImagen.deleteById(entidad.getCat_imagen());
+                //eliminamos categoria
+            repoCategoria.deleteById(nombreCategoria);
+            return respuesta;
+        }
+        //si posee dependencias, marcamos como eliminado
+        repoCategoria.marcarComoEliminado(nombreCategoria);
+        return respuesta;
     }
 
 }

@@ -2,45 +2,27 @@ package co.edu.unicauca.deporteParaTodos.dominio.servicios;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import org.modelmapper.ModelMapper;
-import org.modelmapper.internal.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.ICategoriaCursoServicio;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.ICategoriaCursoGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Categoria;
-import co.edu.unicauca.deporteParaTodos.dominio.modelo.Imagen;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.comunes.CategoriaDTO;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.comunes.ImagenDTO;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.peticion.CategoriaInDTO;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CategoriaDto;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.ICategoriaCursoRepositorio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ErrorInternoException;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.InsercionFallidaExepcion;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ListadoVacioExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoConvertibleException;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
-import co.edu.unicauca.deporteParaTodos.infraestructura.mappers.MapperImagen;
 
 @Service
 public class CategoriaCursoServicio implements ICategoriaCursoServicio {
 
-    // @Autowired
-
-    @Qualifier("modelMapperGenerico")
-    @Autowired
-    private ModelMapper mapper;
-
     @Autowired
     private ICategoriaCursoGateway categoriaCursoGateway;
 
-    /**
-     * Obtiene retorna las categorias disponibles en el sistema.
-     * @return lista de categorias
-     */
+    @Transactional(readOnly = true)
     @Override
     public List<CategoriaDto> recuperarCategoriasCurso() {
         //no es necesario generar excepcion cuando la lista esta vacia
@@ -54,6 +36,7 @@ public class CategoriaCursoServicio implements ICategoriaCursoServicio {
         return listaDtos;
     }
 
+    @Transactional
     @Override
     public CategoriaDto insertarCategoria(CategoriaDto dto) {
         //transformacion de datos
@@ -72,28 +55,7 @@ public class CategoriaCursoServicio implements ICategoriaCursoServicio {
         return respuesta;
     }
 
-    @Deprecated
-    @Override
-    public CategoriaDTO registrarCategoria(CategoriaInDTO datos) {
-        Categoria categoriaModelo = new Categoria();
-        ImagenDTO imagenDTO = new ImagenDTO();
-        Imagen imagenModelo;
-        ImagenDTO dtoimagenRetorno = null;
-      
-
-        categoriaModelo.setTitulo(datos.getTitulo());
-        categoriaModelo.setDescripcion(datos.getDescripcion());
-        Categoria regitro = categoriaCursoGateway.registrarCategoria(categoriaModelo);
-
-       
-
-        CategoriaDTO catRetorno = new CategoriaDTO();
-        catRetorno.setTitulo(regitro.getTitulo());
-        catRetorno.setDescripcion(regitro.getDescripcion());
-        catRetorno.setImagen(dtoimagenRetorno);
-        return catRetorno;
-    }
-
+    @Transactional(readOnly = true)
     @Override
     public CategoriaDto obtenerCategoriaCursoPorId(String tituloCategoria) {
         
@@ -107,6 +69,7 @@ public class CategoriaCursoServicio implements ICategoriaCursoServicio {
         return respuesta;
     }
 
+    @Transactional
     @Override
     public CategoriaDto actualizarCategoria(String titulo, CategoriaDto datosCategoria) {
         if (!categoriaCursoGateway.existeCategoria(titulo)) {
@@ -125,12 +88,15 @@ public class CategoriaCursoServicio implements ICategoriaCursoServicio {
         return catRetorno;
     }
 
+    @Transactional
     @Override
-    public CategoriaDTO eliminarCategoria(String tituloCategoria) {
-        if (!categoriaCursoGateway.existeCategoria(tituloCategoria)) {
-            throw new NoExisteExcepcion("La categoría con el título " + tituloCategoria + " no existe.");
+    public CategoriaDto eliminarCategoria(String tituloCategoria) {
+        Categoria categoria = categoriaCursoGateway.eliminarCategoria(tituloCategoria);
+        if(categoria==null){
+            throw new ErrorInternoException();
         }
-        return mapper.map(categoriaCursoGateway.eliminarCategoria(tituloCategoria), CategoriaDTO.class);
+        CategoriaDto respuesta = CategoriaDto.fabricarDeModelo(categoria);
+        return respuesta;
     }
 
     

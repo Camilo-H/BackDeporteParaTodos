@@ -1,8 +1,6 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.api;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,20 +9,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.ICategoriaCursoServicio;
-import co.edu.unicauca.deporteParaTodos.dominio.modelo.Categoria;
-import co.edu.unicauca.deporteParaTodos.dominio.servicios.CategoriaCursoServicio;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.v2DTO.V2CategoriaDTO;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CategoriaDto;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CategoriaCursoEntidad;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.ICategoriaCursoRepositorio;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IImagenRepositorio;
-import io.micrometer.core.ipc.http.HttpSender.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -35,7 +25,6 @@ import jakarta.validation.constraints.NotBlank;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 
 @RestController
@@ -44,32 +33,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Validated
 public class CategoriaRest {
 
-    private final CategoriaCursoServicio categoriaCursoServicio;
-    //TODO: eliminar dependencia del repositorio cuando finalice la normalizacion
-    @Autowired
-    private ICategoriaCursoRepositorio repositorioCategoria;
-
-    //TODO: eliminar depenciencia del repositorio cuando finalice
-    @Autowired
-    private IImagenRepositorio repositorioImagen;
-
     @Autowired
     private ICategoriaCursoServicio servicioCategoria;
-
-    CategoriaRest(CategoriaCursoServicio categoriaCursoServicio) {
-        this.categoriaCursoServicio = categoriaCursoServicio;
-    }
-    
-    @Operation(summary = "Obtener todas las categorias sin discriminar disponibles y no disponibles")
-    @ApiResponses(value ={
-        @ApiResponse(responseCode = "200", description = "Elemento encontrado"),
-        @ApiResponse(responseCode = "404", description = "Elemento no encontrado")
-    })
-    @Deprecated
-    @GetMapping("/categorias")
-    public Iterable<CategoriaCursoEntidad> obtenerCategorias(){
-        return repositorioCategoria.findAll();
-    }
     
     @Operation(summary = "Obtener todas las categorias disponibles en el sistema")
     @ApiResponses(value ={
@@ -83,7 +48,7 @@ public class CategoriaRest {
 
     }
 
-    @Operation(summary = "Obtener categoria por titulo")
+    @Operation(summary = "Obtener categoria por titulo, independientemente si eesta marcada como eliminada")
     @ApiResponses(value ={
         @ApiResponse(responseCode = "200", description = "Elemento encontrado"),
         @ApiResponse(responseCode = "404", description = "Elemento no encontrado")
@@ -123,27 +88,10 @@ public class CategoriaRest {
      * @param titulo identificador de la categoria.
      * @return cantidad de filas afectadas en la peticion, 1 representa exito en la operacion.
      */
-    @Operation(summary = "Pendiente por refactorizar")
+    @Operation(summary = "Elimina una categoria")
     @DeleteMapping("/categoria")
-    public ResponseEntity<Integer> deleteCategoria(@RequestParam String titulo){
-        Optional<CategoriaCursoEntidad> op = repositorioCategoria.findById(titulo);
-        if(op.isEmpty()){
-            return new ResponseEntity<>(0,HttpStatus.NOT_FOUND);
-        }
-        CategoriaCursoEntidad entidad = op.get();
-        if(entidad.getEliminado()==1){
-            return new ResponseEntity<>(0, HttpStatus.OK);
-        }
-        //Eliminar imagen de la categoria -> las imagenes por ser multimedia si se borran no tiene dependencias mas abajo en la cascada
-        if(entidad.getCat_imagen()!=null){
-            repositorioImagen.deleteById(entidad.getCat_imagen());
-        }
-        //marcar eliminada categoria,
-        String argTitulo = entidad.getTitulo();
-        int filasAfectadas= repositorioCategoria.marcarComoEliminado(argTitulo);
-        if(filasAfectadas==1){
-            return new ResponseEntity<>(filasAfectadas, HttpStatus.OK);
-        }
-        return ResponseEntity.internalServerError().body(filasAfectadas);
+    public ResponseEntity<CategoriaDto> deleteCategoria(@RequestParam String titulo){
+        CategoriaDto categoria = servicioCategoria.eliminarCategoria(titulo);
+        return new ResponseEntity<>(categoria, HttpStatus.OK);
     }
 }

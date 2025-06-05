@@ -3,6 +3,7 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadores
 import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CursoEntidad;
 
@@ -22,4 +23,11 @@ public interface ICursoRepositorio extends CrudRepository<CursoEntidad,String>{
      * @return objeto de tipo CursoEntidad
      */
     CursoEntidad findByCategoriaCursoAndNombre(String categoriaCurso, String nombre);
+
+    /***
+     * A partir de un titulo de categoria retorna la cantidad de cursos asociados
+     * @param CategoriaCurso titulo de la categoria
+     * @return cantidad de categorias
+     */
+    long countByCategoriaCurso(String CategoriaCurso);
 }

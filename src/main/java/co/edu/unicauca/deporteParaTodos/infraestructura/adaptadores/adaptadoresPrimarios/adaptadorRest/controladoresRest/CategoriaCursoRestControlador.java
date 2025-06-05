@@ -52,12 +52,6 @@ public class CategoriaCursoRestControlador {
         return null;
     }
 
-    @PostMapping("/categoriass")
-    public ResponseEntity<CategoriaDTO> insertarCategoria(@Valid @ModelAttribute CategoriaInDTO categoriaDTO) {
-        CategoriaDTO respuestaDTO = servicio.registrarCategoria(categoriaDTO);
-        return new ResponseEntity<>(respuestaDTO, HttpStatus.CREATED);
-    }
-
     @GetMapping("/categorias/{titulo}")
     public ResponseEntity<CategoriaDTO> obtenerCategoriaCurso(@PathVariable String titulo) {
         CategoriaDto respuesta = servicio.obtenerCategoriaCursoPorId(titulo);
@@ -69,9 +63,9 @@ public class CategoriaCursoRestControlador {
     }
 
     @DeleteMapping("/categorias/{titulo}")
-    public ResponseEntity<CategoriaDTO> deleteCategoria(@PathVariable String titulo) {
-        CategoriaDTO categoriaEliminada = servicio.eliminarCategoria(titulo);
-        return new ResponseEntity<CategoriaDTO>(categoriaEliminada, HttpStatus.OK);
+    public ResponseEntity<CategoriaDto> deleteCategoria(@PathVariable String titulo) {
+        CategoriaDto categoriaEliminada = servicio.eliminarCategoria(titulo);
+        return new ResponseEntity<CategoriaDto>(categoriaEliminada, HttpStatus.OK);
     }
 
 }
