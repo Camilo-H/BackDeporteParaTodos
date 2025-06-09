@@ -1,4 +1,4 @@
-package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.v2DTO;
+package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class V2Estadistica {
+public class EstadisticaDto {
     ///titulo de la estadistica
     private String leyenda1;
     private String leyenda2;
@@ -24,8 +24,8 @@ public class V2Estadistica {
     ///duracion total en minutos
     private double duracion;
 
-    public static V2Estadistica fromObjectCategorias(Object[] objects){
-        V2Estadistica estadistica = new V2Estadistica();
+    public static EstadisticaDto fromObjectCategorias(Object[] objects){
+        EstadisticaDto estadistica = new EstadisticaDto();
         try{
             estadistica.setLeyenda1(objects[0].toString());
             estadistica.setClases(Double.parseDouble(objects[1].toString()));
@@ -38,8 +38,8 @@ public class V2Estadistica {
         }
     }
 
-    public static V2Estadistica fromObjectCursos(Object[] objects){
-        V2Estadistica estadistica = new V2Estadistica();
+    public static EstadisticaDto fromObjectCursos(Object[] objects){
+        EstadisticaDto estadistica = new EstadisticaDto();
         try{
             estadistica.setLeyenda1(objects[0].toString());
             estadistica.setLeyenda2(objects[1].toString());
@@ -53,8 +53,8 @@ public class V2Estadistica {
         }
     }
 
-    public static V2Estadistica fromObjectGrupos(Object[] objects){
-        V2Estadistica estadistica = new V2Estadistica();
+    public static EstadisticaDto fromObjectGrupos(Object[] objects){
+        EstadisticaDto estadistica = new EstadisticaDto();
         try{
             estadistica.setLeyenda1(objects[0].toString());
             estadistica.setLeyenda2(objects[1].toString());
