@@ -17,9 +17,14 @@ public class EstadisticasGateway implements IEstadisticasGateway{
     private IAsistenciaRepositorio repoAsistencia;
 
     @Override
-    public List<EstadisticaDto> estadisticasCategorias(LocalDate fechaInicio, LocalDate fechaFin) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'estadisticasCategorias'");
+    public List<EstadisticaDto> estadisticasCategorias(LocalDate fechaInicio, LocalDate fechaFin, String categoria) {
+        List<Object[]> objetos = repoAsistencia.estadisticasCategorias(fechaInicio, fechaFin, categoria);
+        List<EstadisticaDto> estadisticas = new ArrayList<>();
+        objetos.forEach((objeto)->{
+            EstadisticaDto estadistica = EstadisticaDto.fromObjectCategorias(objeto);
+            estadisticas.add(estadistica);
+        });
+        return estadisticas;
     }
 
     @Override
@@ -45,9 +50,14 @@ public class EstadisticasGateway implements IEstadisticasGateway{
     }
 
     @Override
-    public EstadisticaDto estadisticaAlumno(String alumno, LocalDate fechaInicio, LocalDate fechaFin) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'estadisticaAlumno'");
+    public List<EstadisticaDto> estadisticaAlumno(String alumno, LocalDate fechaInicio, LocalDate fechaFin) {
+        List<Object[]> objetos = repoAsistencia.estadisticasAlumno(fechaInicio, fechaFin, alumno);
+        List<EstadisticaDto> estadisticas = new ArrayList<>();
+        objetos.forEach((objeto)->{
+            EstadisticaDto estadistica = EstadisticaDto.fromObjectAlumno(objeto);
+            estadisticas.add(estadistica);
+        });
+        return estadisticas;
     }
 
     @Override

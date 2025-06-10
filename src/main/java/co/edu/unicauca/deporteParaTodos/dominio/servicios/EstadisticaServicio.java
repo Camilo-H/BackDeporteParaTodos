@@ -17,8 +17,8 @@ public class EstadisticaServicio implements IEstadisticaServicio{
     private IEstadisticasGateway gateEstadistica;
 
     @Override
-    public List<EstadisticaDto> estadisticasCategorias(LocalDate fechaInicio, LocalDate fechaFin) {
-        return gateEstadistica.estadisticasCategorias(fechaInicio, fechaFin);
+    public List<EstadisticaDto> estadisticasCategorias(LocalDate fechaInicio, LocalDate fechaFin, String categoria) {
+        return gateEstadistica.estadisticasCategorias(fechaInicio, fechaFin, categoria);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class EstadisticaServicio implements IEstadisticaServicio{
     }
 
     @Override
-    public EstadisticaDto estadisticaAlumno(String alumno, LocalDate fechaInicio, LocalDate fechaFin) {
+    public List<EstadisticaDto> estadisticaAlumno(String alumno, LocalDate fechaInicio, LocalDate fechaFin) {
         return gateEstadistica.estadisticaAlumno(alumno, fechaInicio, fechaFin);
     }
 

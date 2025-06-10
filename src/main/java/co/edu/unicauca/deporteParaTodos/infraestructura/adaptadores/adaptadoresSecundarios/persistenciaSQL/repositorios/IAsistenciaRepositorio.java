@@ -37,9 +37,10 @@ public interface IAsistenciaRepositorio extends CrudRepository<AsistenciaEntidad
                                         and g.grp_anio = cl.grp_anio
                                         and g.grp_iterable = cl.grp_iterable
                                         and cl.cls_fecha between :fechaInicio and :fechaFin
+            where (:categoria is null or c.cat_titulo = :categoria)
             group by cc.cat_titulo
             """,nativeQuery = true)
-    List<Object[]>  estadisticasCategorias(@Param("fechaInicio") LocalDate fechaInicio, @Param("fechaFin") LocalDate fechaFin);
+    List<Object[]>  estadisticasCategorias(@Param("fechaInicio") LocalDate fechaInicio, @Param("fechaFin") LocalDate fechaFin, String categoria);
 
     /***
      * Obtiene las estadisticas de todos los cursos entre 2 fechas
@@ -126,16 +127,19 @@ public interface IAsistenciaRepositorio extends CrudRepository<AsistenciaEntidad
     @Query(value = """
         select 
             asis.perf_id,
-            count(*) as total_asistencias,
-            sum(cla.cls_duracion_horas) as total_horas
+            coalesce( count(*), 0) as clases,
+            coalesce (sum(cl.cls_duracion_horas),0) as horas,
+            coalesce (sum(cl.cls_duracion_minutos), 0) as minutos,
+            (coalesce( sum(cl.cls_duracion_horas),0)*60)
+                +coalesce(sum(cl.cls_duracion_minutos),0) as duracion_total_minutos
         from 
             tbl_asistencia asis
-            inner join tbl_clase cla on asis.cls_codigo=cla.cls_codigo
+            inner join tbl_clase cl on asis.cls_codigo=cl.cls_codigo and
+            cl.cls_fecha BETWEEN :fechaInicio
+                            AND :fechaFin
         where 
-            asis.perf_id = :alumno and
-            cla.cls_fecha BETWEEN TO_DATE(:fechaInicio, 'DD/MM/YY') 
-                            AND TO_DATE(:fechaFin, 'DD/MM/YY')
+            (asis.perf_id = :alumno or :alumno is null)
         group by asis.perf_id""", 
         nativeQuery = true)
-    Object[] estadisticasAlumno(@Param("fechaInicio") LocalDate fechaInicio, @Param("fechaFin") LocalDate fechaFin, @Param("alumno") String alumno);
+    List<Object[]> estadisticasAlumno(@Param("fechaInicio") LocalDate fechaInicio, @Param("fechaFin") LocalDate fechaFin, @Param("alumno") String alumno);
 }

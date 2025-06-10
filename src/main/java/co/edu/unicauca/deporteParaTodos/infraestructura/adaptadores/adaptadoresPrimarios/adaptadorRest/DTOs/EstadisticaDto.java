@@ -38,6 +38,20 @@ public class EstadisticaDto {
         }
     }
 
+    public static EstadisticaDto fromObjectAlumno(Object[] objects){
+        EstadisticaDto estadistica = new EstadisticaDto();
+        try{
+            estadistica.setLeyenda1(objects[0].toString());
+            estadistica.setClases(Double.parseDouble(objects[1].toString()));
+            estadistica.setHoras(Double.parseDouble(objects[2].toString()));
+            estadistica.setMinutos(Double.parseDouble(objects[3].toString()));
+            estadistica.setDuracion(Double.parseDouble(objects[4].toString()));
+            return estadistica;
+        }catch(Exception e){
+            return null;
+        }
+    }
+
     public static EstadisticaDto fromObjectCursos(Object[] objects){
         EstadisticaDto estadistica = new EstadisticaDto();
         try{

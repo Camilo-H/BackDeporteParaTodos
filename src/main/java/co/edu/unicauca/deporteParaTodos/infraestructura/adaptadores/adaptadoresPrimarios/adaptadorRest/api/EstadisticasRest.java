@@ -42,9 +42,10 @@ public class EstadisticasRest {
         @Parameter(description = "fecha inicial, use el formato YYYY-MM-DD ejemplo: 2025-01-01")
         @RequestParam("inicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
         @Parameter(description = "fecha final, use el formato YYYY-MM-DD ejemplo: 2025-01-02")
-        @RequestParam("fin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin) {
-
-        List<EstadisticaDto> estadisticas = servEstadistica.estadisticasCategorias(fechaInicio, fechaFin);
+        @RequestParam("fin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin,
+        @RequestParam(required = false) String categoria
+        ) {
+        List<EstadisticaDto> estadisticas = servEstadistica.estadisticasCategorias(fechaInicio, fechaFin, categoria);
         return new ResponseEntity<>(estadisticas, HttpStatus.OK);
     }
     
@@ -89,4 +90,22 @@ public class EstadisticasRest {
         List<EstadisticaDto> estadisticas = servEstadistica.estadisticasGrupos(fechaInicio, fechaFin, categoria, curso, anio, iterable);
         return new ResponseEntity<>(estadisticas, HttpStatus.OK);
     }
+
+    @Operation(summary = "Retorna una lista cuyos elementos estan etiquetados como id alumno, junto a su informacion en atenciones brindadas y tiempo, leyenda 1 ocupa id del alumno")
+    @ApiResponses(value ={
+        @ApiResponse(responseCode = "200", description = "Operacion exitosa"),
+    })
+    @GetMapping("estadisticas/alumnos")
+    public ResponseEntity<List<EstadisticaDto>> getEtadisticasAlumnos(
+        @Parameter(description = "fecha inicial, use el formato YYYY-MM-DD ejemplo: 2025-01-01")
+        @RequestParam("inicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+        @Parameter(description = "fecha final, use el formato YYYY-MM-DD ejemplo: 2025-01-02")
+        @RequestParam("fin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin,
+        @Parameter(description = "campo opcional, si es null obtendra de todos los alumnos")
+        @RequestParam(required = false) String alumno
+    ) {
+        List<EstadisticaDto> estadisticas = servEstadistica.estadisticaAlumno(alumno, fechaInicio, fechaFin);
+        return new ResponseEntity<>(estadisticas,HttpStatus.OK);
+    }
+    
 }

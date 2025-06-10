@@ -7,13 +7,13 @@ import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresP
 
 public interface IEstadisticaServicio {
     //categorias
-    List<EstadisticaDto> estadisticasCategorias(LocalDate fechaInicio, LocalDate fechaFin);
+    List<EstadisticaDto> estadisticasCategorias(LocalDate fechaInicio, LocalDate fechaFin, String categoria);
     //cursos
     List<EstadisticaDto> estadisticasCursos(LocalDate fechaInicio, LocalDate fechaFin, String categoria, String curso);
     //grupos
     List<EstadisticaDto> estadisticasGrupos(LocalDate fechaInicio, LocalDate fechaFin, String categoria, String curso, Integer anio, Integer iterable);
     //alumno
-    EstadisticaDto estadisticaAlumno(String alumno, LocalDate fechaInicio, LocalDate fechaFin);
+    List<EstadisticaDto> estadisticaAlumno(String alumno, LocalDate fechaInicio, LocalDate fechaFin);
     //instructor
     EstadisticaDto estadisticaInstructor(LocalDate fechaInicio, LocalDate fechaFin);
     //facultad
