@@ -142,4 +142,29 @@ public interface IAsistenciaRepositorio extends CrudRepository<AsistenciaEntidad
         group by asis.perf_id""", 
         nativeQuery = true)
     List<Object[]> estadisticasAlumno(@Param("fechaInicio") LocalDate fechaInicio, @Param("fechaFin") LocalDate fechaFin, @Param("alumno") String alumno);
+
+    /**
+     * Estadistcas para instructor entre 2 fechas
+     * @param fechaInicio
+     * @param fechaFin
+     * @param instructor si es null, obtendra de todos los instructores
+     * @return
+     */
+    @Query(value = """
+            select 
+            cl.perf_id,
+            coalesce( count(*), 0) as clases,
+            coalesce (sum(cl.cls_duracion_horas),0) as horas,
+            coalesce (sum(cl.cls_duracion_minutos), 0) as minutos,
+            (coalesce( sum(cl.cls_duracion_horas),0)*60)
+                +coalesce(sum(cl.cls_duracion_minutos),0) as duracion_total_minutos
+        from 
+            tbl_clase cl
+        where 
+            (cl.perf_id = :instructor or :instructor is null) and
+            cl.cls_fecha BETWEEN :fechaInicio 
+                            AND :fechaFin
+        group by cl.perf_id
+            """, nativeQuery = true)
+            List<Object[]> estadisticasInstructor(@Param("fechaInicio") LocalDate fechaInicio, @Param("fechaFin") LocalDate fechaFin, @Param("instructor") String instructor);
 }

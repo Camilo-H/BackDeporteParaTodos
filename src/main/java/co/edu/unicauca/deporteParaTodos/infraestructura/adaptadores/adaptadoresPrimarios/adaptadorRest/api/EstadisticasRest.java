@@ -1,7 +1,6 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.api;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +35,7 @@ public class EstadisticasRest {
     @Operation(summary = "Retorna una lista cuyos elementos estan etiquetados como categoria, junto a su informacion en atenciones brindadas y tiempo, solo la leyenda 1 se ocupa para el titulo de la categoria")
     @ApiResponses(value ={
         @ApiResponse(responseCode = "200", description = "Operacion exitosa"),
+        @ApiResponse(responseCode = "404", description = "Identificador especificado no existe"),
     })
     @GetMapping("estadisticas/categorias")
     public ResponseEntity<List<EstadisticaDto>> getEstaditicasCategorias(
@@ -52,6 +52,7 @@ public class EstadisticasRest {
     @Operation(summary = "Retorna una lista cuyos elementos estan etiquetados como cursos, junto a su informacion en atenciones brindadas y tiempo, leyenda 1 y 2 se usan para categoria y curso respectivamente")
     @ApiResponses(value ={
         @ApiResponse(responseCode = "200", description = "Operacion exitosa"),
+        @ApiResponse(responseCode = "404", description = "Identificador especificado no existe"),
     })
     @GetMapping("estadisticas/cursos")
     public ResponseEntity<List<EstadisticaDto>> getEstadisticasCursos(
@@ -70,6 +71,7 @@ public class EstadisticasRest {
     @Operation(summary = "Retorna una lista cuyos elementos estan etiquetados como grupos, junto a su informacion en atenciones brindadas y tiempo, leyenda 1, 2, 3, 4 ocupan categoria, curso, grupo e iterable respectivamente")
     @ApiResponses(value ={
         @ApiResponse(responseCode = "200", description = "Operacion exitosa"),
+        @ApiResponse(responseCode = "404", description = "Identificador especificado no existe"),
     })
     @GetMapping("estadisticas/grupos")
     public ResponseEntity<List<EstadisticaDto>> getEstadisticasGrupos(
@@ -94,6 +96,7 @@ public class EstadisticasRest {
     @Operation(summary = "Retorna una lista cuyos elementos estan etiquetados como id alumno, junto a su informacion en atenciones brindadas y tiempo, leyenda 1 ocupa id del alumno")
     @ApiResponses(value ={
         @ApiResponse(responseCode = "200", description = "Operacion exitosa"),
+        @ApiResponse(responseCode = "404", description = "Identificador especificado no existe"),
     })
     @GetMapping("estadisticas/alumnos")
     public ResponseEntity<List<EstadisticaDto>> getEtadisticasAlumnos(
@@ -108,4 +111,21 @@ public class EstadisticasRest {
         return new ResponseEntity<>(estadisticas,HttpStatus.OK);
     }
     
+    @Operation(summary = "Retorna una lista cuyos elementos estan etiquetados como id instructor, junto a su informacion en atenciones brindadas y tiempo, leyenda 1 ocupa id del instructor")
+    @ApiResponses(value ={
+        @ApiResponse(responseCode = "200", description = "Operacion exitosa"),
+        @ApiResponse(responseCode = "404", description = "Identificador especificado no existe"),
+    })
+    @GetMapping("estadisticas/instructores")
+    public ResponseEntity<List<EstadisticaDto>> getEtadisticasInstructores(
+        @Parameter(description = "fecha inicial, use el formato YYYY-MM-DD ejemplo: 2025-01-01")
+        @RequestParam("inicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+        @Parameter(description = "fecha final, use el formato YYYY-MM-DD ejemplo: 2025-01-02")
+        @RequestParam("fin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin,
+        @Parameter(description = "campo opcional, si es null obtendra de todos los instructores")
+        @RequestParam(required = false) String instructor
+    ) {
+        List<EstadisticaDto> estadisticas = servEstadistica.estadisticaInstructor(instructor, fechaInicio, fechaFin);
+        return new ResponseEntity<>(estadisticas,HttpStatus.OK);
+    }
 }

@@ -37,8 +37,8 @@ public class EstadisticaServicio implements IEstadisticaServicio{
     }
 
     @Override
-    public EstadisticaDto estadisticaInstructor(LocalDate fechaInicio, LocalDate fechaFin) {
-        return gateEstadistica.estadisticaInstructor(fechaInicio, fechaFin);
+    public List<EstadisticaDto> estadisticaInstructor(String instructor, LocalDate fechaInicio, LocalDate fechaFin) {
+        return gateEstadistica.estadisticaInstructor(instructor, fechaInicio, fechaFin);
     }
 
     @Override

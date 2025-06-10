@@ -15,7 +15,7 @@ public interface IEstadisticaServicio {
     //alumno
     List<EstadisticaDto> estadisticaAlumno(String alumno, LocalDate fechaInicio, LocalDate fechaFin);
     //instructor
-    EstadisticaDto estadisticaInstructor(LocalDate fechaInicio, LocalDate fechaFin);
+    List<EstadisticaDto> estadisticaInstructor(String instructor, LocalDate fechaInicio, LocalDate fechaFin);
     //facultad
     EstadisticaDto estadisticaFacultad(String facultad, LocalDate fechaInicio, LocalDate fechaFin);
     //programa

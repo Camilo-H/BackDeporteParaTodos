@@ -95,7 +95,7 @@ public class RestExceptionHandler {
         public ResponseEntity<Error> GenericException(final HttpServletRequest req, final NoExisteExcepcion ex) {
                 final Error error = ErrorUtils.crearError(
                                 ex.getCodigo(),
-                                ex.getLlaveMensaje(),
+                                ex.getLlaveMensaje() +": "+ ex.getMessage(),
                                 HttpStatus.NOT_FOUND.value())
                                 .setUrl(req.getRequestURL().toString())
                                 .setMetodo(req.getMethod());
