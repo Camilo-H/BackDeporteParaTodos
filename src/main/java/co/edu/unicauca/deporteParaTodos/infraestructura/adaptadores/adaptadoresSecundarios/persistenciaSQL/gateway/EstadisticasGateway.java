@@ -23,8 +23,8 @@ public class EstadisticasGateway implements IEstadisticasGateway{
     }
 
     @Override
-    public List<EstadisticaDto> estadisticasCursos(LocalDate fechaInicio, LocalDate fechaFin) {
-        List<Object[]> objetos = repoAsistencia.estadisticasCursos(fechaInicio, fechaFin);
+    public List<EstadisticaDto> estadisticasCursos(LocalDate fechaInicio, LocalDate fechaFin, String categoria, String curso) {
+        List<Object[]> objetos = repoAsistencia.estadisticasCursos(fechaInicio, fechaFin, categoria, curso);
         List<EstadisticaDto> estadisticas = new ArrayList<>();
         objetos.forEach((objeto)->{
             EstadisticaDto estadistica = EstadisticaDto.fromObjectCursos(objeto);

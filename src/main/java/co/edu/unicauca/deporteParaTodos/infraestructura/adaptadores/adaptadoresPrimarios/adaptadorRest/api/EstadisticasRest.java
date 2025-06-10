@@ -57,9 +57,12 @@ public class EstadisticasRest {
         @Parameter(description = "fecha inicial, use el formato YYYY-MM-DD ejemplo: 2025-01-01")
         @RequestParam("inicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
         @Parameter(description = "fecha final, use el formato YYYY-MM-DD ejemplo: 2025-01-02")
-        @RequestParam("fin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin) {
+        @RequestParam("fin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin,
+        @RequestParam(required = false) String categoria,
+        @RequestParam(required = false) String curso
+        ) {
 
-        List<EstadisticaDto> estadisticas = servEstadistica.estadisticasCursos(fechaInicio, fechaFin);
+        List<EstadisticaDto> estadisticas = servEstadistica.estadisticasCursos(fechaInicio, fechaFin, categoria, curso);
         return new ResponseEntity<>(estadisticas, HttpStatus.OK);
     }
     

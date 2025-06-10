@@ -63,9 +63,12 @@ public interface IAsistenciaRepositorio extends CrudRepository<AsistenciaEntidad
                                         and g.grp_anio = cl.grp_anio
                                         and g.grp_iterable = cl.grp_iterable
                                         and cl.cls_fecha between :fechaInicio and :fechaFin
+            where
+                (:categoria is null or c.cat_titulo = :categoria) and
+                (:curso is null or c.cur_nombre = :curso)
             group by c.cat_titulo, c.cur_nombre
             """,nativeQuery = true)
-    List<Object[]>  estadisticasCursos(@Param("fechaInicio") LocalDate fechaInicio, @Param("fechaFin") LocalDate fechaFin);
+    List<Object[]>  estadisticasCursos(@Param("fechaInicio") LocalDate fechaInicio, @Param("fechaFin") LocalDate fechaFin, String categoria, String curso);
 
 
     /**
