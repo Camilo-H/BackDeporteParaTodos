@@ -42,10 +42,11 @@ public class EstadisticaDto {
         EstadisticaDto estadistica = new EstadisticaDto();
         try{
             estadistica.setLeyenda1(objects[0].toString());
-            estadistica.setClases(Double.parseDouble(objects[1].toString()));
-            estadistica.setHoras(Double.parseDouble(objects[2].toString()));
-            estadistica.setMinutos(Double.parseDouble(objects[3].toString()));
-            estadistica.setDuracion(Double.parseDouble(objects[4].toString()));
+            estadistica.setLeyenda2(objects[1].toString());
+            estadistica.setClases(Double.parseDouble(objects[2].toString()));
+            estadistica.setHoras(Double.parseDouble(objects[3].toString()));
+            estadistica.setMinutos(Double.parseDouble(objects[4].toString()));
+            estadistica.setDuracion(Double.parseDouble(objects[5].toString()));
             return estadistica;
         }catch(Exception e){
             return null;
@@ -56,10 +57,11 @@ public class EstadisticaDto {
         EstadisticaDto estadistica = new EstadisticaDto();
         try{
             estadistica.setLeyenda1(objects[0].toString());
-            estadistica.setClases(Double.parseDouble(objects[1].toString()));
-            estadistica.setHoras(Double.parseDouble(objects[2].toString()));
-            estadistica.setMinutos(Double.parseDouble(objects[3].toString()));
-            estadistica.setDuracion(Double.parseDouble(objects[4].toString()));
+            estadistica.setLeyenda2(objects[1].toString());
+            estadistica.setClases(Double.parseDouble(objects[2].toString()));
+            estadistica.setHoras(Double.parseDouble(objects[3].toString()));
+            estadistica.setMinutos(Double.parseDouble(objects[4].toString()));
+            estadistica.setDuracion(Double.parseDouble(objects[5].toString()));
             return estadistica;
         }catch(Exception e){
             return null;

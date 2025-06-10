@@ -125,21 +125,22 @@ public interface IAsistenciaRepositorio extends CrudRepository<AsistenciaEntidad
      * @return
      */
     @Query(value = """
-        select 
+        SELECT  
+            p.perf_nombre,
             asis.perf_id,
-            coalesce( count(*), 0) as clases,
-            coalesce (sum(cl.cls_duracion_horas),0) as horas,
-            coalesce (sum(cl.cls_duracion_minutos), 0) as minutos,
-            (coalesce( sum(cl.cls_duracion_horas),0)*60)
-                +coalesce(sum(cl.cls_duracion_minutos),0) as duracion_total_minutos
-        from 
+            COALESCE(COUNT(*), 0) AS clases,
+            COALESCE(SUM(cl.cls_duracion_horas), 0) AS horas,
+            COALESCE(SUM(cl.cls_duracion_minutos), 0) AS minutos,
+            (COALESCE(SUM(cl.cls_duracion_horas), 0) * 60) + COALESCE(SUM(cl.cls_duracion_minutos), 0) AS duracion_total_minutos
+        FROM  
             tbl_asistencia asis
-            inner join tbl_clase cl on asis.cls_codigo=cl.cls_codigo and
-            cl.cls_fecha BETWEEN :fechaInicio
-                            AND :fechaFin
-        where 
-            (asis.perf_id = :alumno or :alumno is null)
-        group by asis.perf_id""", 
+            INNER JOIN tbl_clase cl ON asis.cls_codigo = cl.cls_codigo
+            INNER JOIN tbl_perfil p ON asis.perf_id = p.perf_id
+        WHERE  
+            (asis.perf_id = :alumno OR :alumno IS NULL) 
+            AND cl.cls_fecha BETWEEN :fechaInicio AND :fechaFin
+        GROUP BY  
+            asis.perf_id, p.perf_nombre""", 
         nativeQuery = true)
     List<Object[]> estadisticasAlumno(@Param("fechaInicio") LocalDate fechaInicio, @Param("fechaFin") LocalDate fechaFin, @Param("alumno") String alumno);
 
@@ -152,6 +153,7 @@ public interface IAsistenciaRepositorio extends CrudRepository<AsistenciaEntidad
      */
     @Query(value = """
             select 
+            p.perf_nombre,
             cl.perf_id,
             coalesce( count(*), 0) as clases,
             coalesce (sum(cl.cls_duracion_horas),0) as horas,
@@ -159,12 +161,12 @@ public interface IAsistenciaRepositorio extends CrudRepository<AsistenciaEntidad
             (coalesce( sum(cl.cls_duracion_horas),0)*60)
                 +coalesce(sum(cl.cls_duracion_minutos),0) as duracion_total_minutos
         from 
-            tbl_clase cl
+            tbl_clase cl inner join tbl_perfil p on cl.perf_id = p.perf_id
         where 
             (cl.perf_id = :instructor or :instructor is null) and
             cl.cls_fecha BETWEEN :fechaInicio 
                             AND :fechaFin
-        group by cl.perf_id
+        group by p.perf_nombre, cl.perf_id
             """, nativeQuery = true)
             List<Object[]> estadisticasInstructor(@Param("fechaInicio") LocalDate fechaInicio, @Param("fechaFin") LocalDate fechaFin, @Param("instructor") String instructor);
 }
