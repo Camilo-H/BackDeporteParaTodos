@@ -26,16 +26,25 @@ public class CursoGateway implements ICursoGateway{
     @Autowired
     private ModelMapper mapper;
 
+    /***
+     * verifica la existencia de un curso a partir de su nombre
+     */
     @Override
     public boolean existeCurso(String nombreCurso) {
        return repoCurso.existsById(nombreCurso);
     }
 
+    /***
+     * retorna toda la lista de cursos sin restricciones
+     */
     @Override
     public List<Curso> obtenerCursos() {
         Iterable<CursoEntidad> respuesta = repoCurso.findAll();
         List<Curso> cursos = new ArrayList<>();
-        cursos = mapper.map(respuesta, new TypeToken<List<Curso>>(){}.getType());
+        respuesta.forEach(entidad -> {
+            Curso curso = Curso.fabricarDeEntidad(entidad);
+            cursos.add(curso);
+        });
         return cursos;
     }
 
@@ -52,14 +61,14 @@ public class CursoGateway implements ICursoGateway{
 
     @Override
     public Curso insertarCurso(Curso curso) {
-        // TODO Auto-generated method stub
-        CursoEntidad entidad = mapper.map(curso, CursoEntidad.class);
+        return null;
+        /*CursoEntidad entidad = mapper.map(curso, CursoEntidad.class);
         if (curso.getObjImagen() != null) {
             ImagenEntidad imagenEntidad = mapper.map(curso.getObjImagen(), ImagenEntidad.class);
             //entidad.setObjImagen(imagenEntidad);
         }
         CursoEntidad entidadGuardada = repoCurso.save(entidad);
-        return mapper.map(entidadGuardada, Curso.class);
+        return mapper.map(entidadGuardada, Curso.class);*/
     }
 
     @Override
@@ -79,5 +88,16 @@ public class CursoGateway implements ICursoGateway{
         }else{
             throw new NoExisteExcepcion("El curso con el nombre " + nombre + " no existe");
         }
+    }
+
+    @Override
+    public List<Curso> obtenerCursoDeCategoria(String nombreCategoria) {
+        List<CursoEntidad> entidades = repoCurso.findByCategoriaCursoAndEliminado(nombreCategoria, 0);
+        List<Curso> cursos = new ArrayList<>();
+        entidades.forEach(entidad ->{
+            Curso curso = Curso.fabricarDeEntidad(entidad);
+            cursos.add(curso);
+        });
+        return cursos;
     } 
 }

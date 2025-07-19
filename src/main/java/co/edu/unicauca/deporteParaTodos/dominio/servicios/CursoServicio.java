@@ -1,12 +1,16 @@
 package co.edu.unicauca.deporteParaTodos.dominio.servicios;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.ICursoServicio;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.ICursoGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Curso;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CursoDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.InsercionFallidaExepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ListadoVacioExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
@@ -17,45 +21,56 @@ public class CursoServicio implements ICursoServicio {
     @Autowired
     private ICursoGateway cursoGateway;
 
+    /***
+     * Retorna todos los cursos del sistema
+     */
     @Override
-    public List<Curso> recuperarCursos() {
+    public List<CursoDto> recuperarCursos() {
         List<Curso> cursos = cursoGateway.obtenerCursos();
-        if (cursos.isEmpty()) {
-            throw new ListadoVacioExcepcion("No se encuentran cursos registrados");
-        }
-        return cursos;
+        List<CursoDto> dtos = new ArrayList<>();
+
+        cursos.forEach(curso -> {
+            CursoDto dto = CursoDto.fabricarDeModelo(curso);
+            dtos.add(dto);
+        });
+        return dtos;
     }
 
     @Override
-    @Transactional
-    public Curso insertarCurso(Curso datosCurso) {
+    public List<CursoDto> cursosDeCategoria(String categoria) {
+        List<Curso> cursos = cursoGateway.obtenerCursoDeCategoria(categoria);
+        List<CursoDto> dtos = new ArrayList<>();
+        cursos.forEach(curso -> {
+            CursoDto dto = CursoDto.fabricarDeModelo(curso);
+            dtos.add(dto);
+        });
+        return dtos;
+    }
+
+    @Override
+    public CursoDto obtenerCurso(String titulo) {
         // TODO Auto-generated method stub
-        Curso cursoInsertado = cursoGateway.insertarCurso(null);
-        if (cursoInsertado == null) {
-            throw new InsercionFallidaExepcion("La insercion no se pudo realizar con exito");
-        }
-        return cursoInsertado;
+        throw new UnsupportedOperationException("Unimplemented method 'obtenerCurso'");
     }
 
     @Override
-    public Curso obtenerCurso(String nombre) {
-        return cursoGateway.obtenerCurso(nombre)
-                .orElseThrow(() -> new NoExisteExcepcion("El curso con el nombre " + nombre + " no existe"));
+    public CursoDto insertarCurso(CursoDto datosCurso) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'insertarCurso'");
     }
 
     @Override
-    public Curso actualizarCurso(Curso datCurso) {
+    public CursoDto actualizarCurso(CursoDto datCurso) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'actualizarCurso'");
     }
 
     @Override
-    public Curso eliminarCurso(String nombre) {
+    public CursoDto eliminarCurso(String titulo) {
         // TODO Auto-generated method stub
-        if (!cursoGateway.existeCurso(nombre)) {
-            throw new NoExisteExcepcion("El curso con el nombre " + nombre + " no existe");
-        }
-        return cursoGateway.eliminarCurso(nombre);
+        throw new UnsupportedOperationException("Unimplemented method 'eliminarCurso'");
     }
+
+    
 
 }

@@ -16,12 +16,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.ICursoServicio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.comunes.CursoDTO;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.v2DTO.V2CursoDTO;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CursoDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CategoriaCursoEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CursoEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.ICategoriaCursoRepositorio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.ICursoRepositorio;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -31,23 +38,43 @@ import org.springframework.web.bind.annotation.RequestBody;
 @CrossOrigin(origins = { "*" }, maxAge = 4200, allowCredentials = "false")
 @Validated
 public class CursoRest {
+
+    /**
+     * TODO:
+     * dto para cursos
+     * obtener todos los cursos
+     * obtener cursos de categoria
+     * obtener un curso
+     * guardar curso
+     * actualizar curso
+     */
     @Autowired
     private ICursoRepositorio repositorio;
 
+    @Autowired
+    private ICursoServicio servicio;
+
+    @Operation(summary = "Obtiene todos los cursos del sistema sin restricciones")
+    @ApiResponses(value ={
+        @ApiResponse(responseCode = "200", description = "listado de cursos en formato dto"),
+    })
     @GetMapping("/cursos")
-    public Iterable<CursoEntidad> obtenerCursos(){
-        return repositorio.findAll();
+    public ResponseEntity<List<CursoDto>> obtenerCursos(){
+        List<CursoDto> respuesta = servicio.recuperarCursos();
+        return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
 
+    @Operation(summary = "Obtiene todos los cursos disponibles del sistema para una categoria")
+    @ApiResponses(value ={
+        @ApiResponse(responseCode = "200", description = "listado de cursos en formato dto"),
+    })
     @GetMapping("/cursosbycategoria")
-    public ResponseEntity<List<V2CursoDTO>> obtenerCursosPorCategoria(@RequestParam String prmCategoria){
-        List<CursoEntidad> entidades = repositorio.findByCategoriaCursoAndEliminado(prmCategoria, 0);
-        List<V2CursoDTO> dtos = new ArrayList<>();
-        for(CursoEntidad entidad : entidades){
-            V2CursoDTO dto = V2CursoDTO.fromEntity(entidad);
-            dtos.add(dto);
-        }
-        return new ResponseEntity<>(dtos,HttpStatus.OK);
+    public ResponseEntity<List<CursoDto>> obtenerCursosPorCategoria(
+        @Parameter(description = "Identificador de una categoria del sistema")
+        @RequestParam String prmCategoria
+        ){
+        List<CursoDto> respuesta = servicio.cursosDeCategoria(prmCategoria);
+        return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
 
     @GetMapping("/curso")

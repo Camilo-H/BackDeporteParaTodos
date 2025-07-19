@@ -1,6 +1,8 @@
 package co.edu.unicauca.deporteParaTodos.dominio.modelo;
 
 import java.util.List;
+
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CursoEntidad;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,13 +17,25 @@ public class Curso {
 
     private String nombre;
 
-    private Deporte deporte;
+    private String deporte;
 
-    private Categoria categoriaCurso;
+    private String categoriaCurso;
 
     private String descripcion;
 
-    private Imagen objImagen;
+    private Integer imagenId;
 
-    private List<Grupo> grupos;
+    public static Curso fabricarDeEntidad(CursoEntidad entidad){
+        try{
+            Curso fabricado = new Curso();
+            fabricado.setNombre(entidad.getNombre());
+            fabricado.setCategoriaCurso(entidad.getCategoriaCurso());
+            fabricado.setDescripcion(entidad.getDescripcion());
+            fabricado.setDeporte(entidad.getDeporte());
+            fabricado.setImagenId(entidad.getObjImagen());
+            return fabricado;
+        }catch(Exception e){
+            return null;
+        }
+    }
 }
