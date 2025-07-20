@@ -11,6 +11,7 @@ import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.ICurso
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.ICursoGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Curso;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CursoDto;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ErrorInternoException;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.InsercionFallidaExepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ListadoVacioExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
@@ -38,7 +39,7 @@ public class CursoServicio implements ICursoServicio {
 
     @Override
     public List<CursoDto> cursosDeCategoria(String categoria) {
-        List<Curso> cursos = cursoGateway.obtenerCursoDeCategoria(categoria);
+        List<Curso> cursos = cursoGateway.obtenerCursosDeCategoria(categoria);
         List<CursoDto> dtos = new ArrayList<>();
         cursos.forEach(curso -> {
             CursoDto dto = CursoDto.fabricarDeModelo(curso);
@@ -48,9 +49,16 @@ public class CursoServicio implements ICursoServicio {
     }
 
     @Override
-    public CursoDto obtenerCurso(String titulo) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'obtenerCurso'");
+    public CursoDto obtenerCurso(String titulo, String nombre) {
+        if(!cursoGateway.existeCurso(titulo, nombre)){
+            throw new NoExisteExcepcion();
+        }
+        Curso respuesta = cursoGateway.obtenerCurso(titulo, nombre);
+        if(respuesta==null){
+            throw new ErrorInternoException();
+        }
+        CursoDto dto = CursoDto.fabricarDeModelo(respuesta);
+        return dto;
     }
 
     @Override

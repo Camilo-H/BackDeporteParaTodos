@@ -13,6 +13,7 @@ import co.edu.unicauca.deporteParaTodos.dominio.modelo.Curso;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CursoEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.GrupoEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ImagenEntidad;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ids.CursoId;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.ICursoRepositorio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
 
@@ -26,17 +27,12 @@ public class CursoGateway implements ICursoGateway{
     @Autowired
     private ModelMapper mapper;
 
-    /***
-     * verifica la existencia de un curso a partir de su nombre
-     */
     @Override
-    public boolean existeCurso(String nombreCurso) {
-       return repoCurso.existsById(nombreCurso);
+    public boolean existeCurso(String categoria, String nombreCurso) {
+        CursoId id = new CursoId(categoria, nombreCurso);
+        return repoCurso.existsById(id);
     }
 
-    /***
-     * retorna toda la lista de cursos sin restricciones
-     */
     @Override
     public List<Curso> obtenerCursos() {
         Iterable<CursoEntidad> respuesta = repoCurso.findAll();
@@ -49,13 +45,15 @@ public class CursoGateway implements ICursoGateway{
     }
 
     @Override
-    public Optional<Curso> obtenerCurso(String nombreCurso) {
-        Optional<CursoEntidad> resultado = repoCurso.findById(nombreCurso);
-        //List<GrupoEntidad> grupos = resultado.get().getGrupos();
-        System.out.println(" ");
-        //System.out.println("GRUPO 1 DEL CURSO "+grupos.get(0).getNombre());
-        System.out.println(" ");
-        return resultado.map(cursoEntidad -> mapper.map(cursoEntidad, Curso.class));
+    public Curso obtenerCurso(String categoria, String nombreCurso) {
+        CursoId id = new CursoId(categoria,nombreCurso);
+        Optional<CursoEntidad> resultado = repoCurso.findById(id);
+        if(resultado.isPresent()){
+            CursoEntidad entidad = resultado.get();
+            Curso curso = Curso.fabricarDeEntidad(entidad);
+            return curso;
+        }
+        return null;
         
     }
 
@@ -80,21 +78,14 @@ public class CursoGateway implements ICursoGateway{
     @Override
     public Curso eliminarCurso(String nombre) {
         // TODO Auto-generated method stub
-        Optional <CursoEntidad> entidadExistente = repoCurso.findById(nombre);
-        if (entidadExistente.isPresent()) {
-            CursoEntidad entidad = entidadExistente.get();
-            repoCurso.delete(entidad);
-            return mapper.map(entidad, Curso.class);
-        }else{
-            throw new NoExisteExcepcion("El curso con el nombre " + nombre + " no existe");
-        }
+        return null;
     }
 
     @Override
-    public List<Curso> obtenerCursoDeCategoria(String nombreCategoria) {
+    public List<Curso> obtenerCursosDeCategoria(String nombreCategoria){
         List<CursoEntidad> entidades = repoCurso.findByCategoriaCursoAndEliminado(nombreCategoria, 0);
         List<Curso> cursos = new ArrayList<>();
-        entidades.forEach(entidad ->{
+        entidades.forEach(entidad -> {
             Curso curso = Curso.fabricarDeEntidad(entidad);
             cursos.add(curso);
         });

@@ -39,15 +39,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Validated
 public class CursoRest {
 
-    /**
-     * TODO:
-     * dto para cursos
-     * obtener todos los cursos
-     * obtener cursos de categoria
-     * obtener un curso
-     * guardar curso
-     * actualizar curso
-     */
     @Autowired
     private ICursoRepositorio repositorio;
 
@@ -77,11 +68,24 @@ public class CursoRest {
         return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
 
+    @Operation(summary = "Obtiene un curso del sistema")
+    @ApiResponses(value ={
+        @ApiResponse(responseCode = "200", description = "curso encontrado"),
+    })
     @GetMapping("/curso")
-    public CursoEntidad obtenerCurso(@RequestParam String prmCategoria, @RequestParam String prmCurso) {
-        return repositorio.findByCategoriaCursoAndNombre(prmCategoria, prmCurso);
+    public ResponseEntity<CursoDto> obtenerCurso(
+        @Parameter(description = "Identificador de una categoria del sistema")
+        @RequestParam String prmCategoria, 
+        @Parameter(description = "Identificador de un curso en el sistema")
+        @RequestParam String prmCurso) {
+        CursoDto dto = servicio.obtenerCurso(prmCategoria, prmCurso);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
+    @Operation(summary = "registrar curso en el sistema")
+    @ApiResponses(value ={
+        @ApiResponse(responseCode = "200", description = "curso encontrado"),
+    })
     @PostMapping("/curso")
     public ResponseEntity<V2CursoDTO> postAgregarCurso(@RequestBody V2CursoDTO dto) {
         CursoEntidad entidad = new CursoEntidad(

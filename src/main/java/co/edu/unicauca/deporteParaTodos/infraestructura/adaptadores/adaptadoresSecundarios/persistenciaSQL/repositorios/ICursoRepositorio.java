@@ -6,8 +6,9 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CursoEntidad;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ids.CursoId;
 
-public interface ICursoRepositorio extends CrudRepository<CursoEntidad,String>{
+public interface ICursoRepositorio extends CrudRepository<CursoEntidad,CursoId>{
     /**
      * Obtiene una lista de cursos a partir de una categoria
      * @param nombreCategoria categoria a la que pertenecen los cursos a buscar

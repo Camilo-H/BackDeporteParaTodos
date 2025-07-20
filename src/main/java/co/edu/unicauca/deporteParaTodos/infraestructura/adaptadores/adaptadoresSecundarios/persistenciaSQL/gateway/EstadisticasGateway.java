@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IEstadisticasGateway;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.EstadisticaDto;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ids.CursoId;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ids.GrupoId;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IAlumnoRepositorio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IAsistenciaRepositorio;
@@ -66,7 +67,8 @@ public class EstadisticasGateway implements IEstadisticasGateway{
             }
         }
         if(curso!=null){
-            if(!repoCurso.existsById(curso)){
+            CursoId id = new CursoId(categoria, curso);
+            if(!repoCurso.existsById(id)){
                 throw new NoExisteExcepcion("El curso denotado como "+curso+" no existe");
             }
         }
@@ -90,7 +92,8 @@ public class EstadisticasGateway implements IEstadisticasGateway{
             }
         }
         if(curso!=null){
-            if(!repoCurso.existsById(curso)){
+            CursoId id = new CursoId(categoria, curso);
+            if(!repoCurso.existsById(id)){
                 throw new NoExisteExcepcion("El curso denotado como "+curso+" no existe");
             }
         }
