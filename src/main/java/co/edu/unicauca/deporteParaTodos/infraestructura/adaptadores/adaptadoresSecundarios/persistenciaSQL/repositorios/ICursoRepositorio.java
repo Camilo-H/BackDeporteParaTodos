@@ -3,7 +3,6 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadores
 import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
 
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CursoEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ids.CursoId;

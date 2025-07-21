@@ -3,7 +3,6 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadores
 
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Categoria;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

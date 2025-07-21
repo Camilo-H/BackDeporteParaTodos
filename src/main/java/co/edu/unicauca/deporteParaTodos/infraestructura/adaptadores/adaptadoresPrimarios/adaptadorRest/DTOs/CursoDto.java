@@ -1,6 +1,5 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs;
 
-import co.edu.unicauca.deporteParaTodos.dominio.modelo.Categoria;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Curso;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

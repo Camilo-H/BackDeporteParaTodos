@@ -1,7 +1,6 @@
 package co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada;
 
 import java.util.List;
-import co.edu.unicauca.deporteParaTodos.dominio.modelo.Curso;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CursoDto;
 
 public interface ICursoServicio {
