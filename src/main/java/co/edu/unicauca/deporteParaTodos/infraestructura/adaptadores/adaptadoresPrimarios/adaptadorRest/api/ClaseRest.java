@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -44,11 +43,9 @@ public class ClaseRest {
         }
         
         respuesta = repositorio.save(entidad);
-        if(respuesta ==null){
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }else{
-            return new ResponseEntity<>(respuesta,HttpStatus.CREATED);
-        }
+        
+        return new ResponseEntity<>(respuesta,HttpStatus.CREATED);
+        
     }
 
     /***
@@ -64,7 +61,6 @@ public class ClaseRest {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         //No se debe hacer delete sobre la clase, lo apropiado es realizar el cambio de estado la metadato meta_eliminado, de 0 a 1
-        Integer respuesta = repositorio.marcarComoEliminado(id);
         //no es relevante el body, el codigo es lo importante en este espacio, al manejar con entidades y excepciones, puede que si se vuelva relevante el body
         return new ResponseEntity<>(HttpStatus.OK);
     }

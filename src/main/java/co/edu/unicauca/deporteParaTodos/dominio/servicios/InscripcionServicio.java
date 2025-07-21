@@ -9,7 +9,6 @@ import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IInscri
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Inscripcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoImplementadoException;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.YaExisteElementoExcepcion;
 
 @Service
 public class InscripcionServicio implements IInscripcionServicio {
