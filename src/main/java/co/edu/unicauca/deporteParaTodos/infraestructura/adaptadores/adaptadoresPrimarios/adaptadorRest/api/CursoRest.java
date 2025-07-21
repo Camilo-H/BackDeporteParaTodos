@@ -101,7 +101,7 @@ public class CursoRest {
         @ApiResponse(responseCode = "200", description = "curso actualizado, no manipula los id"),
     })
     @PutMapping("curso")
-    public ResponseEntity<CursoDto> putMethodName(@RequestParam @NotBlank String categoria, @RequestParam @NotBlank String curso, @RequestBody @Valid CursoDto dto) {
+    public ResponseEntity<CursoDto> actualizarCurso(@RequestParam @NotBlank String categoria, @RequestParam @NotBlank String curso, @RequestBody @Valid CursoDto dto) {
         //TODO: process PUT request
         CursoDto dtoActualizado = servicio.actualizarCurso(categoria, curso, dto);
         return new ResponseEntity<>(dtoActualizado, HttpStatus.OK);
