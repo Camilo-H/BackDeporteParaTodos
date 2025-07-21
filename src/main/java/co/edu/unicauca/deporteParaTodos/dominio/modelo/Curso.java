@@ -2,7 +2,9 @@ package co.edu.unicauca.deporteParaTodos.dominio.modelo;
 
 import java.util.List;
 
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CursoDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CursoEntidad;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoProcesableEntidadException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,6 +35,20 @@ public class Curso {
             fabricado.setDescripcion(entidad.getDescripcion());
             fabricado.setDeporte(entidad.getDeporte());
             fabricado.setImagenId(entidad.getObjImagen());
+            return fabricado;
+        }catch(Exception e){
+            return null;
+        }
+    }
+
+    public static Curso fabricarDeDto(CursoDto dto){
+        try{
+            Curso fabricado = new Curso();
+            fabricado.setCategoriaCurso(dto.getCategoriaCurso());
+            fabricado.setNombre(dto.getNombre());
+            fabricado.setDescripcion(dto.getDescripcion());
+            fabricado.setDeporte(dto.getDeporte());
+            fabricado.setImagenId(dto.getIdImagen());
             return fabricado;
         }catch(Exception e){
             return null;

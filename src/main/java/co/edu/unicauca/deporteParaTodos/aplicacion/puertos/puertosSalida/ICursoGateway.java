@@ -31,7 +31,12 @@ public interface ICursoGateway{
      * @return lista de cursos en formato del dominio
      */
     public List<Curso> obtenerCursosDeCategoria(String nombreCategoria);
+    /***
+     * Registra un curso en el sistema
+     * @param curso entidad a ser insertada
+     * @return curso insertado
+     */
     public Curso insertarCurso(Curso curso);
-    public Curso actualizarCurso(Curso curso, String nombreCurso);
+    public Curso actualizarCurso(String categoria, String nombre, Curso curso);
     public Curso eliminarCurso(String nombre);
 }

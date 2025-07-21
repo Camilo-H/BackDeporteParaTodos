@@ -6,15 +6,15 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.ICursoServicio;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.ICursoGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Curso;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CursoDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ErrorInternoException;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.InsercionFallidaExepcion;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ListadoVacioExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoProcesableEntidadException;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.YaExisteElementoExcepcion;
 
 @Service
 public class CursoServicio implements ICursoServicio {
@@ -63,14 +63,34 @@ public class CursoServicio implements ICursoServicio {
 
     @Override
     public CursoDto insertarCurso(CursoDto datosCurso) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'insertarCurso'");
+        if(cursoGateway.existeCurso(datosCurso.getCategoriaCurso(), datosCurso.getNombre())){
+            throw new YaExisteElementoExcepcion("el curso notado con categoria "+datosCurso.getCategoriaCurso()+" y nombre "+datosCurso.getNombre()+" ya se encuentra en el sistema");
+        }
+        Curso curso = Curso.fabricarDeDto(datosCurso);
+        if(curso==null){
+            throw new NoProcesableEntidadException("No fue posible convertir de dto a modelo en entrada servicio");
+        }
+        Curso respuesta = cursoGateway.insertarCurso(curso);
+        if(respuesta == null){
+            throw new InsercionFallidaExepcion("Error en la insercion o conversion de retorno fallida, se ha respondido con nulo");
+        }
+        return CursoDto.fabricarDeModelo(respuesta);
     }
 
     @Override
-    public CursoDto actualizarCurso(CursoDto datCurso) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'actualizarCurso'");
+    public CursoDto actualizarCurso(String categoria, String curso, CursoDto datCurso) {
+        if(!cursoGateway.existeCurso(categoria, curso)){
+            throw new NoExisteExcepcion("el curso notado no existe en el sistema");
+        }
+        Curso datos = Curso.fabricarDeDto(datCurso);
+        if(curso==null){
+            throw new NoProcesableEntidadException("No fue posible convertir de dto a modelo en entrada servicio");
+        }
+        Curso actualizado = cursoGateway.actualizarCurso(categoria, curso, datos);
+        if(actualizado==null){
+            throw new InsercionFallidaExepcion("Error en la insercion o conversion de retorno fallida, se ha respondido con nulo");
+        }
+        return CursoDto.fabricarDeModelo(actualizado);
     }
 
     @Override

@@ -14,14 +14,29 @@ import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresS
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.GrupoEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ImagenEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ids.CursoId;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.ICategoriaCursoRepositorio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.ICursoRepositorio;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IDeporteRepositorio;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IImagenRepositorio;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.DependenciaFallida;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.InsercionFallidaExepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoProcesableEntidadException;
 
 @Service
 public class CursoGateway implements ICursoGateway{
 
     @Autowired
     private ICursoRepositorio repoCurso;
+
+    @Autowired
+    private IImagenRepositorio repoImagen;
+
+    @Autowired 
+    private IDeporteRepositorio repoDeporte;
+
+    @Autowired
+    private ICategoriaCursoRepositorio repoCategoria;
 
     @Qualifier("modelMapperGenerico")
     @Autowired
@@ -59,20 +74,61 @@ public class CursoGateway implements ICursoGateway{
 
     @Override
     public Curso insertarCurso(Curso curso) {
-        return null;
-        /*CursoEntidad entidad = mapper.map(curso, CursoEntidad.class);
-        if (curso.getObjImagen() != null) {
-            ImagenEntidad imagenEntidad = mapper.map(curso.getObjImagen(), ImagenEntidad.class);
-            //entidad.setObjImagen(imagenEntidad);
+        CursoEntidad entidad = CursoEntidad.fabricarDeModelo(curso);
+        if (entidad==null) {
+            throw new NoProcesableEntidadException("No fue posible convertir de modelo a entidad en ingreso del gateway");
         }
-        CursoEntidad entidadGuardada = repoCurso.save(entidad);
-        return mapper.map(entidadGuardada, Curso.class);*/
+        
+        if(!repoCategoria.existsById(entidad.getCategoriaCurso())){
+            throw new DependenciaFallida("La categoria especificada no existe");
+        }
+
+        if(!repoImagen.existsById(entidad.getObjImagen())){
+            throw new DependenciaFallida("fallo insercion curso, imagen adjunta con identificador "+entidad.getObjImagen()+" no existe en el sistema");
+        }
+        if(!repoDeporte.existsById(entidad.getDeporte())){
+            throw new DependenciaFallida("no existe un deporte registrado notado como "+entidad.getDeporte());
+        }
+        entidad.setEliminado(0);
+        CursoEntidad respuesta = repoCurso.save(entidad);
+        Curso insertado = Curso.fabricarDeEntidad(respuesta);
+        if(insertado==null){
+            throw new NoProcesableEntidadException("No fue posible convertir de entidad a modelo en salida del gateway");
+        }
+        return insertado;
     }
 
     @Override
-    public Curso actualizarCurso(Curso curso, String nombreCurso) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'actualizarCurso'");
+    public Curso actualizarCurso(String categoria, String nombre, Curso curso) {
+        CursoEntidad entidad = CursoEntidad.fabricarDeModelo(curso);
+        if (entidad==null) {
+            throw new NoProcesableEntidadException("No fue posible convertir de modelo a entidad en ingreso del gateway");
+        }
+        if(!repoCategoria.existsById(entidad.getCategoriaCurso())){
+            throw new DependenciaFallida("La categoria especificada no existe");
+        }
+        if(!repoImagen.existsById(entidad.getObjImagen())){
+            throw new DependenciaFallida("fallo actualizacion curso, imagen adjunta con identificador "+entidad.getObjImagen()+" no existe en el sistema");
+        }
+        if(!repoDeporte.existsById(entidad.getDeporte())){
+            throw new DependenciaFallida("no existe un deporte registrado notado como "+entidad.getDeporte());
+        }
+        CursoId id = new CursoId(categoria,nombre);
+        Optional<CursoEntidad> objetivo = repoCurso.findById(id);
+        if(!objetivo.isPresent()){
+            throw new NoExisteExcepcion("No existe el curso que se desea actualizar");
+        }
+        CursoEntidad actulizacion = objetivo.get();
+        actulizacion.setDeporte(entidad.getDeporte());
+        actulizacion.setDescripcion(entidad.getDescripcion());
+        actulizacion.setEliminado(0);
+        actulizacion.setObjImagen(entidad.getObjImagen());
+        CursoEntidad respuesta = repoCurso.save(actulizacion);
+        Curso insertado = Curso.fabricarDeEntidad(respuesta);
+        if(insertado==null){
+            throw new NoProcesableEntidadException("No fue posible convertir de entidad a modelo en salida del gateway");
+        }
+        return insertado;
     }
 
     @Override

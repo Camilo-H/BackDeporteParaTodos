@@ -29,6 +29,6 @@ public interface ICursoServicio {
      * @return curso registrado
      */
     public CursoDto insertarCurso(CursoDto datosCurso);
-    public CursoDto actualizarCurso(CursoDto datCurso);
+    public CursoDto actualizarCurso(String categoria, String curso, CursoDto datCurso);
     public CursoDto eliminarCurso(String titulo);
 }

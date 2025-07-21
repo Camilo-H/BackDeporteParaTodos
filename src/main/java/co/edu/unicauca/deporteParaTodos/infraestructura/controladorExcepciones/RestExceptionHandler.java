@@ -22,6 +22,7 @@ import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.e
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoConvertibleException;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoImplementadoException;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoProcesableEntidadException;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.YaExisteElementoExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.formatoError.CodigoError;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.formatoError.ErrorUtils;
@@ -133,7 +134,7 @@ public class RestExceptionHandler {
                                 HttpStatus.NOT_MODIFIED.value())
                                 .setUrl(req.getRequestURL().toString())
                                 .setMetodo(req.getMethod());
-                return new ResponseEntity<Error>(error, HttpStatus.NOT_MODIFIED);
+                return new ResponseEntity<Error>(error, HttpStatus.CONFLICT);
         }
 
         @ExceptionHandler(YaExisteElementoExcepcion.class)
@@ -184,9 +185,28 @@ public class RestExceptionHandler {
                 return new ResponseEntity<Error>(error, codigoHttp);
         }
 
+        /**
+         * cuando es necesaria una dependencia pero esta no corresponde con las reglas del negocio, como llave foranea erronea
+         * @param req
+         * @param ex
+         * @return
+         */
         @ExceptionHandler(DependenciaFallida.class)
         public ResponseEntity<Error> GenericException(final HttpServletRequest req, final DependenciaFallida ex){
                 HttpStatusCode codigoHttp = HttpStatus.FAILED_DEPENDENCY;
+                String mensaje = String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage());
+
+                final Error error = ErrorUtils.crearError(ex.getCodigo(),mensaje,codigoHttp.value());
+
+                error.setUrl(req.getRequestURL().toString());
+                error.setMetodo(req.getMethod());
+                
+                return new ResponseEntity<Error>(error, codigoHttp);
+        }
+
+        @ExceptionHandler(NoProcesableEntidadException.class)
+        public ResponseEntity<Error> GenericException(final HttpServletRequest req, final NoProcesableEntidadException ex){
+                HttpStatusCode codigoHttp = HttpStatus.INTERNAL_SERVER_ERROR;
                 String mensaje = String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage());
 
                 final Error error = ErrorUtils.crearError(ex.getCodigo(),mensaje,codigoHttp.value());

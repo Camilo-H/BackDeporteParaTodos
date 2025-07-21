@@ -1,5 +1,6 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades;
 
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Curso;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ids.CursoId;
 
 import jakarta.persistence.Column;
@@ -40,4 +41,18 @@ public class CursoEntidad {
 
     @Column(name = "meta_eliminado")
     private Integer eliminado;
+
+    public static CursoEntidad fabricarDeModelo(Curso curso){
+        try{
+            CursoEntidad entidad = new CursoEntidad();
+            entidad.setCategoriaCurso(curso.getCategoriaCurso());
+            entidad.setNombre(curso.getNombre());
+            entidad.setDescripcion(curso.getDescripcion());
+            entidad.setDeporte(curso.getDeporte());
+            entidad.setObjImagen(curso.getImagenId());
+            return entidad;
+        }catch(Exception e){
+            return null;
+        }
+    }
 }

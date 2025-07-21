@@ -28,9 +28,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 
 @RestController
@@ -82,25 +86,24 @@ public class CursoRest {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    @Operation(summary = "registrar curso en el sistema")
+    @Operation(summary = "registrar curso en el sistema, no manipula los id")
     @ApiResponses(value ={
-        @ApiResponse(responseCode = "200", description = "curso encontrado"),
+        @ApiResponse(responseCode = "200", description = "curso registrado"),
     })
     @PostMapping("/curso")
-    public ResponseEntity<V2CursoDTO> postAgregarCurso(@RequestBody V2CursoDTO dto) {
-        CursoEntidad entidad = new CursoEntidad(
-            dto.getNombre(),
-            dto.getDeporte(),
-            dto.getCategoriaCurso(),
-            dto.getDescripcion(),
-            dto.getIdImagen(),
-            0
-        );
-        CursoEntidad entidadGuardada=null;
-        entidadGuardada = repositorio.save(entidad);
-        V2CursoDTO retorno = V2CursoDTO.fromEntity(entidadGuardada);
-        return new ResponseEntity<>(retorno,HttpStatus.CREATED);
+    public ResponseEntity<CursoDto> postAgregarCurso(@RequestBody @Valid CursoDto dto) {
+        CursoDto dtoGuardado = servicio.insertarCurso(dto);
+        return new ResponseEntity<>(dtoGuardado,HttpStatus.CREATED);
     }
     
-    
+    @Operation(summary = "actualiza curso en el sistema")
+    @ApiResponses(value ={
+        @ApiResponse(responseCode = "200", description = "curso actualizado, no manipula los id"),
+    })
+    @PutMapping("curso")
+    public ResponseEntity<CursoDto> putMethodName(@RequestParam @NotBlank String categoria, @RequestParam @NotBlank String curso, @RequestBody @Valid CursoDto dto) {
+        //TODO: process PUT request
+        CursoDto dtoActualizado = servicio.actualizarCurso(categoria, curso, dto);
+        return new ResponseEntity<>(dtoActualizado, HttpStatus.OK);
+    }
 }

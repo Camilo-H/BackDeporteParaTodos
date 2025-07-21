@@ -17,6 +17,7 @@ public enum CodigoError {
         NO_CONVERTIBLE("GC-0008", "Datos no son compatibles, no pueden ser transformados"),
         ERROR_INTERNO("GC-0009", "No se ha logrado completar la peticion"),
         DEPENDICEA_FALLIDA("GC-0010", "El recurso necesita de una dependencia que no se encuentra en el sistema"),
+        ENTIDAD_NO_PROCESABLE("GC-0011", "La entidad no puede ser procesada"),
         ;
 
         private final String codigo;
