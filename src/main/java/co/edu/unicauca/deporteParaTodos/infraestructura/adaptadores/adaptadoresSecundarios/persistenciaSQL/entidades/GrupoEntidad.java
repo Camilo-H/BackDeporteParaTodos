@@ -4,6 +4,8 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Grupo;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ids.GrupoId;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -69,5 +71,14 @@ public class GrupoEntidad {
 
     @Column(name = "META_ELIMINADO")
     private Integer eliminado;
+
+    public static GrupoEntidad fabricarDeModelo(Grupo grupo){
+        try{
+            GrupoEntidad entidad = new GrupoEntidad(grupo.getCategoria(), grupo.getCurso(), grupo.getAnio(), grupo.getIterable(), grupo.getImagenGrupo(), grupo.getCupos(), grupo.getIdInstructor(), grupo.getFechaCreacion(), grupo.getFechaFinalizacion(), 0);
+            return entidad;
+        }catch(Exception e){
+            return null;
+        }
+    }
 }
 // fetch = FetchType.EAGER fetch = FetchType.LAZY,
