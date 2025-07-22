@@ -1,6 +1,5 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.api;
 
-import java.sql.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.v2DTO.V2GrupoDTO;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.GrupoEntidad;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.ICategoriaCursoRepositorio;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IGrupoRepositorio;
+import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IGrupoServicio;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.GrupoDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -26,62 +28,76 @@ import org.springframework.web.bind.annotation.RequestBody;
 @CrossOrigin(origins = { "*" }, maxAge = 4200, allowCredentials = "false")
 @Validated
 public class GrupoRest {
+
     @Autowired
-    private IGrupoRepositorio repositorio;
+    private IGrupoServicio servicio;
 
-    @Autowired 
-    private ICategoriaCursoRepositorio repoCategoria;
-
+    @Operation(summary = "Obtiene todos los grupos del sistema sin discriminar su estado eliminado")
+    @ApiResponses(value ={
+        @ApiResponse(responseCode = "200", description = "Grupos recuperados"),
+    })
     @GetMapping("/grupos")
-    public Iterable<GrupoEntidad> obtenerCursos(){
-        return repositorio.findAll();
+    public ResponseEntity<List<GrupoDto>> obtenerCursos(){
+        List<GrupoDto> dtos = servicio.obtenerTodosGrupos();
+        return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
-
+    
+    @Operation(summary = "Obtiene todos los grupos disponibles del sistema")
+    @ApiResponses(value ={
+        @ApiResponse(responseCode = "200", description = "Grupos recuperados"),
+    })
     @GetMapping("gruposNoEliminados")
-    public List<GrupoEntidad> obtenerCursosNoeliminados(){
-        return repositorio.findByEliminado(0);
+    public ResponseEntity<List<GrupoDto>> obtenerCursosNoeliminados(){
+        List<GrupoDto> dtos = servicio.obtenerGruposDisponibles();
+        return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
     
+    @Operation(summary = "Obtiene todos los grupos disponibles del sistema para un curso")
+    @ApiResponses(value ={
+        @ApiResponse(responseCode = "200", description = "Grupos recuperados"),
+    })
     @GetMapping("gruposCurso")
-    public List<GrupoEntidad> obtenerGruposDe(@RequestParam String prmCategoria, @RequestParam String prmCurso){
-        return repositorio.findByCategoriaAndCursoAndEliminado(prmCategoria, prmCurso, 0);
+    public ResponseEntity<List<GrupoDto>> obtenerGruposDe(@RequestParam String prmCategoria, @RequestParam String prmCurso){
+        List<GrupoDto> dtos = servicio.obtenerGruposDeCurso(prmCategoria, prmCurso);
+        return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
+    @Operation(summary = "Obtiene todos los grupos del sistema disponibles a la inscripcion")
+    @ApiResponses(value ={
+        @ApiResponse(responseCode = "200", description = "Curso recuperados"),
+    })
     @GetMapping("/gruposInscripcion")
-    public List<GrupoEntidad> obtenerGruposInscripcion() {
-        return repositorio.obtenerGruposConInscripcionDisponibleNativo();
+    public ResponseEntity<List<GrupoDto>> obtenerGruposInscripcion() {
+        List<GrupoDto> dtos = servicio.obtenerGruposInscripcionDisponible();
+        return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
     
+    @Operation(summary = "Obtiene todos los grupos del sistema asociados a un instructor")
+    @ApiResponses(value ={
+        @ApiResponse(responseCode = "200", description = "Curso recuperados"),
+    })
     @GetMapping("/gruposInstructor")
-    public ResponseEntity<List<GrupoEntidad>> obtnerGruposInscripcion(@RequestParam String idInstructor) {
-        List<GrupoEntidad> resultado = repositorio.findByIdInstructor(idInstructor);
-        return new ResponseEntity<>(resultado,HttpStatus.OK);
+    public ResponseEntity<List<GrupoDto>> obtnerGruposInstructor(@RequestParam String idInstructor) {
+        List<GrupoDto> dtos = servicio.obtenerGruposInstructor(idInstructor);
+        return new ResponseEntity<>(dtos,HttpStatus.OK);
     }
 
+    /**
+     * lo valores de anio e iterable no son tenidos en cuenta para la insercion
+     * @param dto
+     * @return
+     */
+    @Operation(summary = "Inserta un registro en el sistema, los valores de anio e iterable son calculados internamete por el servidor, reportes de error por json malformados pueden ser causados por fechas no formateadas adecuadamente")
+    @ApiResponses(value ={
+        @ApiResponse(responseCode = "200", description = "Curso insertado"),
+    })
     @PostMapping("/grupo")
-    public ResponseEntity<GrupoEntidad> postGrupo(@RequestBody V2GrupoDTO dto) {
-        List<GrupoEntidad> entidades = repositorio.findByCategoriaAndCursoAndEliminado(dto.getCat_titulo(), dto.getCur_nombre(), 0);
-        int pivote = 0;
-        for (GrupoEntidad grupoEntidad : entidades) {
-            int temporal = grupoEntidad.getIterable();
-            if(pivote < temporal){
-                pivote = temporal;
-            }
-        }
-        GrupoEntidad entidad = new GrupoEntidad();
-        entidad.setCategoria(dto.getCat_titulo());
-        entidad.setCurso(dto.getCur_nombre());
-        entidad.setAnio(dto.getAnio());
-        entidad.setIterable(pivote+1);
-        entidad.setCupos(dto.getCupos());
-        entidad.setEliminado(0);
-        entidad.setFechaCreacion(Date.valueOf(dto.getFechaCreacion()));
-        entidad.setIdInstructor(dto.getIdInstructor());
-        entidad.setImagenGrupo(dto.getImagen());
-        
-        repositorio.save(entidad);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<GrupoDto> postGrupo(@RequestBody @Valid GrupoDto dto) {
+        GrupoDto guardado = servicio.insertarGrupo(dto);
+        return new ResponseEntity<>(guardado, HttpStatus.CREATED);
     }
+
+
     
     
 }

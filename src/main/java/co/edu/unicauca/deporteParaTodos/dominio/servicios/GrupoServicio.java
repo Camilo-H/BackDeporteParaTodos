@@ -69,9 +69,6 @@ public class GrupoServicio implements IGrupoServicio {
     }
 
     public GrupoDto insertarGrupo(GrupoDto datosGrupo){
-        if(grupoGateway.existeGrupo(datosGrupo.getCategoria(), datosGrupo.getCurso(), datosGrupo.getAnio(), datosGrupo.getIterable())){
-            throw new YaExisteElementoExcepcion("El objetivo a insertar ya existe en el sistema");
-        }
         Grupo grupo = Grupo.fabricarDeDto(datosGrupo);
         Grupo guardado = grupoGateway.insertarGrupo(grupo);
         GrupoDto respuesta = GrupoDto.fabricarDeModelo(guardado);

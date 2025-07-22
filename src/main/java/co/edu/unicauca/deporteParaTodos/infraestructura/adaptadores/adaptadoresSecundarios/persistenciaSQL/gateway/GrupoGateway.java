@@ -8,7 +8,10 @@ import org.springframework.stereotype.Service;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IGrupoGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Grupo;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.GrupoEntidad;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ids.CursoId;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ids.GrupoId;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.ICategoriaCursoRepositorio;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.ICursoRepositorio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IGrupoRepositorio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IImagenRepositorio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IInstructorRepositorio;
@@ -25,6 +28,12 @@ public class GrupoGateway implements IGrupoGateway {
 
     @Autowired
     private IImagenRepositorio repoImagen;
+
+    @Autowired
+    private ICursoRepositorio repoCurso;
+
+    @Autowired
+    private ICategoriaCursoRepositorio repoCategoria;
 
     @Autowired
     private IInstructorRepositorio repoInstructor;
@@ -86,21 +95,39 @@ public class GrupoGateway implements IGrupoGateway {
     }
     
     public Grupo insertarGrupo(Grupo datosGrupo){
-        GrupoId id = new GrupoId(datosGrupo.getCategoria(), datosGrupo.getCurso(), datosGrupo.getAnio(), datosGrupo.getIterable());
+        if(!repoCategoria.existsById(datosGrupo.getCategoria())){
+            throw new NoExisteExcepcion("la categoria a la que intenta insertar un grupo no existe");
+        }
+        
+        CursoId cursoId = new CursoId(datosGrupo.getCategoria(), datosGrupo.getCurso());
+        if(!repoCurso.existsById(cursoId)){
+            throw new NoExisteExcepcion("el curso al que intenta insertar un nuevo grupo no existe");
+        }
+        //obtengo el año actual a cargar
+        Integer anio = java.time.Year.now().getValue();
+        datosGrupo.setAnio(anio);
+        //obtengo el iterable adecuado para la insercion
+        Integer iterable = repoGrupo.countByCategoriaAndCursoAndAnio(datosGrupo.getCategoria(), datosGrupo.getCurso(), anio) + 1;
+        datosGrupo.setIterable(iterable);
+        GrupoId id = new GrupoId(datosGrupo.getCategoria(), datosGrupo.getCurso(), anio, iterable);
         if(repoGrupo.existsById(id)){
             throw new YaExisteElementoExcepcion("el grupo especificado ya existe en el sistema");
         }
         if(!repoImagen.existsById(datosGrupo.getImagenGrupo())){
             throw new DependenciaFallida("la imagen identificado con "+datosGrupo.getImagenGrupo()+" no existe en el sistema");
         }
-        if(!repoInstructor.existsById(datosGrupo.getIdInstructor())){
-            throw new DependenciaFallida("el instructor identificado con "+datosGrupo.getIdInstructor()+" no existe en el sistema");
+        if(datosGrupo.getIdInstructor()!=null){
+            if(!repoInstructor.existsById(datosGrupo.getIdInstructor())){
+                throw new DependenciaFallida("el instructor identificado con "+datosGrupo.getIdInstructor()+" no existe en el sistema");
+            }
         }
         GrupoEntidad entidad = GrupoEntidad.fabricarDeModelo(datosGrupo);
         if(entidad==null){
             throw new InsercionFallidaExepcion("no fue posible convertir entrada de datos en gateway");
         }
         try{
+            entidad.setEliminado(0);
+            System.out.println(entidad.getCategoria() +"-"+entidad.getCurso()+"-"+entidad.getAnio()+"-"+entidad.getIterable()+"-"+entidad.getCupos()+"-"+entidad.getIdInstructor()+"-"+entidad.getImagenGrupo()+"-"+entidad.getFechaCreacion()+"-"+entidad.getFechaFinalizacion()+"-"+entidad.getEliminado());
             GrupoEntidad guardado = repoGrupo.save(entidad);
             Grupo respuesta = Grupo.fabricarDeEntidad(guardado);
             return respuesta;

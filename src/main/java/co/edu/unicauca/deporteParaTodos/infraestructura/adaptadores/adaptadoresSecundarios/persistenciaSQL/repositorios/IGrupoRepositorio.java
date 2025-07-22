@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CursoEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.GrupoEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ids.GrupoId;
 
@@ -38,4 +37,13 @@ public interface IGrupoRepositorio extends CrudRepository<GrupoEntidad, GrupoId>
     List<GrupoEntidad> obtenerGruposPorInstructor(@Param("instructorId") String instructorId);
 
     List<GrupoEntidad> findByIdInstructor(String idInstructor);
+
+    /**
+     * util para obtener el iterable identificador,
+     * @param Categoria
+     * @param Curso
+     * @param anio
+     * @return cantidad de coincidencias
+     */
+    int countByCategoriaAndCursoAndAnio(String Categoria, String Curso, Integer anio);
 }

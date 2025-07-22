@@ -1,7 +1,6 @@
 package co.edu.unicauca.deporteParaTodos.dominio.modelo;
 
-import java.sql.Date;
-import java.util.List;
+import java.time.LocalDate;
 
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.GrupoDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.GrupoEntidad;
@@ -30,9 +29,9 @@ public class Grupo {
 
     private String idInstructor;
 
-    private Date fechaCreacion;
+    private LocalDate fechaCreacion;
 
-    private Date fechaFinalizacion;
+    private LocalDate fechaFinalizacion;
 
     public static Grupo fabricarDeEntidad(GrupoEntidad entidad){
         try{
