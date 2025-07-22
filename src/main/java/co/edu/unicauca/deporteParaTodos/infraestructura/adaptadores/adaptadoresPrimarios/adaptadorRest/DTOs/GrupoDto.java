@@ -2,6 +2,7 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadores
 
 import java.sql.Date;
 
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Grupo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,4 +30,22 @@ public class GrupoDto {
     private Date fechaCreacion;
 
     private Date fechaFinalizacion;
+
+    public static GrupoDto fabricarDeModelo(Grupo grupo){
+        try{
+            GrupoDto dto = new GrupoDto();
+            dto.setCategoria(grupo.getCategoria());
+            dto.setCurso(grupo.getCurso());
+            dto.setAnio(grupo.getAnio());
+            dto.setIterable(grupo.getIterable());
+            dto.setCupos(grupo.getCupos());
+            dto.setFechaCreacion(grupo.getFechaCreacion());
+            dto.setFechaFinalizacion(grupo.getFechaFinalizacion());
+            dto.setIdInstructor(grupo.getIdInstructor());
+            dto.setImagenGrupo(grupo.getImagenGrupo());
+            return dto;
+        }catch(Exception e){
+            return null;
+        }
+    }
 }

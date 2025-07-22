@@ -3,6 +3,7 @@ package co.edu.unicauca.deporteParaTodos.dominio.modelo;
 import java.sql.Date;
 import java.util.List;
 
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.GrupoDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.GrupoEntidad;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -45,6 +46,14 @@ public class Grupo {
             grupo.setIdInstructor(entidad.getIdInstructor());
             grupo.setImagenGrupo(entidad.getImagenGrupo());
             grupo.setIterable(entidad.getIterable());
+            return grupo;
+        }catch(Exception e){
+            return null;
+        }
+    }
+    public static Grupo fabricarDeDto(GrupoDto dto){
+        try{
+            Grupo grupo = new Grupo(dto.getCategoria(), dto.getCurso(), dto.getAnio(), dto.getIterable(), dto.getImagenGrupo(), dto.getCupos(), dto.getIdInstructor(), dto.getFechaCreacion(), dto.getFechaFinalizacion());
             return grupo;
         }catch(Exception e){
             return null;
