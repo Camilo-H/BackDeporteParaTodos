@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.GrupoDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.GrupoEntidad;
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,6 +34,10 @@ public class Grupo {
 
     private LocalDate fechaFinalizacion;
 
+    private LocalDate fechaInscripcionApertura;
+
+    private LocalDate fechaIncripcionCierre;
+
     public static Grupo fabricarDeEntidad(GrupoEntidad entidad){
         try{
             Grupo grupo = new Grupo();
@@ -42,6 +47,8 @@ public class Grupo {
             grupo.setCupos(entidad.getCupos());
             grupo.setFechaCreacion(entidad.getFechaCreacion());
             grupo.setFechaFinalizacion(entidad.getFechaFinalizacion());
+            grupo.setFechaInscripcionApertura(entidad.getFechaInscripcionApertura());
+            grupo.setFechaIncripcionCierre(entidad.getFechaIncripcionCierre());
             grupo.setIdInstructor(entidad.getIdInstructor());
             grupo.setImagenGrupo(entidad.getImagenGrupo());
             grupo.setIterable(entidad.getIterable());
@@ -52,7 +59,18 @@ public class Grupo {
     }
     public static Grupo fabricarDeDto(GrupoDto dto){
         try{
-            Grupo grupo = new Grupo(dto.getCategoria(), dto.getCurso(), dto.getAnio(), dto.getIterable(), dto.getImagenGrupo(), dto.getCupos(), dto.getIdInstructor(), dto.getFechaCreacion(), dto.getFechaFinalizacion());
+            Grupo grupo = new Grupo(
+                dto.getCategoria(), 
+                dto.getCurso(), 
+                dto.getAnio(), 
+                dto.getIterable(), 
+                dto.getImagenGrupo(), 
+                dto.getCupos(), 
+                dto.getIdInstructor(), 
+                dto.getFechaCreacion(), 
+                dto.getFechaFinalizacion(), 
+                dto.getFechaInscripcionApertura(), 
+                dto.getFechaIncripcionCierre());
             return grupo;
         }catch(Exception e){
             return null;

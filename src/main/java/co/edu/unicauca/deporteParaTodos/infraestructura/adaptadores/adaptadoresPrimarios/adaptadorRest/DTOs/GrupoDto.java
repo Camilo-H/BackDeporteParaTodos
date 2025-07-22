@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Grupo;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
@@ -46,6 +47,10 @@ public class GrupoDto {
 
     private @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFinalizacion;
 
+    private @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInscripcionApertura;
+
+    private @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaIncripcionCierre;
+
     public static GrupoDto fabricarDeModelo(Grupo grupo){
         try{
             GrupoDto dto = new GrupoDto();
@@ -56,6 +61,8 @@ public class GrupoDto {
             dto.setCupos(grupo.getCupos());
             dto.setFechaCreacion(grupo.getFechaCreacion());
             dto.setFechaFinalizacion(grupo.getFechaFinalizacion());
+            dto.setFechaInscripcionApertura(grupo.getFechaInscripcionApertura());
+            dto.setFechaIncripcionCierre(grupo.getFechaIncripcionCierre());
             dto.setIdInstructor(grupo.getIdInstructor());
             dto.setImagenGrupo(grupo.getImagenGrupo());
             return dto;

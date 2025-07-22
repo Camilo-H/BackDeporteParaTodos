@@ -64,7 +64,7 @@ public class GrupoRest {
 
     @Operation(summary = "Obtiene todos los grupos del sistema disponibles a la inscripcion")
     @ApiResponses(value ={
-        @ApiResponse(responseCode = "200", description = "Curso recuperados"),
+        @ApiResponse(responseCode = "200", description = "Grupos recuperados"),
     })
     @GetMapping("/gruposInscripcion")
     public ResponseEntity<List<GrupoDto>> obtenerGruposInscripcion() {
@@ -74,7 +74,7 @@ public class GrupoRest {
     
     @Operation(summary = "Obtiene todos los grupos del sistema asociados a un instructor")
     @ApiResponses(value ={
-        @ApiResponse(responseCode = "200", description = "Curso recuperados"),
+        @ApiResponse(responseCode = "200", description = "Grupos recuperados"),
     })
     @GetMapping("/gruposInstructor")
     public ResponseEntity<List<GrupoDto>> obtnerGruposInstructor(@RequestParam String idInstructor) {
@@ -89,7 +89,7 @@ public class GrupoRest {
      */
     @Operation(summary = "Inserta un registro en el sistema, los valores de anio e iterable son calculados internamete por el servidor, reportes de error por json malformados pueden ser causados por fechas no formateadas adecuadamente")
     @ApiResponses(value ={
-        @ApiResponse(responseCode = "200", description = "Curso insertado"),
+        @ApiResponse(responseCode = "201", description = "Grupo insertado"),
     })
     @PostMapping("/grupo")
     public ResponseEntity<GrupoDto> postGrupo(@RequestBody @Valid GrupoDto dto) {
@@ -97,7 +97,15 @@ public class GrupoRest {
         return new ResponseEntity<>(guardado, HttpStatus.CREATED);
     }
 
-
+    @Operation(summary = "obtiene un grupo del sistema")
+    @ApiResponses(value ={
+        @ApiResponse(responseCode = "200", description = "grupo encontrado"),
+    })
+    @GetMapping("/grupo")
+    public ResponseEntity<GrupoDto> obtenerGrupo(@RequestParam String categoria, @RequestParam String curso, @RequestParam Integer anio, @RequestParam Integer iterable) {
+        GrupoDto dto = servicio.obtenerGrupo(categoria, curso, anio, iterable);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
     
     
 }

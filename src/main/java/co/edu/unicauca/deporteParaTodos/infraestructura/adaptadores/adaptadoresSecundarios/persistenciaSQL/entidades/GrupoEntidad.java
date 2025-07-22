@@ -60,16 +60,33 @@ public class GrupoEntidad {
     @Column(name = "GRP_FECHA_FINALIZACION")
     private LocalDate fechaFinalizacion;
 
+    @Column(name = "GRP_FECHA_INSCRIP_APERTURA")
+    private LocalDate fechaInscripcionApertura;
+
+    @Column(name = "GRP_FECHA_INSCRIP_CIERRE")
+    private LocalDate fechaIncripcionCierre;
+
     @Column(name = "META_ELIMINADO")
     private Integer eliminado;
 
     public static GrupoEntidad fabricarDeModelo(Grupo grupo){
         try{
-            GrupoEntidad entidad = new GrupoEntidad(grupo.getCategoria(), grupo.getCurso(), grupo.getAnio(), grupo.getIterable(), grupo.getImagenGrupo(), grupo.getCupos(), grupo.getIdInstructor(), grupo.getFechaCreacion(), grupo.getFechaFinalizacion(), 0);
+            GrupoEntidad entidad = new GrupoEntidad(
+                grupo.getCategoria(), 
+                grupo.getCurso(), 
+                grupo.getAnio(), 
+                grupo.getIterable(), 
+                grupo.getImagenGrupo(), 
+                grupo.getCupos(), 
+                grupo.getIdInstructor(), 
+                grupo.getFechaCreacion(), 
+                grupo.getFechaFinalizacion(), 
+                grupo.getFechaInscripcionApertura(),
+                grupo.getFechaIncripcionCierre(),
+                0);
             return entidad;
         }catch(Exception e){
             return null;
         }
     }
 }
-// fetch = FetchType.EAGER fetch = FetchType.LAZY,

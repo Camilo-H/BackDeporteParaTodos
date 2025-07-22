@@ -27,12 +27,7 @@ public interface IGrupoRepositorio extends CrudRepository<GrupoEntidad, GrupoId>
     @Query(value = """
     SELECT DISTINCT g.*
     FROM TEST.TBL_GRUPO g
-    JOIN TEST.TBL_CLASE c ON 
-        c.CAT_TITULO = g.CAT_TITULO AND
-        c.CUR_NOMBRE = g.CUR_NOMBRE AND
-        c.GRP_ANIO = g.GRP_ANIO AND
-        c.GRP_ITERABLE = g.GRP_ITERABLE
-    WHERE c.PERF_ID = :instructorId
+    WHERE g.PERF_ID = :instructorId and g.META_ELIMINADO= 0
     """, nativeQuery = true)
     List<GrupoEntidad> obtenerGruposPorInstructor(@Param("instructorId") String instructorId);
 

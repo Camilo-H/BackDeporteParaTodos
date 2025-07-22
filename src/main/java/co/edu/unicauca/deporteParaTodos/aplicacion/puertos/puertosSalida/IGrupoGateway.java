@@ -82,4 +82,13 @@ public interface IGrupoGateway {
     public Grupo eliminarGrupo(String categoria, String curso, Integer anio, Integer iterable);
 
 
+    /***
+     * Recupera un curso del sistema identificado con los parametros
+     * @param categoria
+     * @param curso
+     * @param anio
+     * @param iterable
+     * @return curso encontrado
+     */
+    public Grupo obtenerGrupo(String categoria, String curso, Integer anio, Integer iterable);
 }

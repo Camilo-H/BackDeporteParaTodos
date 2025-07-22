@@ -185,6 +185,17 @@ public class GrupoGateway implements IGrupoGateway {
         return Grupo.fabricarDeEntidad(respuesta);
     }
 
+    @Override
+    public Grupo obtenerGrupo(String categoria, String curso, Integer anio, Integer iterable) {
+        GrupoId id = new GrupoId(categoria, curso, anio, iterable);
+        if(!repoGrupo.existsById(id)){
+            throw new NoExisteExcepcion("el grupo buscado no existe en el sistema");
+        }
+        GrupoEntidad entidad = repoGrupo.findById(id).get();
+        Grupo grupo = Grupo.fabricarDeEntidad(entidad);
+        return grupo;
+    }
+
 
 
 }

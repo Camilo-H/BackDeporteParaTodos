@@ -103,4 +103,11 @@ public class GrupoServicio implements IGrupoServicio {
         Grupo grupo = grupoGateway.eliminarGrupo(categoria, curso, anio, iterable);
         return GrupoDto.fabricarDeModelo(grupo);
     }
+
+    @Override
+    public GrupoDto obtenerGrupo(String categoria, String curso, Integer anio, Integer iterable) {
+        Grupo grupo = grupoGateway.obtenerGrupo(categoria, curso, anio, iterable);
+        GrupoDto dto = GrupoDto.fabricarDeModelo(grupo);
+        return dto;
+    }
 }
