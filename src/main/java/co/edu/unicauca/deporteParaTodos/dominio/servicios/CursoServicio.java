@@ -93,9 +93,13 @@ public class CursoServicio implements ICursoServicio {
     }
 
     @Override
-    public CursoDto eliminarCurso(String titulo) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'eliminarCurso'");
+    public CursoDto eliminarCurso(String categoria, String curso) {
+        if(!cursoGateway.existeCurso(categoria, curso)){
+            throw new NoExisteExcepcion("El curso a eliminar no existe");
+        }
+        Curso eliminado = cursoGateway.eliminarCurso(categoria, curso);
+        CursoDto dto = CursoDto.fabricarDeModelo(eliminado);
+        return dto;
     }
 
     

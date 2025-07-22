@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -88,9 +89,24 @@ public class CursoRest {
         @ApiResponse(responseCode = "200", description = "curso actualizado, no manipula los id"),
     })
     @PutMapping("curso")
-    public ResponseEntity<CursoDto> actualizarCurso(@RequestParam @NotBlank String categoria, @RequestParam @NotBlank String curso, @RequestBody @Valid CursoDto dto) {
-        //TODO: process PUT request
+    public ResponseEntity<CursoDto> actualizarCurso(
+        @Parameter(description = "Identificador de una categoria del sistema")
+        @RequestParam @NotBlank String categoria, 
+        @Parameter(description = "Identificador de un curso en el sistema")
+        @RequestParam @NotBlank String curso,
+        @RequestBody @Valid CursoDto dto) {
         CursoDto dtoActualizado = servicio.actualizarCurso(categoria, curso, dto);
         return new ResponseEntity<>(dtoActualizado, HttpStatus.OK);
+    }
+
+    @Operation(summary = "elimina un curso")
+    @DeleteMapping("curso")
+    public ResponseEntity<CursoDto> eliminarCurso(
+        @Parameter(description = "Identificador de una categoria del sistema")
+        @RequestParam @NotBlank String categoria, 
+        @Parameter(description = "Identificador de un curso en el sistema")
+        @RequestParam @NotBlank String curso){
+        CursoDto dto = servicio.eliminarCurso(categoria, curso);
+        return new ResponseEntity<>(dto,HttpStatus.OK);
     }
 }

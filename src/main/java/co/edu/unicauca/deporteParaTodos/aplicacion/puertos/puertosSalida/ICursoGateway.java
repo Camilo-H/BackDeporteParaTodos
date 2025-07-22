@@ -36,6 +36,19 @@ public interface ICursoGateway{
      * @return curso insertado
      */
     public Curso insertarCurso(Curso curso);
+    /***
+     * Actualiza la informacion de un curso
+     * @param categoria identificador de la categoria
+     * @param nombre identificador del curso
+     * @param curso datos a actualizar
+     * @return datos actualizados
+     */
     public Curso actualizarCurso(String categoria, String nombre, Curso curso);
-    public Curso eliminarCurso(String nombre);
+    /**
+     * marca un curso como eliminado
+     * @param categoria, identificador de la categoria
+     * @param curso, identificador del curso
+     * @return curso eliminado
+     */
+    public Curso eliminarCurso(String categoria, String curso);
 }

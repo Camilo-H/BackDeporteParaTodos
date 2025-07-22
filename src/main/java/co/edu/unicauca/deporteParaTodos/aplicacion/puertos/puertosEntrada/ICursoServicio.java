@@ -28,6 +28,19 @@ public interface ICursoServicio {
      * @return curso registrado
      */
     public CursoDto insertarCurso(CursoDto datosCurso);
+    /***
+     * Actualiza la informacion de un curso en el sistema, no altera los identificadores
+     * @param categoria identificador de la categoria a la que pertenece el curso
+     * @param curso identificador del curso
+     * @param datCurso datos a actualizar
+     * @return datos actualizador
+     */
     public CursoDto actualizarCurso(String categoria, String curso, CursoDto datCurso);
-    public CursoDto eliminarCurso(String titulo);
+    /***
+     * marca como eliminado un curso
+     * @param categoria, identificador de la categoria
+     * @param curso, identificador del curso
+     * @return curso eliminado
+     */
+    public CursoDto eliminarCurso(String categoria, String curso);
 }

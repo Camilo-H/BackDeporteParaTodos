@@ -128,9 +128,20 @@ public class CursoGateway implements ICursoGateway{
     }
 
     @Override
-    public Curso eliminarCurso(String nombre) {
-        // TODO Auto-generated method stub
-        return null;
+    public Curso eliminarCurso(String categoria, String curso) {
+        CursoId id = new CursoId(categoria,curso);
+        if(!repoCurso.existsById(id)){
+            throw new NoExisteExcepcion("gateway no encuentra el objetivo");
+        }
+        Optional<CursoEntidad> op = repoCurso.findById(id);
+        if(op.isEmpty()){
+            throw new NoExisteExcepcion("gateway encontro el objetivo en blanco");
+        }
+        CursoEntidad entidad = op.get();
+        entidad.setEliminado(1);
+        CursoEntidad respuesta = repoCurso.save(entidad);
+        Curso respuestaModelo = Curso.fabricarDeEntidad(respuesta);
+        return respuestaModelo;
     }
 
     @Override
