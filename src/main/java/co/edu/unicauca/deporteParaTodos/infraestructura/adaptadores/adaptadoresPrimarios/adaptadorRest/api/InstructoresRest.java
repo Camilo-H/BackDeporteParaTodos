@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,5 +45,16 @@ public class InstructoresRest {
         });
         return instructores;
     }
+
+    @GetMapping("/instructor")
+    public ResponseEntity<V2InstructorDTO> getInstructor(@RequestParam String idInstructor) {
+        Optional<PerfilEntidad> response = repoPerfil.findById(idInstructor);
+        if(response.isPresent()){
+            V2InstructorDTO dtoResponse = V2InstructorDTO.factoryFromPerfil(response.get());
+            return new ResponseEntity<>(dtoResponse, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    
     
 }
