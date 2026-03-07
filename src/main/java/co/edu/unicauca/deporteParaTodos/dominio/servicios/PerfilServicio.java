@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IPerfilServicio;
-import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IperfilGateway;
+import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IPerfilGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Perfil;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.InsercionFallidaExepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ListadoVacioExcepcion;
@@ -16,7 +16,7 @@ import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.e
 public class PerfilServicio implements IPerfilServicio {
 
     @Autowired
-    private IperfilGateway perfilGateway;
+    private IPerfilGateway perfilGateway;
 
     @Override
     public List<Perfil> obtenerPerfiles() {

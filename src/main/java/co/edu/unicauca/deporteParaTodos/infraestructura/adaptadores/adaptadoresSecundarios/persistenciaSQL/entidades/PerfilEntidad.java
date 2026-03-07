@@ -1,11 +1,9 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades;
 
-import jakarta.persistence.CascadeType;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Perfil;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,9 +26,8 @@ public class PerfilEntidad {
     @Column(name = "perf_correo", length = 100, nullable = false)
     private String perfcorreo;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "perf_imagen", referencedColumnName = "IMG_ID")
-    private ImagenEntidad perf_imagen;
+    @Column(name = "perf_imagen")
+    private Integer perf_imagen;
 
     @Column(name = "perf_tipoid", length = 50, nullable = false)
     private String perf_tipo;
@@ -40,4 +37,20 @@ public class PerfilEntidad {
 
     @Column(name ="META_ELIMINADO")
     private Integer eliminado;
+
+    public static PerfilEntidad fabricarDeModelo(Perfil perfil, int eliminado){
+        try{
+            PerfilEntidad entidad = new PerfilEntidad();
+            entidad.setEliminado(eliminado);
+            entidad.setPerf_id(perfil.getId());
+            entidad.setPerf_nombre(perfil.getNombre());
+            entidad.setPerf_Sexo(perfil.getSexo());
+            entidad.setPerf_tipo(perfil.getTipoId());
+            entidad.setPerfcorreo(perfil.getCorreo());
+            entidad.setPerf_imagen(perfil.getImagen());
+            return entidad;
+        }catch(Exception e){
+            return null;
+        }
+    }
 }

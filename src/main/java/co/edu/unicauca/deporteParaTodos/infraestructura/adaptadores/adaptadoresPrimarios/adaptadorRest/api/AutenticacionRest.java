@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.AlumnoEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.PerfilEntidad;
+import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IAutenticacionServicio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.v2DTO.V2PerfilDTO;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.PerfilDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IAlumnoRepositorio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.ICoordinadorRepositorio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IInstructorRepositorio;
@@ -39,28 +41,13 @@ public class AutenticacionRest {
     @Autowired
     ICoordinadorRepositorio repositorioCoordinador;
 
+    @Autowired
+    IAutenticacionServicio autenticacionServicio;
+
     @GetMapping("/login")
-    public ResponseEntity<V2PerfilDTO> getLogin(@RequestParam String email) {
-        List<PerfilEntidad> entidades;
-        //TODO: el correo debe ser unique o identificador, de momento no lo es y la consulta genera una lista
-        entidades = repositorioPerfil.findByPerfcorreo(email);
-        if(entidades.size()>0){
-            PerfilEntidad entidad = entidades.get(0);
-            V2PerfilDTO dto = V2PerfilDTO.fabricaFromPerfilEntidad(entidad);
-            if(repositorioCoordinador.existsById(entidad.getPerf_id())){
-                dto.setRole("Coordinador");
-                return new ResponseEntity<>(dto,HttpStatus.OK);
-            }
-            if(repositorioInstructor.existsById(entidad.getPerf_id())){
-                dto.setRole("Instructor");
-                return new ResponseEntity<>(dto,HttpStatus.OK);
-            }
-            if(repositorioAlumno.existsById(entidad.getPerf_id())){
-                dto.setRole("Alumno");
-                return new ResponseEntity<>(dto,HttpStatus.OK);
-            }
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<PerfilDto> getLogin(@RequestParam String email) {
+        PerfilDto dto = autenticacionServicio.login(email);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @PostMapping("/RegistroPerfilAlumno")

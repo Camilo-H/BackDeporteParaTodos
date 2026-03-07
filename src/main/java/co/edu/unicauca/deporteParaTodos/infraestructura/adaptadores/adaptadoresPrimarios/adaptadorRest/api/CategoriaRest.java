@@ -45,7 +45,6 @@ public class CategoriaRest {
 
         List<CategoriaDto> listaDtos = servicioCategoria.recuperarCategoriasCurso();
         return new ResponseEntity<>(listaDtos, HttpStatus.OK);
-
     }
 
     @Operation(summary = "Obtener categoria por titulo, independientemente si eesta marcada como eliminada")

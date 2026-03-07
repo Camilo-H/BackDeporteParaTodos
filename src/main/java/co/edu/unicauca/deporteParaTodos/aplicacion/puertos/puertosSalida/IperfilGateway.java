@@ -5,7 +5,9 @@ import java.util.Optional;
 
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Perfil;
 
-public interface IperfilGateway {
+public interface IPerfilGateway {
+
+    public Perfil obtenerUsuario(String email);
 
     public boolean existePerfil(String perfilId);
 

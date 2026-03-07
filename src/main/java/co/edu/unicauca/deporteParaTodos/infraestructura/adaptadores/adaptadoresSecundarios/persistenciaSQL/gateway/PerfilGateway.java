@@ -8,18 +8,37 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IperfilGateway;
+import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IPerfilGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Perfil;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ImagenEntidad;
+import co.edu.unicauca.deporteParaTodos.dominio.servicios.valores.Roles;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.PerfilEntidad;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IAlumnoRepositorio;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.ICoordinadorRepositorio;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IImagenRepositorio;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IInstructorRepositorio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IPerfilRepositorio;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.DependenciaFallida;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoConvertibleException;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.YaExisteElementoExcepcion;
 
 @Service
-public class PerfilGateway implements IperfilGateway {
+public class PerfilGateway implements IPerfilGateway {
 
     @Autowired
     private IPerfilRepositorio repoPerfil;
+
+    @Autowired
+    private ICoordinadorRepositorio repoCoordinador;
+
+    @Autowired
+    private IInstructorRepositorio repoInstructor;
+    
+    @Autowired
+    private IAlumnoRepositorio repoAlumno;
+
+    @Autowired
+    private IImagenRepositorio repoImagen;
 
     @Qualifier("modelMapperGenerico")
     @Autowired
@@ -41,14 +60,32 @@ public class PerfilGateway implements IperfilGateway {
 
     @Override
     public Perfil insertarPerfil(Perfil perfil) {
-        PerfilEntidad entidad = mapper.map(perfil, PerfilEntidad.class);
-        if (perfil.getPerf_imagen() != null) {
-            ImagenEntidad imagen = mapper.map(perfil.getPerf_imagen(), ImagenEntidad.class);
-            entidad.setPerf_imagen(imagen);
+        //verificar insercion
+        if(existePerfil(perfil.getId())){
+            throw new YaExisteElementoExcepcion("El perfil con la identificacion ya se encuentra registrado");
         }
-        PerfilEntidad entidadGuardad = repoPerfil.save(entidad);
-        Perfil respuesta = mapper.map(entidadGuardad, Perfil.class);
-        return respuesta;
+
+        //verificar imagen
+        if(!repoImagen.existsById(perfil.getImagen())){
+            throw new DependenciaFallida("la imgen no se encuentra registrada");
+        }
+
+        //conversion de datos
+        PerfilEntidad entidadInsertar = PerfilEntidad.fabricarDeModelo(perfil, 0);
+        if(entidadInsertar==null){
+            throw new NoConvertibleException();
+        }
+
+        //insercion
+        PerfilEntidad guardado = repoPerfil.save(entidadInsertar);
+
+        //conversion
+        Perfil perfilCreado = Perfil.fabricarDeEntidad(guardado);
+        if(perfilCreado == null){
+            throw new InternalError("No se ha logrado retornar la respuesta desde gateway");
+        }
+        
+        return perfilCreado;
     }
 
     @Override
@@ -59,20 +96,27 @@ public class PerfilGateway implements IperfilGateway {
 
     @Override
     public Perfil actualizarPerfil(String perfilId, Perfil datosPerfil) {
+        //confirmar existencia de registro
         if (!existePerfil(perfilId)) {
             throw new NoExisteExcepcion("No existe el perfil con el identificador " + perfilId);
         }
+        
+        //obtener datos
         PerfilEntidad entidadExistente = repoPerfil.findById(perfilId)
                 .orElseThrow(() -> new NoExisteExcepcion("No exoste el perfil"));
 
-        entidadExistente.setPerf_nombre(datosPerfil.getPerf_nombre());
-        entidadExistente.setPerfcorreo(datosPerfil.getPerf_correo());
-        if (datosPerfil.getPerf_imagen() != null) {
-            ImagenEntidad perfimagen = mapper.map(datosPerfil.getPerf_imagen(), ImagenEntidad.class);
-            entidadExistente.setPerf_imagen(perfimagen);
+        entidadExistente.setPerf_nombre(datosPerfil.getNombre());
+        entidadExistente.setPerfcorreo(datosPerfil.getCorreo());
+        //solo actualizar imagen en caso de existir dicha informacion
+        if(datosPerfil.getImagen()!=null){
+            if(!repoImagen.existsById(datosPerfil.getImagen())){
+                throw new DependenciaFallida("la imagen a actualizar no existe");
+            }
+            entidadExistente.setPerf_imagen(datosPerfil.getImagen());
         }
-        entidadExistente.setPerf_tipo(datosPerfil.getPerf_tipo());
-        entidadExistente.setPerf_Sexo(datosPerfil.getPerf_Sexo());
+        entidadExistente.setPerf_tipo(datosPerfil.getTipoId());
+        entidadExistente.setPerf_Sexo(datosPerfil.getSexo());
+        entidadExistente.setEliminado(0);
 
         PerfilEntidad perfilActualizado = repoPerfil.save(entidadExistente);
         return mapper.map(perfilActualizado, Perfil.class);
@@ -87,6 +131,29 @@ public class PerfilGateway implements IperfilGateway {
             return mapper.map(entidad, Perfil.class);
         }
         throw new NoExisteExcepcion("No existe el perfil con el identificador " + perfilId);
+    }
+
+    @Override
+    public Perfil obtenerUsuario(String email) {
+        List<PerfilEntidad> perfiles = repoPerfil.findByPerfcorreo(email);
+        if(perfiles.size()>0){
+            PerfilEntidad entidad = perfiles.get(0);
+            Perfil perfil = Perfil.fabricarDeEntidad(entidad);
+            String id = perfil.getId();
+            if(repoCoordinador.existsById(id)){
+                perfil.setRol(Roles.ADMINISTRADOR.getValor());
+                return perfil;
+            }
+            if(repoInstructor.existsById(id)){
+                perfil.setRol(Roles.INSTRUCTOR.getValor());
+                return perfil;
+            }
+            if(repoAlumno.existsById(id)){
+                perfil.setRol(Roles.ALUMNO.getValor());
+                return perfil;
+            }
+        }
+        return null;
     }
 
 }
