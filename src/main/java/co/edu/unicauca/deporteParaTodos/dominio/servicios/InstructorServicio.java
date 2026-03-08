@@ -27,11 +27,7 @@ public class InstructorServicio implements IInstructorServicio {
 
     @Override
     public Instructor insertarInstructor(Instructor datosInstructor) {
-        if (instructorsGateway.existeInstructor(datosInstructor.getPerfil().getPerf_id())) {
-            throw new YaExisteElementoExcepcion("Ya existe el registro");
-        }
-        Instructor instructorInsertar = instructorsGateway.insertarInstructor(datosInstructor);
-        return instructorInsertar;
+        return null;
     }
 
     @Override

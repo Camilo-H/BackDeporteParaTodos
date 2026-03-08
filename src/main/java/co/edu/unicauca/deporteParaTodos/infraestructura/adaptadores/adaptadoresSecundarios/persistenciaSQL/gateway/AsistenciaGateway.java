@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IAsistenciaGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Asistencia;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.comunes.AsistenciaDTO;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.AsistenciaEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ids.AsistenciaId;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IAsistenciaRepositorio;
@@ -36,11 +35,7 @@ public class AsistenciaGateway implements IAsistenciaGateway {
 
     @Override
     public List<Asistencia> obtenerAsistencias() {
-        Iterable<AsistenciaEntidad> entidades = repoAsistencia.findAll();
-        List<Asistencia> asistencias = new ArrayList<>();
-        asistencias = mapper.map(entidades, new TypeToken<List<AsistenciaDTO>>() {
-        }.getType());
-        return asistencias;
+        return null;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package co.edu.unicauca.deporteParaTodos.dominio.servicios;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IImagenServicio;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IImagenGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Imagen;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.ImagenDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.InsercionFallidaExepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ListadoVacioExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
@@ -24,13 +26,18 @@ public class ImagenServicio implements IImagenServicio {
      * ListadoVacioExcepcion
      */
     @Override
-    public List<Imagen> obtenerImagenes() {
+    public List<ImagenDto> obtenerImagenes() {
         List<Imagen> imagenes = imagenGateway.obtenerImagenes();
         if (imagenes.isEmpty()) {
             // Lanzar excepcion, sera capturada por el exceptionHandler.
             throw new ListadoVacioExcepcion("No se encuentran imagenes registradas");
         }
-        return imagenes;
+        List<ImagenDto> listaDtos = new ArrayList<>();
+        imagenes.forEach(modelo ->{
+            ImagenDto dto = ImagenDto.fabricaFromImagenModelo(modelo);
+            listaDtos.add(dto);
+        });
+        return listaDtos;
     }
 
     /**
@@ -40,7 +47,7 @@ public class ImagenServicio implements IImagenServicio {
      * @return imagen encontrada o excepcion de tipo NoExisteExcepcion
      */
     @Override
-    public Imagen obtenerImagen(Integer id) {
+    public ImagenDto obtenerImagen(Integer id) {
         if (!imagenGateway.existeImagen(id)) {
             throw new NoExisteExcepcion();
         }
@@ -49,26 +56,35 @@ public class ImagenServicio implements IImagenServicio {
             // TODO: probablemente lanzar una excepcion de error en el procesamiento sql
             throw new NoExisteExcepcion();
         }
-        return imagen;
+        ImagenDto dto = new ImagenDto();
+        dto = ImagenDto.fabricaFromImagenModelo(imagen);
+        return dto;
     }
 
     @Override
-    public Imagen insertarImagen(Imagen imagen) {
+    public ImagenDto insertarImagen(ImagenDto imagen) {
         // validaciones de extension
         // validaciones de tipo
         // validaciones de contenido
         // TODO: Validar elemento null
-        Imagen objImagen = imagenGateway.insertarImagen(imagen);
+        Imagen modelo = Imagen.fabricaFromImagenDto(imagen);
+        if(modelo==null){
+            throw new InsercionFallidaExepcion("no fue posible convertir el archivo");
+        }
+        Imagen objImagen = imagenGateway.insertarImagen(modelo);
 
         if (objImagen == null) {
             throw new InsercionFallidaExepcion("La insersion no se pudo realizar");
         }
-        return imagenGateway.insertarImagen(imagen);
+        ImagenDto dto = ImagenDto.fabricaFromImagenModelo(modelo);
+        return dto;
     }
 
     @Override
-    public Imagen eliminarImagen(Integer id) {
-        return imagenGateway.eliminarImagen(id);
+    public ImagenDto eliminarImagen(Integer id) {
+        Imagen modelo = imagenGateway.eliminarImagen(id);
+        ImagenDto dto = ImagenDto.fabricaFromImagenModelo(modelo);
+        return dto;
     }
 
 }

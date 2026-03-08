@@ -1,11 +1,11 @@
 package co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada;
 
 import java.util.List;
-import co.edu.unicauca.deporteParaTodos.dominio.modelo.Imagen;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.ImagenDto;
 
 public interface IImagenServicio {
-    public List<Imagen> obtenerImagenes();
-    public Imagen obtenerImagen(Integer id);
-    public Imagen insertarImagen(Imagen imagen);
-    public Imagen eliminarImagen(Integer id);
+    public List<ImagenDto> obtenerImagenes();
+    public ImagenDto obtenerImagen(Integer id);
+    public ImagenDto insertarImagen(ImagenDto imagen);
+    public ImagenDto eliminarImagen(Integer id);
 }

@@ -28,11 +28,7 @@ public class AlumnoServicio implements IAlumnoServicio {
 
     @Override
     public Alumno insertAlumno(Alumno datosAlumno) {
-        if (alumnoGateway.existeAlumno(datosAlumno.getPerfil().getPerf_id())) {
-            throw new YaExisteElementoExcepcion("Ya existe el registro");
-        }
-        Alumno alumnoInsertado = alumnoGateway.insertAlumno(datosAlumno);
-        return alumnoInsertado;
+        return null;
     }
 
     @Override

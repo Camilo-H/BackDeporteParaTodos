@@ -3,7 +3,6 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.mappers;
 import org.springframework.web.multipart.MultipartFile;
 
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Imagen;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.comunes.ImagenDTO;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ImagenEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ArchivoNoConvertibleExcepcion;
 
@@ -35,6 +34,7 @@ public class MapperImagen {
      * @param archivo
      * @return objeto de tipo ImagenDTO con los datos del archivo recibido.
      */
+    /*
     public static ImagenDTO multiparfileToImagenDTO(MultipartFile archivo) {
         // validacion de contenido
         if (archivo == null ||
@@ -66,7 +66,7 @@ public class MapperImagen {
             throw new ArchivoNoConvertibleExcepcion("ex.getMessage().toString()");
         }
         return dto;
-    }
+    } */
 
     
 }

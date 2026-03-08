@@ -1,6 +1,6 @@
 package co.edu.unicauca.deporteParaTodos.dominio.modelo;
 
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.comunes.FacultadDTO;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.FacultadDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,5 +14,5 @@ import lombok.Setter;
 public class Programa {
     private String prg_nombre;
 
-    private FacultadDTO facultad;
+    private FacultadDto facultad;
 }

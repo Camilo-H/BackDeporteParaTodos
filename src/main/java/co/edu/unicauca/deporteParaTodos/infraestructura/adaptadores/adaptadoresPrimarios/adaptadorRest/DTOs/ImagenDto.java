@@ -1,21 +1,17 @@
-package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.v2DTO;
+package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs;
 
 import java.util.Base64;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Imagen;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ImagenEntidad;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Setter
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
-public class V2ImagenDTO {
-    
+public class ImagenDto {
     private Integer id;
 
     
@@ -31,14 +27,29 @@ public class V2ImagenDTO {
 
     private String datosBase64;
 
-    public static V2ImagenDTO fabricaFromImagenEntidad(ImagenEntidad entidad){
+    public static ImagenDto fabricaFromImagenEntidad(ImagenEntidad entidad){
         try{
-            V2ImagenDTO dto = new V2ImagenDTO();
+            ImagenDto dto = new ImagenDto();
             dto.setId(entidad.getId());
             dto.setNombre(entidad.getNombre());
             dto.setLongitud(entidad.getLongitud());
             dto.setTipoArchivo(entidad.getTipoArchivo());
             dto.setDatosBase64(Base64.getEncoder().encodeToString(entidad.getDatos()));
+            return dto;
+        }catch(Exception e){
+            return null;
+        }
+    }
+
+    
+    public static ImagenDto fabricaFromImagenModelo(Imagen modelo){
+        try{
+            ImagenDto dto = new ImagenDto();
+            dto.setId(modelo.getId());
+            dto.setLongitud(modelo.getLongitud());
+            dto.setNombre(modelo.getNombre());
+            dto.setTipoArchivo(modelo.getTipoArchivo());
+            dto.setDatosBase64(Base64.getEncoder().encodeToString(modelo.getDatos()));
             return dto;
         }catch(Exception e){
             return null;

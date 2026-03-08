@@ -1,11 +1,10 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.api;
 
 import java.io.IOException;
-import java.util.Optional;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -13,16 +12,13 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
-import ch.qos.logback.core.util.ContentTypeUtil;
-import co.edu.unicauca.deporteParaTodos.dominio.modelo.Imagen;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTO.v2DTO.V2ImagenDTO;
+import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IImagenServicio;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.ImagenDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ImagenEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IImagenRepositorio;
 
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -33,8 +29,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 @CrossOrigin(origins = { "*" }, maxAge = 4200, allowCredentials = "false")
 @Validated
 public class ImagenRest {
+
     @Autowired
-    private IImagenRepositorio repositorio;
+    private IImagenServicio servicio;
 
     /***
      * en este endpoint es necesario usar @ModelAtribute para que se puedan recibir los datos por formdata y se mapee el file como Multipartfile
@@ -43,39 +40,22 @@ public class ImagenRest {
      * @throws IOException 
      */
     @PostMapping("/imagenMultipart")
-    public ResponseEntity<V2ImagenDTO> postInsertImagen(@ModelAttribute V2ImagenDTO entidad) throws IOException {
-        System.out.println("existe"+entidad.toString());
-        //contorlar la excepcion sobre los bytes
-        ImagenEntidad entiti = new ImagenEntidad(null, entidad.getNombre(), entidad.getTipoArchivo(), entidad.getLongitud(), entidad.getDatosMultipartFile().getBytes(), 0);
-        ImagenEntidad respuesta;
-        respuesta = repositorio.save(entiti);
-        V2ImagenDTO respuestaDto = V2ImagenDTO.fabricaFromImagenEntidad(respuesta);
-        return new ResponseEntity<V2ImagenDTO>(respuestaDto,HttpStatus.CREATED);
+    public ResponseEntity<ImagenDto> postInsertImagen(@ModelAttribute ImagenDto entidad) throws IOException {
+        ImagenDto dto = servicio.insertarImagen(entidad);
+        return new ResponseEntity<ImagenDto>(dto,HttpStatus.CREATED);
     }
 
     @GetMapping("/imagen")
-    public ResponseEntity<V2ImagenDTO> getObtenerImagen(@RequestParam int idImagen) {
-        Optional<ImagenEntidad> opcional = repositorio.findById(idImagen);
-        if(opcional.isPresent()){
-            ImagenEntidad imagen = opcional.get();
-            V2ImagenDTO dto = V2ImagenDTO.fabricaFromImagenEntidad(imagen);
-            if(dto == null){
-                return new ResponseEntity<>(HttpStatusCode.valueOf(500));
-            }
-            return new ResponseEntity<>(dto,HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<ImagenDto> getObtenerImagen(@RequestParam int idImagen) {
+        ImagenDto dto = servicio.obtenerImagen(idImagen);
+        return new ResponseEntity<>(dto,HttpStatus.OK);
     }
     
     @GetMapping("/imagenStream")
     public ResponseEntity<byte[]> getMethodName(@RequestParam int idImagen) {
-        Optional<ImagenEntidad> op;
-        op = repositorio.findById(idImagen);
-        if(op.isEmpty() || op.get().getDatos()==null){
-            return ResponseEntity.notFound().build();
-        }
-        byte[] datos = op.get().getDatos();
-        String tipoMime = op.get().getTipoArchivo();
+        ImagenDto dto = servicio.obtenerImagen(idImagen);
+        byte[] datos = dto.getDatosBase64().getBytes();
+        String tipoMime = dto.getTipoArchivo();
         if(tipoMime==null || tipoMime.isEmpty()){
             tipoMime = "image/jpeg";
         }
@@ -84,6 +64,13 @@ public class ImagenRest {
 
         return ResponseEntity.ok().contentType(mediaType).body(datos);
     }
+
+    @GetMapping("/imagenes")
+    public ResponseEntity<List<ImagenDto>> getMethodName() {
+        List<ImagenDto> lista = servicio.obtenerImagenes();
+        return new ResponseEntity<List<ImagenDto>>(lista, HttpStatus.OK);
+    }
+    
     
     
 }
