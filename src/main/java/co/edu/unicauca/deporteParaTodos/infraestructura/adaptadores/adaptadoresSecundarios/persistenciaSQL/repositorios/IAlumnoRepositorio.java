@@ -46,4 +46,21 @@ public interface IAlumnoRepositorio extends CrudRepository<AlumnoEntidad,String>
         @Param("iterable") Integer iterable,
         @Param("eliminado") Integer eliminado
     );
+
+    @Query(value = """
+        SELECT fac_nombre
+        FROM (
+            SELECT fac.fac_nombre
+            FROM tbl_alumno alm
+            INNER JOIN tbl_intermedia_alumno_programa intermedia
+                ON intermedia.perf_id = alm.perf_id
+            INNER JOIN tbl_programa programa
+                ON programa.prg_nombre = intermedia.prg_nombre
+            INNER JOIN tbl_facultad fac
+                ON fac.fac_nombre = programa.fac_nombre
+            WHERE alm.perf_id = :perfilId
+        )
+        WHERE ROWNUM = 1
+        """, nativeQuery = true)
+    String obtenerFacultadPorPerfilId(@Param("perfilId") String perfilId);
 }

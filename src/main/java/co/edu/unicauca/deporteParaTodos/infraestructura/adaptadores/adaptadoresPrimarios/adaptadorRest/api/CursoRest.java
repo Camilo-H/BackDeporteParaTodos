@@ -2,6 +2,8 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadores
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.ICursoServicio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CursoDto;
+import co.edu.unicauca.deporteParaTodos.infraestructura.logs.PeticionLogger;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -34,6 +37,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 @Validated
 public class CursoRest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CursoRest.class);
+
     @Autowired
     private ICursoServicio servicio;
 
@@ -43,6 +48,7 @@ public class CursoRest {
     })
     @GetMapping("/cursos")
     public ResponseEntity<List<CursoDto>> obtenerCursos(){
+        PeticionLogger.log(LOGGER, "GET", "/api/v2/cursos", "sin datos");
         List<CursoDto> respuesta = servicio.recuperarCursos();
         return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
@@ -56,6 +62,7 @@ public class CursoRest {
         @Parameter(description = "Identificador de una categoria del sistema")
         @RequestParam String prmCategoria
         ){
+        PeticionLogger.log(LOGGER, "GET", "/api/v2/cursosbycategoria", "prmCategoria=" + prmCategoria);
         List<CursoDto> respuesta = servicio.cursosDeCategoria(prmCategoria);
         return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
@@ -70,6 +77,7 @@ public class CursoRest {
         @RequestParam String prmCategoria, 
         @Parameter(description = "Identificador de un curso en el sistema")
         @RequestParam String prmCurso) {
+        PeticionLogger.log(LOGGER, "GET", "/api/v2/curso", "prmCategoria=" + prmCategoria + ", prmCurso=" + prmCurso);
         CursoDto dto = servicio.obtenerCurso(prmCategoria, prmCurso);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
@@ -80,6 +88,7 @@ public class CursoRest {
     })
     @PostMapping("/curso")
     public ResponseEntity<CursoDto> postAgregarCurso(@RequestBody @Valid CursoDto dto) {
+        PeticionLogger.log(LOGGER, "POST", "/api/v2/curso", dto);
         CursoDto dtoGuardado = servicio.insertarCurso(dto);
         return new ResponseEntity<>(dtoGuardado,HttpStatus.CREATED);
     }
@@ -95,6 +104,7 @@ public class CursoRest {
         @Parameter(description = "Identificador de un curso en el sistema")
         @RequestParam @NotBlank String curso,
         @RequestBody @Valid CursoDto dto) {
+        PeticionLogger.log(LOGGER, "PUT", "/api/v2/curso", "categoria=" + categoria + ", curso=" + curso + ", body=" + dto);
         CursoDto dtoActualizado = servicio.actualizarCurso(categoria, curso, dto);
         return new ResponseEntity<>(dtoActualizado, HttpStatus.OK);
     }
@@ -106,6 +116,7 @@ public class CursoRest {
         @RequestParam @NotBlank String categoria, 
         @Parameter(description = "Identificador de un curso en el sistema")
         @RequestParam @NotBlank String curso){
+        PeticionLogger.log(LOGGER, "DELETE", "/api/v2/curso", "categoria=" + categoria + ", curso=" + curso);
         CursoDto dto = servicio.eliminarCurso(categoria, curso);
         return new ResponseEntity<>(dto,HttpStatus.OK);
     }

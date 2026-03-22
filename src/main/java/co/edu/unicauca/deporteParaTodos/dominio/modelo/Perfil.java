@@ -26,6 +26,10 @@ public class Perfil {
 
     private String rol;
 
+    private String facultad;
+
+    private String tipoAlumno;
+
     public static Perfil fabricarDeEntidad(PerfilEntidad entidad){
         try{
             Perfil perfil = new Perfil();
@@ -36,6 +40,8 @@ public class Perfil {
             perfil.setCorreo(entidad.getPerfcorreo());
             perfil.setImagen(entidad.getPerf_imagen());
             perfil.setRol(null);
+            perfil.setFacultad(null);
+            perfil.setTipoAlumno(null);
             return perfil;
         }catch (Exception e){
             return null;

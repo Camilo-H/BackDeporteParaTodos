@@ -3,6 +3,8 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadores
 import java.time.LocalDate;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IEstadisticaServicio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.EstadisticaDto;
+import co.edu.unicauca.deporteParaTodos.infraestructura.logs.PeticionLogger;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -28,6 +31,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @CrossOrigin(origins = { "*" }, maxAge = 4200, allowCredentials = "false")
 @Validated
 public class EstadisticasRest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(EstadisticasRest.class);
 
     @Autowired
     private IEstadisticaServicio servEstadistica;
@@ -45,6 +50,8 @@ public class EstadisticasRest {
         @RequestParam("fin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin,
         @RequestParam(required = false) String categoria
         ) {
+        PeticionLogger.log(LOGGER, "GET", "/api/v2/estadisticas/categorias",
+                "inicio=" + fechaInicio + ", fin=" + fechaFin + ", categoria=" + categoria);
         List<EstadisticaDto> estadisticas = servEstadistica.estadisticasCategorias(fechaInicio, fechaFin, categoria);
         return new ResponseEntity<>(estadisticas, HttpStatus.OK);
     }
@@ -63,7 +70,8 @@ public class EstadisticasRest {
         @RequestParam(required = false) String categoria,
         @RequestParam(required = false) String curso
         ) {
-
+        PeticionLogger.log(LOGGER, "GET", "/api/v2/estadisticas/cursos",
+                "inicio=" + fechaInicio + ", fin=" + fechaFin + ", categoria=" + categoria + ", curso=" + curso);
         List<EstadisticaDto> estadisticas = servEstadistica.estadisticasCursos(fechaInicio, fechaFin, categoria, curso);
         return new ResponseEntity<>(estadisticas, HttpStatus.OK);
     }
@@ -88,7 +96,9 @@ public class EstadisticasRest {
         @Parameter(description = "campo opcional, si es null obtendra de todas los iterables")
         @RequestParam(required = false) Integer iterable
         ) {
-
+        PeticionLogger.log(LOGGER, "GET", "/api/v2/estadisticas/grupos",
+                "inicio=" + fechaInicio + ", fin=" + fechaFin + ", categoria=" + categoria + ", curso=" + curso
+                        + ", anio=" + anio + ", iterable=" + iterable);
         List<EstadisticaDto> estadisticas = servEstadistica.estadisticasGrupos(fechaInicio, fechaFin, categoria, curso, anio, iterable);
         return new ResponseEntity<>(estadisticas, HttpStatus.OK);
     }
@@ -107,6 +117,8 @@ public class EstadisticasRest {
         @Parameter(description = "campo opcional, si es null obtendra de todos los alumnos")
         @RequestParam(required = false) String alumno
     ) {
+        PeticionLogger.log(LOGGER, "GET", "/api/v2/estadisticas/alumnos",
+                "inicio=" + fechaInicio + ", fin=" + fechaFin + ", alumno=" + alumno);
         List<EstadisticaDto> estadisticas = servEstadistica.estadisticaAlumno(alumno, fechaInicio, fechaFin);
         return new ResponseEntity<>(estadisticas,HttpStatus.OK);
     }
@@ -125,6 +137,8 @@ public class EstadisticasRest {
         @Parameter(description = "campo opcional, si es null obtendra de todos los instructores")
         @RequestParam(required = false) String instructor
     ) {
+        PeticionLogger.log(LOGGER, "GET", "/api/v2/estadisticas/instructores",
+                "inicio=" + fechaInicio + ", fin=" + fechaFin + ", instructor=" + instructor);
         List<EstadisticaDto> estadisticas = servEstadistica.estadisticaInstructor(instructor, fechaInicio, fechaFin);
         return new ResponseEntity<>(estadisticas,HttpStatus.OK);
     }

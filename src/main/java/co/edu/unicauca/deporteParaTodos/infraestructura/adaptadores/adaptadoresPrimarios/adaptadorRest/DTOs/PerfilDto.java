@@ -37,6 +37,8 @@ public class PerfilDto {
             dto.setRole(perfil.getRol());
             dto.setSexo(perfil.getSexo());
             dto.setTipoId(perfil.getTipoId());
+            dto.setFacultad(perfil.getFacultad());
+            dto.setTipoAlumno(perfil.getTipoAlumno());
             return dto;
         }catch(Exception e){
             return null;

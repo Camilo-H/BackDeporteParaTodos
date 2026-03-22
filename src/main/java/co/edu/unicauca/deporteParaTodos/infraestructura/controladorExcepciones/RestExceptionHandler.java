@@ -3,12 +3,15 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -28,9 +31,22 @@ import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.f
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.formatoError.ErrorUtils;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.formatoError.Error;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 
 @RestControllerAdvice
 public class RestExceptionHandler {
+        private static final Logger LOGGER = LoggerFactory.getLogger(RestExceptionHandler.class);
+
+        private void logExcepcion(String tipo, HttpServletRequest req, Exception ex) {
+                LOGGER.error(
+                                "\n=============================\nExcepcion: {}\nPeticion: {}\nDireccion: {}\nMotivo: {}\n=============================",
+                                tipo,
+                                req != null ? req.getMethod() : "N/A",
+                                req != null ? req.getRequestURL().toString() : "N/A",
+                                ex != null ? ex.getMessage() : "Sin detalle",
+                                ex);
+        }
         /***
          * Captura las excepciones generadas por los argumentos en los endpoint al no
          * coincidir con los constraint establecidos.
@@ -44,7 +60,7 @@ public class RestExceptionHandler {
          *         argumentos
          */
         @ExceptionHandler(MethodArgumentNotValidException.class)
-        public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        public ResponseEntity<Map<String, String>> handleValidationExceptions(HttpServletRequest req, MethodArgumentNotValidException ex) {
                 System.out.println("Retornando respuesta con los errores identificados");
                 Map<String, String> errores = new HashMap<>();
                 ex.getBindingResult().getAllErrors().forEach((error) -> {
@@ -53,6 +69,41 @@ public class RestExceptionHandler {
                         errores.put(campo, mensajeDeError);
                 });
 
+                logExcepcion("MethodArgumentNotValidException", req, ex);
+                return new ResponseEntity<Map<String, String>>(errores, HttpStatus.BAD_REQUEST);
+        }
+
+        /**
+         * Captura las excepciones de validacion lanzadas sobre parametros simples
+         * como query params, path params o request params cuando se usa @Validated.
+         */
+        @ExceptionHandler(ConstraintViolationException.class)
+        public ResponseEntity<Map<String, String>> handleConstraintViolationExceptions(HttpServletRequest req, ConstraintViolationException ex) {
+                Map<String, String> errores = new HashMap<>();
+                for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
+                        String ruta = violation.getPropertyPath() != null ? violation.getPropertyPath().toString() : "parametro";
+                        String campo = ruta.contains(".") ? ruta.substring(ruta.lastIndexOf('.') + 1) : ruta;
+                        errores.put(campo, violation.getMessage());
+                }
+                logExcepcion("ConstraintViolationException", req, ex);
+                return new ResponseEntity<Map<String, String>>(errores, HttpStatus.BAD_REQUEST);
+        }
+
+        /**
+         * Captura validaciones de parametros de metodo en Spring Framework 6.1+.
+         */
+        @ExceptionHandler(HandlerMethodValidationException.class)
+        public ResponseEntity<Map<String, String>> handleHandlerMethodValidationException(
+                        HttpServletRequest req,
+                        HandlerMethodValidationException ex) {
+                Map<String, String> errores = new HashMap<>();
+                ex.getAllValidationResults().forEach(resultado -> {
+                        String campo = resultado.getMethodParameter().getParameterName();
+                        resultado.getResolvableErrors().forEach(error -> {
+                                errores.put(campo, error.getDefaultMessage());
+                        });
+                });
+                logExcepcion("HandlerMethodValidationException", req, ex);
                 return new ResponseEntity<Map<String, String>>(errores, HttpStatus.BAD_REQUEST);
         }
 
@@ -63,10 +114,11 @@ public class RestExceptionHandler {
          * @return
          */
         @ExceptionHandler(HttpMessageNotReadableException.class)
-                public ResponseEntity<Map<String, String>> handleJsonParseError(HttpMessageNotReadableException ex) {
+                public ResponseEntity<Map<String, String>> handleJsonParseError(HttpServletRequest req, HttpMessageNotReadableException ex) {
                 Map<String, String> error = new HashMap<>();
                 error.put("mensaje", "El cuerpo de la solicitud contiene JSON mal formado o datos no válidos.");
                 error.put("detalle", ex.getMostSpecificCause().getMessage());
+                logExcepcion("HttpMessageNotReadableException", req, ex);
                 return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
         }
 
@@ -81,6 +133,7 @@ public class RestExceptionHandler {
         @ExceptionHandler(ListadoVacioExcepcion.class)
         @ResponseBody
         public ResponseEntity<Error> GenericException(final HttpServletRequest req, final ListadoVacioExcepcion ex) {
+                logExcepcion("ListadoVacioExcepcion", req, ex);
                 final Error error = ErrorUtils.crearError(
                                 CodigoError.LISTADO_VACIO.getCodigo(),
                                 String.format("%s, %s", CodigoError.LISTADO_VACIO.getLlaveMensaje(), ex.getMessage()),
@@ -94,6 +147,7 @@ public class RestExceptionHandler {
         // Cuando intenta buscar un elemento por código y no se encuentra
         @ExceptionHandler(NoExisteExcepcion.class)
         public ResponseEntity<Error> GenericException(final HttpServletRequest req, final NoExisteExcepcion ex) {
+                logExcepcion("NoExisteExcepcion", req, ex);
                 final Error error = ErrorUtils.crearError(
                                 ex.getCodigo(),
                                 ex.getLlaveMensaje() +": "+ ex.getMessage(),
@@ -113,6 +167,7 @@ public class RestExceptionHandler {
         @ExceptionHandler(ArchivoNoConvertibleExcepcion.class)
         public ResponseEntity<Error> GenericException(final HttpServletRequest req,
                         final ArchivoNoConvertibleExcepcion ex) {
+                logExcepcion("ArchivoNoConvertibleExcepcion", req, ex);
                 final Error error = ErrorUtils.crearError(
                                 ex.getCodigo(),
                                 String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage()),
@@ -128,6 +183,7 @@ public class RestExceptionHandler {
          */
         @ExceptionHandler(InsercionFallidaExepcion.class)
         public ResponseEntity<Error> GenericException(final HttpServletRequest req, final InsercionFallidaExepcion ex) {
+                logExcepcion("InsercionFallidaExepcion", req, ex);
                 final Error error = ErrorUtils.crearError(
                                 ex.getCodigo(),
                                 String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage()),
@@ -140,6 +196,7 @@ public class RestExceptionHandler {
         @ExceptionHandler(YaExisteElementoExcepcion.class)
         public ResponseEntity<Error> GenericException(final HttpServletRequest req,
                         final YaExisteElementoExcepcion ex) {
+                logExcepcion("YaExisteElementoExcepcion", req, ex);
                 final Error error = ErrorUtils
                                 .crearError(ex.getCodigo(),
                                                 String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage()),
@@ -151,6 +208,7 @@ public class RestExceptionHandler {
         @ExceptionHandler(NoImplementadoException.class)
         public ResponseEntity<Error> GenericException(final HttpServletRequest req,
                         final NoImplementadoException ex) {
+                logExcepcion("NoImplementadoException", req, ex);
                 final Error error = ErrorUtils
                                 .crearError(ex.getCodigo(),
                                                 String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage()),
@@ -161,6 +219,7 @@ public class RestExceptionHandler {
 
         @ExceptionHandler(NoConvertibleException.class)
         public ResponseEntity<Error> GenericException(final HttpServletRequest req, final NoConvertibleException ex){
+                logExcepcion("NoConvertibleException", req, ex);
                 HttpStatusCode codigoHttp = HttpStatus.NOT_ACCEPTABLE;
                 String mensaje = String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage());
 
@@ -174,6 +233,7 @@ public class RestExceptionHandler {
 
          @ExceptionHandler(ErrorInternoException.class)
         public ResponseEntity<Error> GenericException(final HttpServletRequest req, final ErrorInternoException ex){
+                logExcepcion("ErrorInternoException", req, ex);
                 HttpStatusCode codigoHttp = HttpStatus.INTERNAL_SERVER_ERROR;
                 String mensaje = String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage());
 
@@ -193,6 +253,7 @@ public class RestExceptionHandler {
          */
         @ExceptionHandler(DependenciaFallida.class)
         public ResponseEntity<Error> GenericException(final HttpServletRequest req, final DependenciaFallida ex){
+                logExcepcion("DependenciaFallida", req, ex);
                 HttpStatusCode codigoHttp = HttpStatus.FAILED_DEPENDENCY;
                 String mensaje = String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage());
 
@@ -206,6 +267,7 @@ public class RestExceptionHandler {
 
         @ExceptionHandler(NoProcesableEntidadException.class)
         public ResponseEntity<Error> GenericException(final HttpServletRequest req, final NoProcesableEntidadException ex){
+                logExcepcion("NoProcesableEntidadException", req, ex);
                 HttpStatusCode codigoHttp = HttpStatus.INTERNAL_SERVER_ERROR;
                 String mensaje = String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage());
 

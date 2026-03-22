@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IPerfilGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Perfil;
 import co.edu.unicauca.deporteParaTodos.dominio.servicios.valores.Roles;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.AlumnoEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.PerfilEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IAlumnoRepositorio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.ICoordinadorRepositorio;
@@ -149,7 +150,12 @@ public class PerfilGateway implements IPerfilGateway {
                 return perfil;
             }
             if(repoAlumno.existsById(id)){
+                AlumnoEntidad alumno = repoAlumno.findById(id).orElse(null);
                 perfil.setRol(Roles.ALUMNO.getValor());
+                if(alumno != null){
+                    perfil.setTipoAlumno(alumno.getTipoAlumno());
+                }
+                perfil.setFacultad(repoAlumno.obtenerFacultadPorPerfilId(id));
                 return perfil;
             }
         }

@@ -2,6 +2,8 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadores
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.ICategoriaCursoServicio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CategoriaDto;
+import co.edu.unicauca.deporteParaTodos.infraestructura.logs.PeticionLogger;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -33,6 +36,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 @Validated
 public class CategoriaRest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CategoriaRest.class);
+
     @Autowired
     private ICategoriaCursoServicio servicioCategoria;
     
@@ -42,7 +47,7 @@ public class CategoriaRest {
     })
     @GetMapping("/categorias2")
     public ResponseEntity<List<CategoriaDto>> obtenerCategoriasExistentes(){        
-
+        PeticionLogger.log(LOGGER, "GET", "/api/v2/categorias2", "sin datos");
         List<CategoriaDto> listaDtos = servicioCategoria.recuperarCategoriasCurso();
         return new ResponseEntity<>(listaDtos, HttpStatus.OK);
     }
@@ -57,6 +62,7 @@ public class CategoriaRest {
             @Parameter(description = "identificador de la categoria, titulo")
             @RequestParam String titulo
         ) {
+        PeticionLogger.log(LOGGER, "GET", "/api/v2/categoria", "titulo=" + titulo);
         CategoriaDto dto = servicioCategoria.obtenerCategoriaCursoPorId(titulo);
         return new ResponseEntity<>(dto,HttpStatus.OK);
     }
@@ -68,6 +74,7 @@ public class CategoriaRest {
     })
     @PostMapping("/categoria")
     public ResponseEntity<CategoriaDto> postCategoria(@RequestBody @Valid CategoriaDto dto) {
+        PeticionLogger.log(LOGGER, "POST", "/api/v2/categoria", dto);
         CategoriaDto respuesta = servicioCategoria.insertarCategoria(dto);
         return new ResponseEntity<>(respuesta, HttpStatus.CREATED);
     }
@@ -78,6 +85,7 @@ public class CategoriaRest {
     })
     @PutMapping("/categoria")
     public ResponseEntity<CategoriaDto> putCategoria(@RequestParam @NotBlank String titulo, @RequestBody @Valid CategoriaDto dto) {
+        PeticionLogger.log(LOGGER, "PUT", "/api/v2/categoria", "titulo=" + titulo + ", body=" + dto);
         CategoriaDto respuesta = servicioCategoria.actualizarCategoria(titulo, dto);
         return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
@@ -90,6 +98,7 @@ public class CategoriaRest {
     @Operation(summary = "Elimina una categoria")
     @DeleteMapping("/categoria")
     public ResponseEntity<CategoriaDto> deleteCategoria(@RequestParam String titulo){
+        PeticionLogger.log(LOGGER, "DELETE", "/api/v2/categoria", "titulo=" + titulo);
         CategoriaDto categoria = servicioCategoria.eliminarCategoria(titulo);
         return new ResponseEntity<>(categoria, HttpStatus.OK);
     }

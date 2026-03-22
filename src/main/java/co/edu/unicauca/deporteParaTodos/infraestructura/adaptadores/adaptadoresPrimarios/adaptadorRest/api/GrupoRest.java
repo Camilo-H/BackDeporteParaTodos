@@ -2,6 +2,8 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadores
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IGrupoServicio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.GrupoDto;
+import co.edu.unicauca.deporteParaTodos.infraestructura.logs.PeticionLogger;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -29,6 +32,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Validated
 public class GrupoRest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(GrupoRest.class);
+
     @Autowired
     private IGrupoServicio servicio;
 
@@ -38,6 +43,7 @@ public class GrupoRest {
     })
     @GetMapping("/grupos")
     public ResponseEntity<List<GrupoDto>> obtenerCursos(){
+        PeticionLogger.log(LOGGER, "GET", "/api/v2/grupos", "sin datos");
         List<GrupoDto> dtos = servicio.obtenerTodosGrupos();
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
@@ -48,6 +54,7 @@ public class GrupoRest {
     })
     @GetMapping("gruposNoEliminados")
     public ResponseEntity<List<GrupoDto>> obtenerCursosNoeliminados(){
+        PeticionLogger.log(LOGGER, "GET", "/api/v2/gruposNoEliminados", "sin datos");
         List<GrupoDto> dtos = servicio.obtenerGruposDisponibles();
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
@@ -58,6 +65,7 @@ public class GrupoRest {
     })
     @GetMapping("gruposCurso")
     public ResponseEntity<List<GrupoDto>> obtenerGruposDe(@RequestParam String prmCategoria, @RequestParam String prmCurso){
+        PeticionLogger.log(LOGGER, "GET", "/api/v2/gruposCurso", "prmCategoria=" + prmCategoria + ", prmCurso=" + prmCurso);
         List<GrupoDto> dtos = servicio.obtenerGruposDeCurso(prmCategoria, prmCurso);
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
@@ -68,6 +76,7 @@ public class GrupoRest {
     })
     @GetMapping("/gruposInscripcion")
     public ResponseEntity<List<GrupoDto>> obtenerGruposInscripcion() {
+        PeticionLogger.log(LOGGER, "GET", "/api/v2/gruposInscripcion", "sin datos");
         List<GrupoDto> dtos = servicio.obtenerGruposInscripcionDisponible();
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
@@ -78,6 +87,7 @@ public class GrupoRest {
     })
     @GetMapping("/gruposInstructor")
     public ResponseEntity<List<GrupoDto>> obtnerGruposInstructor(@RequestParam String idInstructor) {
+        PeticionLogger.log(LOGGER, "GET", "/api/v2/gruposInstructor", "idInstructor=" + idInstructor);
         List<GrupoDto> dtos = servicio.obtenerGruposInstructor(idInstructor);
         return new ResponseEntity<>(dtos,HttpStatus.OK);
     }
@@ -93,6 +103,7 @@ public class GrupoRest {
     })
     @PostMapping("/grupo")
     public ResponseEntity<GrupoDto> postGrupo(@RequestBody @Valid GrupoDto dto) {
+        PeticionLogger.log(LOGGER, "POST", "/api/v2/grupo", dto);
         GrupoDto guardado = servicio.insertarGrupo(dto);
         return new ResponseEntity<>(guardado, HttpStatus.CREATED);
     }
@@ -103,6 +114,7 @@ public class GrupoRest {
     })
     @GetMapping("/grupo")
     public ResponseEntity<GrupoDto> obtenerGrupo(@RequestParam String categoria, @RequestParam String curso, @RequestParam Integer anio, @RequestParam Integer iterable) {
+        PeticionLogger.log(LOGGER, "GET", "/api/v2/grupo", "categoria=" + categoria + ", curso=" + curso + ", anio=" + anio + ", iterable=" + iterable);
         GrupoDto dto = servicio.obtenerGrupo(categoria, curso, anio, iterable);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }

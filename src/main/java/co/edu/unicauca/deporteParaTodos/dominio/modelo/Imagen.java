@@ -34,9 +34,10 @@ public class Imagen {
             modelo.setTipoArchivo(dto.getTipoArchivo());
             if(dto.getDatosMultipartFile().getSize()>0){
                 modelo.setDatos(dto.getDatosMultipartFile().getBytes());
-            }
-            if(dto.getDatosBase64().length()>1){
+            }else if(dto.getDatosBase64()!=null){
                 modelo.setDatos(Base64.getDecoder().decode(dto.getDatosBase64()));
+            }else{
+                modelo.setDatos(null);
             }
             return modelo;
         }catch(Exception e){

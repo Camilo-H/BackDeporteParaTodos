@@ -76,7 +76,7 @@ public class ImagenServicio implements IImagenServicio {
         if (objImagen == null) {
             throw new InsercionFallidaExepcion("La insersion no se pudo realizar");
         }
-        ImagenDto dto = ImagenDto.fabricaFromImagenModelo(modelo);
+        ImagenDto dto = ImagenDto.fabricaFromImagenModelo(objImagen);
         return dto;
     }
 

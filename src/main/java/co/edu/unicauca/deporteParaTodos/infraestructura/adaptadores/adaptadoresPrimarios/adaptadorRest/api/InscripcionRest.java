@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,21 +18,20 @@ import org.springframework.web.bind.annotation.RestController;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.InscripcionEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ids.InscripcionId;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IInscripcionRepositorio;
+import co.edu.unicauca.deporteParaTodos.infraestructura.logs.PeticionLogger;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-
-
-
 
 @RestController
 @RequestMapping("api/v2")
 @CrossOrigin(origins = { "*" }, maxAge = 4200, allowCredentials = "false")
 @Validated
 public class InscripcionRest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(InscripcionRest.class);
+
     @Autowired
     IInscripcionRepositorio repositorio;
     
@@ -43,6 +44,7 @@ public class InscripcionRest {
     @PostMapping("/inscripcion")
     //TODO: crear dto
     public ResponseEntity<InscripcionEntidad> postMethodName(@RequestBody InscripcionEntidad entidad) {
+        PeticionLogger.log(LOGGER, "POST", "/api/v2/inscripcion", entidad);
         InscripcionId id = new InscripcionId(entidad.getCategoria(), entidad.getCurso(), entidad.getAnio(), entidad.getIterable(), entidad.getAlumnoId());
         boolean existe = repositorio.existsById(id);
         InscripcionEntidad entidadGuardada;
@@ -65,6 +67,7 @@ public class InscripcionRest {
      */
     @GetMapping("/validarInscripcion")
     public ResponseEntity<Boolean> validarIncripcion(@RequestBody InscripcionEntidad entidad){
+        PeticionLogger.log(LOGGER, "GET", "/api/v2/validarInscripcion", entidad);
         boolean respuesta = repositorio.existeInscripcionActiva(entidad.getAlumnoId(), entidad.getCategoria(), entidad.getCurso(), entidad.getAnio(), entidad.getIterable());
         return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
@@ -76,6 +79,7 @@ public class InscripcionRest {
      */
     @PutMapping("/desvincularInscripcion")
     public ResponseEntity<InscripcionEntidad> eliminarInscripcion(@RequestBody InscripcionEntidad entidad){
+        PeticionLogger.log(LOGGER, "PUT", "/api/v2/desvincularInscripcion", entidad);
         InscripcionId id = new InscripcionId(entidad.getCategoria(), entidad.getCurso(), entidad.getAnio(), entidad.getIterable(), entidad.getAlumnoId());
         Optional<InscripcionEntidad> opcional = repositorio.findById(id);
         if(opcional.isPresent()){
