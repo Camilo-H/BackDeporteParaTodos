@@ -46,4 +46,6 @@ public class AutenticacionRest {
         PerfilDto respuesta = servicioAutenticacion.login(email);
         return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
+
+    //TODO: metodo de registro
 }
