@@ -10,6 +10,8 @@ import lombok.Setter;
 @Setter
 @Getter
 public class Alumno {
+    private Integer eliminadoestado;
     private String alm_codigo;
+    private String tipoAlumno;
     private Perfil perfil;
 }

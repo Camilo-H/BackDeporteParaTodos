@@ -1,6 +1,6 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs;
 
-import co.edu.unicauca.deporteParaTodos.dominio.modelo.Alumno;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Instructor;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,15 +10,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AlumnoDto {
-
-    private Integer eliminadoestado;
+public class InstructorDto {
 
     private String id;
-
-    private String codigo;
-
-    private String tipo;
 
     private String nombre;
 
@@ -26,23 +20,14 @@ public class AlumnoDto {
 
     private String sexo;
 
-    private String tipoid;
-
-    private Integer imagen;
-
-    public static AlumnoDto fabricarDeModelo(Alumno modelo) {
+    public static InstructorDto fabricarDeModelo(Instructor modelo) {
         try {
-            AlumnoDto dto = new AlumnoDto();
-            dto.setEliminadoestado(modelo.getEliminadoestado());
-            dto.setCodigo(modelo.getAlm_codigo());
-            dto.setTipo(modelo.getTipoAlumno());
+            InstructorDto dto = new InstructorDto();
             if (modelo.getPerfil() != null) {
                 dto.setId(modelo.getPerfil().getId());
                 dto.setNombre(modelo.getPerfil().getNombre());
                 dto.setCorreo(modelo.getPerfil().getCorreo());
                 dto.setSexo(modelo.getPerfil().getSexo());
-                dto.setTipoid(modelo.getPerfil().getTipoId());
-                dto.setImagen(modelo.getPerfil().getImagen());
             }
             return dto;
         } catch (Exception e) {

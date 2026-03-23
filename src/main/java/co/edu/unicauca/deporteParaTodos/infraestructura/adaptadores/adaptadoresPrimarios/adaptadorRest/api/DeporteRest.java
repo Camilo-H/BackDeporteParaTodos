@@ -9,38 +9,37 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IInstructorServicio;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.InstructorDto;
+import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IDeporteServicio;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.DeporteDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.logs.PeticionLogger;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("api/v2")
 @CrossOrigin(origins = { "*" }, maxAge = 4200, allowCredentials = "false")
 @Validated
-public class InstructoresRest {
+public class DeporteRest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(InstructoresRest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DeporteRest.class);
 
     @Autowired
-    private IInstructorServicio servicioInstructor;
+    private IDeporteServicio servicioDeporte;
 
-    @Operation(summary = "Obtiene todos los instructores registrados en el sistema")
+    @Operation(summary = "Obtiene todos los deportes registrados en el sistema")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Listado de instructores"),
-        @ApiResponse(responseCode = "404", description = "No existen instructores registrados")
+        @ApiResponse(responseCode = "200", description = "Listado de deportes"),
+        @ApiResponse(responseCode = "404", description = "No existen deportes registrados")
     })
-    @GetMapping("/instructores")
-    public ResponseEntity<List<InstructorDto>> getMethodName() {
-        PeticionLogger.log(LOGGER, "GET", "/api/v2/instructores", "sin datos");
-        List<InstructorDto> respuesta = servicioInstructor.obtenerInstructores();
+    @GetMapping("/deportes")
+    public ResponseEntity<List<DeporteDto>> obtenerDeportes() {
+        PeticionLogger.log(LOGGER, "GET", "/api/v2/deportes", "sin datos");
+        List<DeporteDto> respuesta = servicioDeporte.listaDeportes();
         return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
-    
 }

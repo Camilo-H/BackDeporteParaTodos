@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IInstructorGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Instructor;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ImagenEntidad;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Perfil;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.InstructorEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IInstructorRepositorio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
@@ -29,10 +29,19 @@ public class InstructorGateway implements IInstructorGateway {
 
     @Override
     public List<Instructor> obtenerInstructores() {
-        Iterable<InstructorEntidad> entidades = repoInstructor.findAll();
         List<Instructor> instructores = new ArrayList<>();
-        instructores = mapper.map(entidades, new TypeToken<List<Instructor>>() {
-        }.getType());
+        List<Object[]> resultados = repoInstructor.buscarInstructoresRaw(0);
+        resultados.forEach(registro -> {
+            Perfil perfil = new Perfil();
+            perfil.setId((String) registro[0]);
+            perfil.setNombre((String) registro[1]);
+            perfil.setCorreo((String) registro[2]);
+            perfil.setSexo((String) registro[3]);
+
+            Instructor instructor = new Instructor();
+            instructor.setPerfil(perfil);
+            instructores.add(instructor);
+        });
         return instructores;
     }
 
