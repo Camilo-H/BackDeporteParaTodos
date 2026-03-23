@@ -90,6 +90,39 @@ public class PerfilGateway implements IPerfilGateway {
     }
 
     @Override
+    public Perfil registrarAlumno(Perfil perfil) {
+        if (existePerfil(perfil.getId())) {
+            throw new YaExisteElementoExcepcion("El perfil con la identificacion ya se encuentra registrado");
+        }
+
+        PerfilEntidad entidadPerfil = PerfilEntidad.fabricarDeModelo(perfil, 0);
+        if (entidadPerfil == null) {
+            throw new NoConvertibleException();
+        }
+
+        AlumnoEntidad entidadAlumno = AlumnoEntidad.fabricarDePerfil(perfil, 0);
+        if (entidadAlumno == null) {
+            throw new NoConvertibleException();
+        }
+
+        PerfilEntidad perfilGuardado = repoPerfil.save(entidadPerfil);
+        AlumnoEntidad alumnoGuardado = repoAlumno.save(entidadAlumno);
+
+        if (perfilGuardado == null || alumnoGuardado == null) {
+            throw new InternalError("No se ha logrado registrar el alumno");
+        }
+
+        Perfil perfilRegistrado = Perfil.fabricarDeEntidad(perfilGuardado);
+        if (perfilRegistrado == null) {
+            throw new NoConvertibleException();
+        }
+        perfilRegistrado.setRol(Roles.ALUMNO.getValor());
+        perfilRegistrado.setTipoAlumno(alumnoGuardado.getTipoAlumno());
+        perfilRegistrado.setFacultad(null);
+        return perfilRegistrado;
+    }
+
+    @Override
     public Optional<Perfil> obtenerPerfil(String perfilId) {
         Optional<PerfilEntidad> entidadRecuperada = repoPerfil.findById(perfilId);
         return entidadRecuperada.map(perfilEndidad -> mapper.map(perfilEndidad, Perfil.class));

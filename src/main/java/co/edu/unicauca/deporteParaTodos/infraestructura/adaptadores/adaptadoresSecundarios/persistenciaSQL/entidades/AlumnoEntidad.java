@@ -3,6 +3,7 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadores
 import java.util.ArrayList;
 import java.util.List;
 
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Perfil;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -40,4 +41,17 @@ public class AlumnoEntidad {
 
     @Column(name= "META_ELIMINADO")
     private Integer eliminado;
+
+    public static AlumnoEntidad fabricarDePerfil(Perfil perfil, Integer eliminado) {
+        try {
+            AlumnoEntidad entidad = new AlumnoEntidad();
+            entidad.setIdPerfil(perfil.getId());
+            entidad.setAlm_codigo(null);
+            entidad.setTipoAlumno(perfil.getTipoAlumno());
+            entidad.setEliminado(eliminado);
+            return entidad;
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

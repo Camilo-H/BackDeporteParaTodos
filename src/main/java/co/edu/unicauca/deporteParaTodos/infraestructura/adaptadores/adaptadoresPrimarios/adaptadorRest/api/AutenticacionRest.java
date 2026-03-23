@@ -6,7 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.slf4j.Logger;
@@ -19,6 +21,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
@@ -47,5 +50,16 @@ public class AutenticacionRest {
         return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
 
-    //TODO: metodo de registro
+    @Operation(summary = "Registra un nuevo perfil en el sistema y lo asocia como alumno")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Perfil registrado correctamente"),
+        @ApiResponse(responseCode = "400", description = "Datos de entrada invalidos"),
+        @ApiResponse(responseCode = "409", description = "El perfil ya existe")
+    })
+    @PostMapping("/RegistroPerfilAlumno")
+    public ResponseEntity<PerfilDto> registrarAlumno(@RequestBody @Valid PerfilDto dto) {
+        PeticionLogger.log(LOGGER, "POST", "/api/v2/register", dto);
+        PerfilDto respuesta = servicioAutenticacion.registrarAlumno(dto);
+        return new ResponseEntity<>(respuesta, HttpStatus.CREATED);
+    }
 }
