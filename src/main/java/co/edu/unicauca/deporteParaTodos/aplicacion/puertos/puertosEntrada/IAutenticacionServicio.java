@@ -4,4 +4,5 @@ import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresP
 
 public interface IAutenticacionServicio {
     public PerfilDto login(String email);
+    public PerfilDto registrarAlumno(PerfilDto datosPerfil);
 }

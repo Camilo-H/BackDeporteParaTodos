@@ -15,6 +15,8 @@ public interface IPerfilGateway {
 
     public Perfil insertarPerfil(Perfil perfil);
 
+    public Perfil registrarAlumno(Perfil perfil);
+
     public Optional<Perfil> obtenerPerfil(String perfilId);
 
     public Perfil actualizarPerfil(String perfilId, Perfil datosPerfil);

@@ -7,7 +7,9 @@ import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IAuten
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IPerfilGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Perfil;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.PerfilDto;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ErrorInternoException;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.YaExisteElementoExcepcion;
 
 @Service
 public class AutenticacionServicio implements IAutenticacionServicio{
@@ -22,6 +24,23 @@ public class AutenticacionServicio implements IAutenticacionServicio{
         }
         PerfilDto dto = PerfilDto.fabricarDeModelo(perfil);
         return dto;
+    }
+
+    @Override
+    public PerfilDto registrarAlumno(PerfilDto datosPerfil) {
+        if (gatePerfil.existePerfil(datosPerfil.getId())) {
+            throw new YaExisteElementoExcepcion("El perfil con la identificacion ya se encuentra registrado");
+        }
+        Perfil perfil = Perfil.fabricarDeDto(datosPerfil);
+        if (perfil == null) {
+            throw new ErrorInternoException();
+        }
+        Perfil perfilRegistrado = gatePerfil.registrarAlumno(perfil);
+        PerfilDto respuesta = PerfilDto.fabricarDeModelo(perfilRegistrado);
+        if (respuesta == null) {
+            throw new ErrorInternoException();
+        }
+        return respuesta;
     }
 
     
