@@ -10,6 +10,8 @@ public interface IAlumnoGateway {
 
     public List<Alumno> obtenerAlumnos();
 
+    public List<Alumno> obtenerAlumnosGrupo(String categoria, String curso, Integer anio, Integer iterable);
+
     public Alumno insertAlumno(Alumno datosAlumno);
 
     public Optional<Alumno> obtenerAlumno(String alumnoId);

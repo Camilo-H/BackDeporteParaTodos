@@ -1,11 +1,13 @@
 package co.edu.unicauca.deporteParaTodos.dominio.servicios;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IDeporteServicio;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IDeporteGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Deporte;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.DeporteDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.InsercionFallidaExepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ListadoVacioExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
@@ -17,13 +19,17 @@ public class DeporteServicio implements IDeporteServicio {
     private IDeporteGateway deporteGateway;
 
     @Override
-    public List<Deporte> listaDeportes() {
-        // TODO Auto-generated method stub
+    public List<DeporteDto> listaDeportes() {
         List<Deporte> deportes = deporteGateway.listaDeportes();
         if(deportes.isEmpty()){
             throw new ListadoVacioExcepcion("No se encontraron deportes registrados");
         }
-        return deportes;
+        List<DeporteDto> listaDtos = new ArrayList<>();
+        deportes.forEach(modelo -> {
+            DeporteDto dto = DeporteDto.fabricarDeModelo(modelo);
+            listaDtos.add(dto);
+        });
+        return listaDtos;
     }
 
     @Override
