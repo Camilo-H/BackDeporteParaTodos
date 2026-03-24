@@ -25,6 +25,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @CrossOrigin(origins = { "*" }, maxAge = 4200, allowCredentials = "false")
 @Validated
 public class InstructoresRest {
+    // IMPLEMENTANDO ENDPOINT INSTRUCTORES
+    @Autowired
+    private IInstructorServicio instructorServicio;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InstructoresRest.class);
 
@@ -33,8 +36,8 @@ public class InstructoresRest {
 
     @Operation(summary = "Obtiene todos los instructores registrados en el sistema")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Listado de instructores"),
-        @ApiResponse(responseCode = "404", description = "No existen instructores registrados")
+            @ApiResponse(responseCode = "200", description = "Listado de instructores"),
+            @ApiResponse(responseCode = "404", description = "No existen instructores registrados")
     })
     @GetMapping("/instructores")
     public ResponseEntity<List<InstructorDto>> getMethodName() {
@@ -42,5 +45,4 @@ public class InstructoresRest {
         List<InstructorDto> respuesta = servicioInstructor.obtenerInstructores();
         return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
-    
 }

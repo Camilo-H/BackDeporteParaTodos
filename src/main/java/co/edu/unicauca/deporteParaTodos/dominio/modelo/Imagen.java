@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter
 
 public class Imagen {
-    
+
     private Integer id;
 
     private String nombre;
@@ -25,22 +25,25 @@ public class Imagen {
 
     private byte[] datos;
 
-    public static Imagen fabricaFromImagenDto(ImagenDto dto){
-        try{
+    public static Imagen fabricaFromImagenDto(ImagenDto dto) {
+        try {
             Imagen modelo = new Imagen();
             modelo.setId(dto.getId());
-            modelo.setLongitud(dto.getLongitud());
             modelo.setNombre(dto.getNombre());
             modelo.setTipoArchivo(dto.getTipoArchivo());
-            if(dto.getDatosMultipartFile().getSize()>0){
+
+            if (dto.getDatosMultipartFile() != null && !dto.getDatosMultipartFile().isEmpty()) {
                 modelo.setDatos(dto.getDatosMultipartFile().getBytes());
-            }else if(dto.getDatosBase64()!=null){
-                modelo.setDatos(Base64.getDecoder().decode(dto.getDatosBase64()));
-            }else{
-                modelo.setDatos(null);
+                modelo.setLongitud(dto.getDatosMultipartFile().getSize());
+            } else if (dto.getDatosBase64() != null && !dto.getDatosBase64().isBlank()) {
+                byte[] datos = Base64.getDecoder().decode(dto.getDatosBase64());
+                modelo.setDatos(datos);
+                modelo.setLongitud((long) datos.length);
             }
+
             return modelo;
-        }catch(Exception e){
+        } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }

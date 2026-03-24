@@ -28,7 +28,7 @@ public class CursoServicio implements ICursoServicio {
     public List<CursoDto> recuperarCursos() {
         List<Curso> cursos = cursoGateway.obtenerCursos();
         List<CursoDto> dtos = new ArrayList<>();
-
+        System.out.println("cursos encontrados: "+cursos.size());
         cursos.forEach(curso -> {
             CursoDto dto = CursoDto.fabricarDeModelo(curso);
             dtos.add(dto);
