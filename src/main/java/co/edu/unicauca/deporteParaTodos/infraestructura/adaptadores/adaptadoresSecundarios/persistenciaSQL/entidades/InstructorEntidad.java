@@ -34,5 +34,9 @@ public class InstructorEntidad {
 
     //@OneToMany(mappedBy = "instructor", cascade = CascadeType.ALL, orphanRemoval = true)
     //private List<ClaseEntidad> clases = new ArrayList<>();
+    // ✅ Relación con TBL_PERFIL usando la misma columna perf_id
+    @OneToOne
+    @JoinColumn(name = "perf_id", insertable = false, updatable = false)
+    private PerfilEntidad perfil;
 
 }

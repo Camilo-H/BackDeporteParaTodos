@@ -12,7 +12,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 @Getter
-
 public class Curso {
 
     private String nombre;

@@ -40,8 +40,10 @@ public interface IAsistenciaRepositorio extends CrudRepository<AsistenciaEntidad
             where (:categoria is null or c.cat_titulo = :categoria)
             group by cc.cat_titulo
             """,nativeQuery = true)
-    List<Object[]>  estadisticasCategorias(@Param("fechaInicio") LocalDate fechaInicio, @Param("fechaFin") LocalDate fechaFin, String categoria);
-
+    List<Object[]> estadisticasCategorias(
+            @Param("fechaInicio") LocalDate fechaInicio,
+            @Param("fechaFin") LocalDate fechaFin,
+            @Param("categoria") String categoria);
     /***
      * Obtiene las estadisticas de todos los cursos entre 2 fechas
      * @param fechaInicio
@@ -69,8 +71,11 @@ public interface IAsistenciaRepositorio extends CrudRepository<AsistenciaEntidad
                 (:curso is null or c.cur_nombre = :curso)
             group by c.cat_titulo, c.cur_nombre
             """,nativeQuery = true)
-    List<Object[]>  estadisticasCursos(@Param("fechaInicio") LocalDate fechaInicio, @Param("fechaFin") LocalDate fechaFin, String categoria, String curso);
-
+    List<Object[]> estadisticasCursos(
+            @Param("fechaInicio") LocalDate fechaInicio,
+            @Param("fechaFin") LocalDate fechaFin,
+            @Param("categoria") String categoria,   // ← agregar @Param
+            @Param("curso") String curso);
 
     /**
      * Retorna las estadisticas de los grupos entre 2 fechas
