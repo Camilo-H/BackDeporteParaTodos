@@ -29,17 +29,21 @@ public class Imagen {
         try{
             Imagen modelo = new Imagen();
             modelo.setId(dto.getId());
-            modelo.setLongitud(dto.getLongitud());
             modelo.setNombre(dto.getNombre());
             modelo.setTipoArchivo(dto.getTipoArchivo());
-            if(dto.getDatosMultipartFile().getSize()>0){
+
+            if(dto.getDatosMultipartFile() != null && !dto.getDatosMultipartFile().isEmpty()){
                 modelo.setDatos(dto.getDatosMultipartFile().getBytes());
+                modelo.setLongitud(dto.getDatosMultipartFile().getSize());
+            } else if(dto.getDatosBase64() != null && !dto.getDatosBase64().isBlank()){
+                byte[] datos = Base64.getDecoder().decode(dto.getDatosBase64());
+                modelo.setDatos(datos);
+                modelo.setLongitud((long) datos.length);
             }
-            if(dto.getDatosBase64().length()>1){
-                modelo.setDatos(Base64.getDecoder().decode(dto.getDatosBase64()));
-            }
+
             return modelo;
         }catch(Exception e){
+            e.printStackTrace();
             return null;
         }
     }

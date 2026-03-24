@@ -4,6 +4,7 @@ import co.edu.unicauca.deporteParaTodos.dominio.modelo.Perfil;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,8 +14,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
-@Entity(name = "tbl_perfil")
+@Entity                          // ✅ @Entity sin name
+@Table(name = "tbl_perfil")
 public class PerfilEntidad {
     @Id
     @Column(name = "perf_id", length = 50, nullable = false)

@@ -18,6 +18,7 @@ public class InstructorServicio implements IInstructorServicio {
 
     @Override
     public List<Instructor> obtenerInstructores() {
+        System.out.println("consultando instructores");
         List<Instructor> listInstructors = instructorsGateway.obtenerInstructores();
         if (listInstructors.isEmpty()) {
             throw new ListadoVacioExcepcion("No se encuentran instructores registrados");

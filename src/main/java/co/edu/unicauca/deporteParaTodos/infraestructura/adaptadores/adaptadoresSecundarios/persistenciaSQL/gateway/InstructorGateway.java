@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Perfil;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +28,35 @@ public class InstructorGateway implements IInstructorGateway {
     @Autowired
     private ModelMapper mapper;
 
-    @Override
+    // ── Mapeo manual Entidad → Dominio ──────────────────────────────────────
+    private Instructor mapearEntidadADominio(InstructorEntidad entidad) {
+        Instructor instructor = new Instructor();
+        instructor.setInst_codigo(entidad.getIdPerfil());
+
+        if (entidad.getPerfil() != null) {
+            instructor.setPerfil(Perfil.fabricarDeEntidad(entidad.getPerfil()));
+        }
+
+        return instructor;
+    }
+
+   /* @Override
     public List<Instructor> obtenerInstructores() {
         Iterable<InstructorEntidad> entidades = repoInstructor.findAll();
         List<Instructor> instructores = new ArrayList<>();
         instructores = mapper.map(entidades, new TypeToken<List<Instructor>>() {
         }.getType());
         return instructores;
-    }
+    }*/
+    //Nueva Implementacion para obtener instructores
+   @Override
+   public List<Instructor> obtenerInstructores() {
+       List<Instructor> lista = new ArrayList<>();
+       repoInstructor.findAll()
+               .forEach(entidad -> lista.add(mapearEntidadADominio(entidad)));
+       return lista;
+   }
+
 
     @Override
     public boolean existeInstructor(String instructorId) {
