@@ -33,12 +33,13 @@ public class DeporteServicio implements IDeporteServicio {
     }
 
     @Override
-    public Deporte insertarDeporte(Deporte datosDeporte) {
+    public DeporteDto insertarDeporte(DeporteDto datosDeporte) {
         // TODO Auto-generated method stub
         if (deporteGateway.existeDeporte(datosDeporte.getNombre())) {
             throw new InsercionFallidaExepcion("El deporte ya existe");
         }
-        return deporteGateway.insertarDeporte(datosDeporte);
+        Deporte deporte = Deporte.fabricarDeDto(datosDeporte);
+        return DeporteDto.fabricarDeModelo(deporte);
     }
 
     @Override
