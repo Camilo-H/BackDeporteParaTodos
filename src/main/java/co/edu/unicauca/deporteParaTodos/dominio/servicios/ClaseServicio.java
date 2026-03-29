@@ -1,11 +1,14 @@
 package co.edu.unicauca.deporteParaTodos.dominio.servicios;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IClaseServicio;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IClaseGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Clase;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.ClaseDto;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ErrorInternoException;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ListadoVacioExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
 
@@ -16,38 +19,44 @@ public class ClaseServicio implements IClaseServicio {
     private IClaseGateway claseGateway;
 
     @Override
-    public List<Clase> obtenerClases() {
-        List<Clase> listado = claseGateway.obtenerClases();
+    public List<ClaseDto> obtenerClasesGrupo(String categoria, String curso, Integer anio, Integer iterable) {
+        List<Clase> listado = claseGateway.obtenerClasesGrupo(categoria, curso, anio, iterable);
         if (listado.isEmpty()) {
             throw new ListadoVacioExcepcion("No existen registros");
         }
-        return listado;
+        List<ClaseDto> listaDtos = new ArrayList<>();
+        listado.forEach(modelo -> {
+            ClaseDto dto = ClaseDto.fabricarDeModelo(modelo);
+            listaDtos.add(dto);
+        });
+        return listaDtos;
     }
 
     @Override
-    public Clase obtenerClase(int id) {
-        return claseGateway.obtenerClase(id).orElseThrow(() -> new NoExisteExcepcion());
+    public ClaseDto insertarClase(ClaseDto datoClase) {
+        Clase modelo = Clase.fabricarDeDto(datoClase);
+        if (modelo == null) {
+            throw new ErrorInternoException();
+        }
+        Clase claseInsertada = claseGateway.insertarClase(modelo);
+        ClaseDto respuesta = ClaseDto.fabricarDeModelo(claseInsertada);
+        if (respuesta == null) {
+            throw new ErrorInternoException();
+        }
+        return respuesta;
     }
 
     @Override
-    public Clase insertarClase(Clase datoClase) {
-        return claseGateway.insertarClase(datoClase);
-    }
-
-    @Override
-    public Clase actualizarClase(int id, Clase datoClase) {
+    public ClaseDto eliminarClase(int id) {
         if (!claseGateway.existeClase(id)) {
             throw new NoExisteExcepcion();
         }
-        return claseGateway.actualizarClase(id, datoClase);
-    }
-
-    @Override
-    public Clase eliminarClase(int id) {
-        if (!claseGateway.existeClase(id)) {
-            throw new NoExisteExcepcion();
+        Clase claseEliminada = claseGateway.eliminarClase(id);
+        ClaseDto respuesta = ClaseDto.fabricarDeModelo(claseEliminada);
+        if (respuesta == null) {
+            throw new ErrorInternoException();
         }
-        return claseGateway.eliminarClase(id);
+        return respuesta;
     }
 
 }
