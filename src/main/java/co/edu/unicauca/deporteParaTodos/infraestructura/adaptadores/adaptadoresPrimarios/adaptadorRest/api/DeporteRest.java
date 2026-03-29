@@ -19,6 +19,11 @@ import co.edu.unicauca.deporteParaTodos.infraestructura.logs.PeticionLogger;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
+
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @RestController
 @RequestMapping("api/v2")
@@ -42,4 +47,13 @@ public class DeporteRest {
         List<DeporteDto> respuesta = servicioDeporte.listaDeportes();
         return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
+
+    @PostMapping("/deportes")
+
+    public ResponseEntity<DeporteDto> insertarDeporte(@RequestBody @Valid DeporteDto dto) {
+       PeticionLogger.log(LOGGER, "POST", "/api/v2/deportes", dto);
+       DeporteDto dtoGuardado = servicioDeporte.insertarDeporte(dto);
+       return new ResponseEntity<>(dtoGuardado, HttpStatus.CREATED);
+    }
+    
 }

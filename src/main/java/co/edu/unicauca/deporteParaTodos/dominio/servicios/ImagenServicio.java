@@ -33,7 +33,7 @@ public class ImagenServicio implements IImagenServicio {
             throw new ListadoVacioExcepcion("No se encuentran imagenes registradas");
         }
         List<ImagenDto> listaDtos = new ArrayList<>();
-        imagenes.forEach(modelo ->{
+        imagenes.forEach(modelo -> {
             ImagenDto dto = ImagenDto.fabricaFromImagenModelo(modelo);
             listaDtos.add(dto);
         });
@@ -63,21 +63,18 @@ public class ImagenServicio implements IImagenServicio {
 
     @Override
     public ImagenDto insertarImagen(ImagenDto imagen) {
-        // validaciones de extension
-        // validaciones de tipo
-        // validaciones de contenido
-        // TODO: Validar elemento null
         Imagen modelo = Imagen.fabricaFromImagenDto(imagen);
-        if(modelo==null){
+        if (modelo == null) {
             throw new InsercionFallidaExepcion("no fue posible convertir el archivo");
         }
+
         Imagen objImagen = imagenGateway.insertarImagen(modelo);
 
         if (objImagen == null) {
             throw new InsercionFallidaExepcion("La insersion no se pudo realizar");
         }
-        ImagenDto dto = ImagenDto.fabricaFromImagenModelo(objImagen);
-        return dto;
+
+        return ImagenDto.fabricaFromImagenModelo(objImagen);
     }
 
     @Override

@@ -7,7 +7,7 @@ import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresP
 public interface IDeporteServicio {
     //public Iterable<DeporteEntidad> obtenerDeportes();
     public List<DeporteDto> listaDeportes();
-    public Deporte insertarDeporte(Deporte datosDeporte);
+    public DeporteDto insertarDeporte(DeporteDto datosDeporte);
     public Deporte obtenerDeportePorId(String nombreDeporte);
     public Deporte actualizarDeporte(String nombre, Deporte datosDeporte);
     public Deporte eliminarDeporte(String nombreDeporte);
