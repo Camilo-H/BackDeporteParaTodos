@@ -37,7 +37,7 @@ public class AtencionRest {
     @Autowired
     private IAsistenciaServicio servicioAsistencia;
 
-    @Operation(summary = "Obtiene las atenciones registradas para una clase especifica")
+    @Operation(summary = "Obtiene las atenciones registradas para una clase especifica, retonan encapsulado en un Dto con el id de la clase, el id perfil del estudiante, todos son true pues solo retorna las asistencias no las no asistencias, en front para una clase comparan con la lista de alumnos del grupo, los que estan en esta lista son los que asistieron de ese grupo")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Listado de atenciones por clase"),
         @ApiResponse(responseCode = "404", description = "No existen atenciones para la clase consultada")
@@ -51,7 +51,7 @@ public class AtencionRest {
         return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
 
-    @Operation(summary = "Registra la asistencia de una lista de alumnos para una clase especifica")
+    @Operation(summary = "Registra la asistencia de una lista de alumnos para una clase especifica, envie encapsulado en un dto con el id de la clase y el id del perfil estudiante, el valor booleano indica si asistio o no, enviese toda la lista de identificadores de alumnos de un grupo con el valor de true o false")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Asistencias procesadas correctamente"),
         @ApiResponse(responseCode = "400", description = "Solicitud inválida"),
