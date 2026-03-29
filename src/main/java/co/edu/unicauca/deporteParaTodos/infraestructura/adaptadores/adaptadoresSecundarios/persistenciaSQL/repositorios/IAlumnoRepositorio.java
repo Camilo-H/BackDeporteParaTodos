@@ -48,6 +48,23 @@ public interface IAlumnoRepositorio extends CrudRepository<AlumnoEntidad,String>
     );
 
     @Query(value = """
+        SELECT 
+            alm.meta_eliminado AS eliminadoestado,
+            alm.perf_id AS id,
+            alm.alm_codigo AS codigo,
+            alm.alm_tipo AS tipo,
+            perf.perf_nombre AS nombre,
+            perf.perf_correo AS correo,
+            perf.perf_sexo AS sexo,
+            perf.perf_tipoid AS tipoid,
+            perf.perf_imagen AS imagen
+        FROM tbl_alumno alm
+        INNER JOIN tbl_perfil perf ON perf.perf_id = alm.perf_id
+        WHERE alm.perf_id = :alumnoId
+        """, nativeQuery = true)
+    Object[] buscarAlumnoPorIdRaw(@Param("alumnoId") String alumnoId);
+
+    @Query(value = """
         SELECT fac_nombre
         FROM (
             SELECT fac.fac_nombre

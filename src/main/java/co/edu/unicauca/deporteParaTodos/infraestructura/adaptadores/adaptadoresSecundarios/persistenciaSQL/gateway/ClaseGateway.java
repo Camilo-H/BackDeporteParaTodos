@@ -2,18 +2,15 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadores
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IClaseGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Clase;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ClaseEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IClaseRepositorio;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
 
 @Service
 public class ClaseGateway implements IClaseGateway {
@@ -21,53 +18,50 @@ public class ClaseGateway implements IClaseGateway {
     @Autowired
     private IClaseRepositorio repoClase;
 
-    @Qualifier("modelMapperGenerico")
-    @Autowired
-    private ModelMapper mapper;
-
     @Override
     public boolean existeClase(int id) {
         return repoClase.existsById(id);
     }
 
     @Override
-    public List<Clase> obtenerClases() {
-        Iterable<ClaseEntidad> entidades = repoClase.findAll();
+    public List<Clase> obtenerClasesGrupo(String categoria, String curso, Integer anio, Integer iterable) {
+        List<ClaseEntidad> entidades = repoClase
+                .findByIdGrupoCategoriaAndIdGrupoCursoAndIdGrupoAnioAndIdGrupoIterableAndEliminado(
+                        categoria, curso, anio, iterable, 0);
         List<Clase> listado = new ArrayList<>();
-        listado = mapper.map(entidades, new TypeToken<List<Clase>>() {
-        }.getType());
+        entidades.forEach(entidad -> {
+            Clase modelo = Clase.fabricarDeEntidad(entidad);
+            if (modelo != null) {
+                listado.add(modelo);
+            }
+        });
         return listado;
     }
 
     @Override
-    public Optional<Clase> obtenerClase(int id) {
-        if (existeClase(id)) {
-            Optional<ClaseEntidad> entidad = repoClase.findById(id);
-            return entidad.map(claseEntidad -> mapper.map(claseEntidad, Clase.class));
-        }
-        return Optional.empty();
-    }
-
-    @Override
     public Clase insertarClase(Clase datoClase) {
-        ClaseEntidad entidad = mapper.map(datoClase, ClaseEntidad.class);
+        ClaseEntidad entidad = new ClaseEntidad();
+        entidad.setCodigo(null);
+        entidad.setIdGrupoCategoria(datoClase.getCategoria());
+        entidad.setIdGrupoCurso(datoClase.getCurso());
+        entidad.setIdGrupoAnio(datoClase.getAnio());
+        entidad.setIdGrupoIterable(datoClase.getIterable());
+        entidad.setIdInstructor(datoClase.getIdInstructor());
+        entidad.setFecha(datoClase.getFecha());
+        entidad.setHoras(datoClase.getHoras());
+        entidad.setMinutos(datoClase.getMinutos());
+        entidad.setObservacion(datoClase.getObservacion());
+        entidad.setEliminado(0);
         ClaseEntidad claseInsertada = repoClase.save(entidad);
-        return mapper.map(claseInsertada, Clase.class);
-    }
-
-    @Override
-    public Clase actualizarClase(int id, Clase datoClase) {
-        ClaseEntidad entidad = mapper.map(datoClase, ClaseEntidad.class);
-        ClaseEntidad claseActualizada = repoClase.save(entidad);
-        return mapper.map(claseActualizada, Clase.class);
+        return Clase.fabricarDeEntidad(claseInsertada);
     }
 
     @Override
     public Clase eliminarClase(int id) {
-        Optional<ClaseEntidad> entidad = repoClase.findById(id);
-        ClaseEntidad entidadEliminada = entidad.get();
-        repoClase.delete(entidadEliminada);
-        return mapper.map(entidadEliminada, Clase.class);
+        ClaseEntidad entidad = repoClase.findById(id).orElseThrow(NoExisteExcepcion::new);
+        repoClase.marcarComoEliminado(id);
+        entidad.setEliminado(1);
+        return Clase.fabricarDeEntidad(entidad);
 
     }
 

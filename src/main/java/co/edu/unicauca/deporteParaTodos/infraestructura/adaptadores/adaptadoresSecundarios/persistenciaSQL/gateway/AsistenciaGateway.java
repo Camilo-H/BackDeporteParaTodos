@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -39,19 +38,35 @@ public class AsistenciaGateway implements IAsistenciaGateway {
     }
 
     @Override
+    public List<Asistencia> obtenerAtencionesPorClase(Integer claseId) {
+        List<AsistenciaEntidad> entidades = repoAsistencia.findByClaseCodigo(claseId);
+        List<Asistencia> lista = new ArrayList<>();
+        entidades.forEach(entidad -> {
+            Asistencia modelo = Asistencia.fabricarDeEntidad(entidad);
+            if (modelo != null) {
+                lista.add(modelo);
+            }
+        });
+        return lista;
+    }
+
+    @Override
     public Optional<Asistencia> obtenerAsistencia(String perfId, int clsId) {
         AsistenciaId idAsistencia = new AsistenciaId();
         idAsistencia.setPerfilId(perfId);
         idAsistencia.setClaseCodigo(clsId);
         Optional<AsistenciaEntidad> existente = repoAsistencia.findById(idAsistencia);
-        return existente.map(asistenciaEntidad -> mapper.map(asistenciaEntidad, Asistencia.class));
+        return existente.map(Asistencia::fabricarDeEntidad);
     }
 
     @Override
     public Asistencia InsertarAsistencia(Asistencia datosAsistencia) {
-        AsistenciaEntidad asisEntidad = mapper.map(datosAsistencia, AsistenciaEntidad.class);
+        AsistenciaEntidad asisEntidad = new AsistenciaEntidad();
+        asisEntidad.setPerfilId(datosAsistencia.getIdPerfil());
+        asisEntidad.setClaseCodigo(datosAsistencia.getClsCodigo());
+        asisEntidad.setEliminado(0);
         AsistenciaEntidad insertada = repoAsistencia.save(asisEntidad);
-        return mapper.map(insertada, Asistencia.class);
+        return Asistencia.fabricarDeEntidad(insertada);
     }
 
     @Override
@@ -63,7 +78,7 @@ public class AsistenciaGateway implements IAsistenciaGateway {
         if (asisExistente.isPresent()) {
             AsistenciaEntidad entidad = asisExistente.get();
             repoAsistencia.delete(entidad);
-            return mapper.map(entidad, Asistencia.class);
+            return Asistencia.fabricarDeEntidad(entidad);
         }
         throw new NoExisteExcepcion();
     }

@@ -11,6 +11,8 @@ public interface IAsistenciaGateway {
     
     public List<Asistencia> obtenerAsistencias();
 
+    public List<Asistencia> obtenerAtencionesPorClase(Integer claseId);
+
     public Optional<Asistencia> obtenerAsistencia(String perfId, int clsId);
 
     public Asistencia InsertarAsistencia(Asistencia datosAsistencia);
