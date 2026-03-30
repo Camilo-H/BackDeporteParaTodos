@@ -10,9 +10,9 @@ public class webConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         // Permitir todas las rutas del backend
         registry.addMapping("/**")
-                .allowedOrigins("*") // Cambia esto por la URL de tu frontend
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Métodos permitidos
-                .allowedHeaders("*") // Permitir todas las cabeceras
-                .allowCredentials(true); // Si estás usando autenticación con cookies o tokens
+                .allowedOrigins("http://localhost:4200")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .allowCredentials(true);
     }
 }

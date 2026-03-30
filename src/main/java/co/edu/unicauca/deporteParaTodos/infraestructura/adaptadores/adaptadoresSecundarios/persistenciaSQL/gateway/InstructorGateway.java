@@ -88,7 +88,7 @@ public class InstructorGateway implements IInstructorGateway {
     public Optional<Instructor> obtenerInstructor(String instructorId) {
         if (existeInstructor(instructorId)) {
             Optional<InstructorEntidad> entidadRecuperada = repoInstructor.findById(instructorId);
-            return entidadRecuperada.map(instructorEntidad -> mapper.map(instructorEntidad, Instructor.class));
+            return entidadRecuperada.map(this::mapearEntidadADominio);
         }
         return Optional.empty();
     }

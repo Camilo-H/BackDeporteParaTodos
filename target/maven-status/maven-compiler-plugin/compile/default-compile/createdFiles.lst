@@ -28,6 +28,7 @@ co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresPrimario
 co\edu\unicauca\deporteParaTodos\aplicacion\puertos\puertosEntrada\IInstructorServicio.class
 co\edu\unicauca\deporteParaTodos\dominio\modelo\Perfil.class
 co\edu\unicauca\deporteParaTodos\aplicacion\puertos\puertosSalida\IDeporteGateway.class
+co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresPrimarios\adaptadorRest\DTOs\ClaseDto.class
 co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\gateway\DeporteGateway.class
 co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresPrimarios\adaptadorRest\DTOs\InstructorDto.class
 co\edu\unicauca\deporteParaTodos\infraestructura\controladorExcepciones\RestExceptionHandler.class
@@ -110,12 +111,12 @@ co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundar
 co\edu\unicauca\deporteParaTodos\dominio\servicios\EstadisticaServicio.class
 co\edu\unicauca\deporteParaTodos\aplicacion\puertos\puertosEntrada\IFacultadServicio.class
 co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresPrimarios\adaptadorRest\api\DeporteRest.class
+co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresPrimarios\adaptadorRest\DTOs\AtencionDto.class
 co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresPrimarios\adaptadorRest\api\AutenticacionRest.class
 co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\repositorios\IInstructorRepositorio.class
 co\edu\unicauca\deporteParaTodos\configurations\MessageConfiguration.class
 co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\repositorios\IProgramaRepositorio.class
 co\edu\unicauca\deporteParaTodos\aplicacion\puertos\puertosEntrada\IHorarioServicio.class
-co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\gateway\ClaseGateway$1.class
 co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\gateway\GrupoGateway.class
 co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\entidades\HorarioEntidad.class
 co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\repositorios\ICursoRepositorio.class
@@ -146,6 +147,7 @@ co\edu\unicauca\deporteParaTodos\deporteParaTodos.class
 co\edu\unicauca\deporteParaTodos\dominio\modelo\Grupo.class
 co\edu\unicauca\deporteParaTodos\dominio\servicios\ClaseServicio.class
 co\edu\unicauca\deporteParaTodos\dominio\modelo\Categoria.class
+co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresPrimarios\adaptadorRest\api\AtencionRest.class
 co\edu\unicauca\deporteParaTodos\aplicacion\puertos\puertosEntrada\IProgramaServicio.class
 co\edu\unicauca\deporteParaTodos\dominio\servicios\AutenticacionServicio.class
 co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresPrimarios\adaptadorRest\api\ImagenRest.class
