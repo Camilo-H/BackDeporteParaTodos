@@ -3,6 +3,7 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadores
 import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CursoEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ids.CursoId;
@@ -14,7 +15,9 @@ public interface ICursoRepositorio extends CrudRepository<CursoEntidad,CursoId>{
      * @param eliminado bandera para la busqueda, 1 indica cursos en estado eliminado, 0 cursos no eliminados
      * @return lista de tipo CursoEntidad
      */
-    List<CursoEntidad> findByCategoriaCursoAndEliminado(String nombreCategoria, Integer eliminado);
+    List<CursoEntidad> findByCategoriaCursoAndEliminado(
+            @Param("nombreCategoria") String nombreCategoria,
+            @Param("eliminado") Integer eliminado);
 
     /**
      * Obtiene un curso
