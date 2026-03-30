@@ -38,9 +38,10 @@ public class InstructorServicio implements IInstructorServicio {
     }
 
     @Override
-    public Instructor obtenerInstructor(String instructorId) {
-        return instructorsGateway.obtenerInstructor(instructorId).orElseThrow(
-                () -> new NoExisteExcepcion("No exoste el instructor con el identificador " + instructorId));
+    public InstructorDto obtenerInstructor(String instructorId) {
+        Instructor modelo = instructorsGateway.obtenerInstructor(instructorId).orElseThrow(
+                () -> new NoExisteExcepcion("No existe el instructor con el identificador " + instructorId));
+        return InstructorDto.fabricarDeModelo(modelo);
     }
 
     @Override
