@@ -14,4 +14,9 @@ public class ErrorInternoException extends RuntimeException{
         this.llaveMensaje = CodigoError.NO_CONVERTIBLE.getLlaveMensaje();
         this.codigo = CodigoError.NO_CONVERTIBLE.getCodigo();
     }
+
+    public ErrorInternoException( String msg){
+        this.llaveMensaje = msg;
+        this.codigo = CodigoError.NO_CONVERTIBLE.getCodigo();
+    }
 }

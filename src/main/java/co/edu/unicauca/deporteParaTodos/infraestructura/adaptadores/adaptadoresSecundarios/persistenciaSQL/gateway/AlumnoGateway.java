@@ -45,20 +45,10 @@ public class AlumnoGateway implements IAlumnoGateway {
         List<Object[]> resultados = repoAlumno.buscarAlumnosGrupoRaw(categoria, curso, anio, iterable, 0);
         List<Alumno> alumnos = new ArrayList<>();
         resultados.forEach(registro -> {
-            Perfil perfil = new Perfil();
-            perfil.setId((String) registro[1]);
-            perfil.setNombre((String) registro[4]);
-            perfil.setCorreo((String) registro[5]);
-            perfil.setSexo((String) registro[6]);
-            perfil.setTipoId((String) registro[7]);
-            perfil.setImagen(registro[8] != null ? ((Number) registro[8]).intValue() : null);
-
-            Alumno alumno = new Alumno();
-            alumno.setEliminadoestado(registro[0] != null ? ((Number) registro[0]).intValue() : null);
-            alumno.setAlm_codigo((String) registro[2]);
-            alumno.setTipoAlumno((String) registro[3]);
-            alumno.setPerfil(perfil);
-            alumnos.add(alumno);
+            Alumno alumno = construirAlumnoDesdeRegistro(registro);
+            if (alumno != null) {
+                alumnos.add(alumno);
+            }
         });
         return alumnos;
     }
@@ -72,8 +62,9 @@ public class AlumnoGateway implements IAlumnoGateway {
     @Override
     public Optional<Alumno> obtenerAlumno(String alumnoId) {
         if (existeAlumno(alumnoId)) {
-            Optional<AlumnoEntidad> entidadRecuperada = repoAlumno.findById(alumnoId);
-            return entidadRecuperada.map(alumnoEntidad -> mapper.map(alumnoEntidad, Alumno.class));
+            Object[] registro = repoAlumno.buscarAlumnoPorIdRaw(alumnoId);
+            Alumno alumno = construirAlumnoDesdeRegistro(registro);
+            return Optional.ofNullable(alumno);
         }
         return Optional.empty();
     }
@@ -93,6 +84,26 @@ public class AlumnoGateway implements IAlumnoGateway {
             return mapper.map(entidad, Alumno.class);
         }
         throw new NoExisteExcepcion();
+    }
+
+    private Alumno construirAlumnoDesdeRegistro(Object[] registro) {
+        if (registro == null) {
+            return null;
+        }
+        Perfil perfil = new Perfil();
+        perfil.setId((String) registro[1]);
+        perfil.setNombre((String) registro[4]);
+        perfil.setCorreo((String) registro[5]);
+        perfil.setSexo((String) registro[6]);
+        perfil.setTipoId((String) registro[7]);
+        perfil.setImagen(registro[8] != null ? ((Number) registro[8]).intValue() : null);
+
+        Alumno alumno = new Alumno();
+        alumno.setEliminadoestado(registro[0] != null ? ((Number) registro[0]).intValue() : null);
+        alumno.setAlm_codigo((String) registro[2]);
+        alumno.setTipoAlumno((String) registro[3]);
+        alumno.setPerfil(perfil);
+        return alumno;
     }
 
 }
