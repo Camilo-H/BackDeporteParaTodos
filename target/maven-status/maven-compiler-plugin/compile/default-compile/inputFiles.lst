@@ -11,6 +11,7 @@ D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\ma
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\entidades\CursoEntidad.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\aplicacion\puertos\puertosEntrada\ICoordinadorServicio.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\repositorios\IGrupoRepositorio.java
+D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresPrimarios\adaptadorRest\api\AlumnoRest.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\configurations\MessageConfiguration.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\repositorios\IProgramaRepositorio.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\aplicacion\puertos\puertosEntrada\IImagenServicio.java
@@ -30,6 +31,7 @@ D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\ma
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\aplicacion\puertos\puertosSalida\IPerfilGateway.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\deporteParaTodos.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\entidades\ProgramaEntidad.java
+D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresPrimarios\adaptadorRest\api\FacultadRest.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\entidades\ids\CursoId.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\aplicacion\puertos\puertosSalida\IGrupoGateway.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\dominio\modelo\Categoria.java
@@ -47,12 +49,14 @@ D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\ma
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresPrimarios\adaptadorRest\api\InstructoresRest.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\infraestructura\controladorExcepciones\excepciones\DependenciaFallida.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\gateway\InscripcionGateway.java
+D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresPrimarios\adaptadorRest\DTOs\InstructorDto.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\aplicacion\puertos\puertosEntrada\ICursoServicio.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\aplicacion\puertos\puertosSalida\IAsistenciaGateway.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\gateway\InstructorGateway.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresPrimarios\adaptadorRest\DTOs\GrupoDto.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\gateway\FacultadGateway.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\repositorios\IAsistenciaRepositorio.java
+D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresPrimarios\adaptadorRest\api\AutenticacionRest.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\repositorios\IInstructorRepositorio.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\gateway\ImagenGateway.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\gateway\DeporteGateway.java
@@ -62,6 +66,7 @@ D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\ma
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresPrimarios\adaptadorRest\api\ClaseRest.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\gateway\EstadisticasGateway.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\dominio\servicios\ImagenServicio.java
+D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\infraestructura\logs\PeticionLogger.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\dominio\modelo\Asistencia.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\infraestructura\controladorExcepciones\excepciones\NoImplementadoException.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\dominio\servicios\ProgramaServicio.java
@@ -114,6 +119,7 @@ D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\ma
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\gateway\CursoGateway.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\aplicacion\puertos\puertosEntrada\IDeporteServicio.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\aplicacion\puertos\puertosEntrada\IPerfilServicio.java
+D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresPrimarios\adaptadorRest\DTOs\DeporteDto.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\gateway\ProgramaGateway.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\infraestructura\controladorExcepciones\excepciones\ListadoVacioExcepcion.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\dominio\servicios\GrupoServicio.java
@@ -128,6 +134,7 @@ D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\ma
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\entidades\GrupoEntidad.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\dominio\modelo\Alumno.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\dominio\servicios\valores\Roles.java
+D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresPrimarios\adaptadorRest\api\DeporteRest.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\dominio\modelo\Perfil.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\aplicacion\puertos\puertosEntrada\IHorarioServicio.java
 D:\ACER\Documents\Practica_Codigo_Fuente\Backend2026\BackDeporteParaTodos\src\main\java\co\edu\unicauca\deporteParaTodos\dominio\servicios\HorarioServicio.java
