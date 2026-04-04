@@ -31,6 +31,8 @@ public class Perfil {
 
     private String tipoAlumno;
 
+    private String alm_codigo;
+
     public static Perfil fabricarDeEntidad(PerfilEntidad entidad){
         try{
             Perfil perfil = new Perfil();
@@ -60,6 +62,7 @@ public class Perfil {
             perfil.setRol(dto.getRole());
             perfil.setFacultad(dto.getFacultad());
             perfil.setTipoAlumno(dto.getTipoAlumno());
+            perfil.setAlm_codigo(dto.getAlumnoCodigo());
             perfil.setImagen(null);
             return perfil;
         } catch (Exception e) {
