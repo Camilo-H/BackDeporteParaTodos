@@ -37,6 +37,9 @@ public class PerfilDto {
     @NotBlank(message = "{perfil.tipoalumno.blank}")
     private String tipoAlumno;
 
+    //Código universitario del alumno (ej. código de matrícula)
+    private String alumnoCodigo;
+
     public static PerfilDto fabricarDeModelo(Perfil perfil){
         try{
             PerfilDto dto = new PerfilDto();
