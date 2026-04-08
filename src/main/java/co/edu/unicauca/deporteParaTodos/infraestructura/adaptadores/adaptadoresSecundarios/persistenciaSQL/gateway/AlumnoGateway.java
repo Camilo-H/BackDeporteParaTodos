@@ -14,6 +14,7 @@ import co.edu.unicauca.deporteParaTodos.dominio.modelo.Alumno;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Perfil;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.AlumnoEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IAlumnoRepositorio;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IPerfilRepositorio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
 
 @Service
@@ -21,6 +22,9 @@ public class AlumnoGateway implements IAlumnoGateway {
 
     @Autowired
     private IAlumnoRepositorio repoAlumno;
+
+    @Autowired
+    private IPerfilRepositorio repoPerfil;
 
     @Qualifier("modelMapperGenerico")
     @Autowired
@@ -71,19 +75,36 @@ public class AlumnoGateway implements IAlumnoGateway {
 
     @Override
     public Alumno actualizarAlumno(String alumnoId, Alumno datosAlumno) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'actualizarAlumno'");
+        // Actualizar alm_tipo en tbl_alumno
+        repoAlumno.actualizarTipoAlumno(alumnoId, datosAlumno.getTipoAlumno());
+        // Construir la respuesta desde los datos en memoria para evitar el
+        // ArrayIndexOutOfBoundsException que produce Hibernate al releer con
+        // native query dentro de una transacción @Transactional activa.
+        // Los 3 campos editables (nombre, correo, tipoAlumno) ya están en datosAlumno.
+        Perfil perfil = datosAlumno.getPerfil();
+        perfil.setId(alumnoId); // necesario para que AlumnoDto serialice el id
+        Alumno resultado = new Alumno();
+        resultado.setTipoAlumno(datosAlumno.getTipoAlumno());
+        resultado.setPerfil(perfil);
+        return resultado;
     }
 
     @Override
     public Alumno eliminarAlumno(String alumnoId) {
-        Optional<AlumnoEntidad> entidadRecuperada = repoAlumno.findById(alumnoId);
-        if (entidadRecuperada.isPresent()) {
-            AlumnoEntidad entidad = entidadRecuperada.get();
-            repoAlumno.delete(entidad);
-            return mapper.map(entidad, Alumno.class);
+        // Borrado lógico: META_ELIMINADO=1 en tbl_alumno y tbl_perfil
+        // NUNCA DELETE físico — las FK tienen ON DELETE SET NULL (tablas hijas no se tocan)
+        repoAlumno.eliminarAlumnoLogico(alumnoId);
+        repoPerfil.findById(alumnoId).ifPresent(perfil -> {
+            perfil.setEliminado(1);
+            repoPerfil.save(perfil);
+        });
+        // Retornar el estado final del alumno (con meta_eliminado=1)
+        Object[] registro = repoAlumno.buscarAlumnoPorIdRaw(alumnoId);
+        Alumno alumnoEliminado = construirAlumnoDesdeRegistro(registro);
+        if (alumnoEliminado == null) {
+            throw new NoExisteExcepcion("No se pudo recuperar el alumno eliminado con id " + alumnoId);
         }
-        throw new NoExisteExcepcion();
+        return alumnoEliminado;
     }
 
     private Alumno construirAlumnoDesdeRegistro(Object[] registro) {
