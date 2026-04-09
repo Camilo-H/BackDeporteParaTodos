@@ -148,8 +148,13 @@ public class PerfilGateway implements IPerfilGateway {
             }
             entidadExistente.setPerf_imagen(datosPerfil.getImagen());
         }
-        entidadExistente.setPerf_tipo(datosPerfil.getTipoId());
-        entidadExistente.setPerf_Sexo(datosPerfil.getSexo());
+        // solo actualizar tipo e id si vienen informados (null = no modificar)
+        if (datosPerfil.getTipoId() != null) {
+            entidadExistente.setPerf_tipo(datosPerfil.getTipoId());
+        }
+        if (datosPerfil.getSexo() != null) {
+            entidadExistente.setPerf_Sexo(datosPerfil.getSexo());
+        }
         entidadExistente.setEliminado(0);
 
         PerfilEntidad perfilActualizado = repoPerfil.save(entidadExistente);

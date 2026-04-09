@@ -2,10 +2,12 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadores
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.AlumnoDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.AlumnoEntidad;
@@ -80,4 +82,22 @@ public interface IAlumnoRepositorio extends CrudRepository<AlumnoEntidad,String>
         WHERE ROWNUM = 1
         """, nativeQuery = true)
     String obtenerFacultadPorPerfilId(@Param("perfilId") String perfilId);
+
+    @Transactional
+    @Modifying
+    @Query(value = """
+        UPDATE tbl_alumno
+        SET alm_tipo = :tipo
+        WHERE perf_id = :alumnoId
+        """, nativeQuery = true)
+    int actualizarTipoAlumno(@Param("alumnoId") String alumnoId, @Param("tipo") String tipo);
+
+    @Transactional
+    @Modifying
+    @Query(value = """
+        UPDATE tbl_alumno
+        SET meta_eliminado = 1
+        WHERE perf_id = :alumnoId
+        """, nativeQuery = true)
+    int eliminarAlumnoLogico(@Param("alumnoId") String alumnoId);
 }

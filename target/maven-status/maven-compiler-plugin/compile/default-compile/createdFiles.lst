@@ -54,6 +54,7 @@ co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundar
 co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\gateway\AsistenciaGateway.class
 co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\gateway\AlumnoGateway$1.class
 co\edu\unicauca\deporteParaTodos\infraestructura\controladorExcepciones\excepciones\ErrorInternoException.class
+co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresPrimarios\adaptadorRest\DTOs\AlumnoRequest.class
 co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\entidades\FacultadEntidad.class
 co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\entidades\DeporteEntidad.class
 co\edu\unicauca\deporteParaTodos\infraestructura\mappers\MapperImagen.class

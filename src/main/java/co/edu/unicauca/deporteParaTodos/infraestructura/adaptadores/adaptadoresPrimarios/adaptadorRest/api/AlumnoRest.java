@@ -9,18 +9,26 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IAlumnoServicio;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Alumno;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Perfil;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.AlumnoDto;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.AlumnoRequest;
 import co.edu.unicauca.deporteParaTodos.infraestructura.logs.PeticionLogger;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -53,6 +61,48 @@ public class AlumnoRest {
         PeticionLogger.log(LOGGER, "GET", "/api/v2/alumnosGrupo",
                 "categoria=" + categoria + ", curso=" + curso + ", anio=" + anio + ", iterable=" + iterable);
         List<AlumnoDto> respuesta = servicioAlumno.obtenerAlumnosGrupo(categoria, curso, anio, iterable);
+        return new ResponseEntity<>(respuesta, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Actualiza nombre, correo y tipo de un alumno")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Alumno actualizado correctamente"),
+        @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
+        @ApiResponse(responseCode = "404", description = "No existe el alumno con el identificador indicado")
+    })
+    @PutMapping("/alumnos/{id}")
+    public ResponseEntity<AlumnoDto> actualizarAlumno(
+            @Parameter(description = "Cédula del alumno")
+            @PathVariable String id,
+            @Valid @RequestBody AlumnoRequest request) {
+        PeticionLogger.log(LOGGER, "PUT", "/api/v2/alumnos/" + id, "id=" + id);
+
+        // Construir el modelo de dominio desde el DTO de entrada
+        Perfil perfil = new Perfil();
+        perfil.setNombre(request.getNombre());
+        perfil.setCorreo(request.getCorreo());
+
+        Alumno datosActualizar = new Alumno();
+        datosActualizar.setTipoAlumno(request.getTipoAlumno());
+        datosActualizar.setPerfil(perfil);
+
+        Alumno alumnoActualizado = servicioAlumno.actualizarAlumno(id, datosActualizar);
+        AlumnoDto respuesta = AlumnoDto.fabricarDeModelo(alumnoActualizado);
+        return new ResponseEntity<>(respuesta, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Elimina lógicamente un alumno (META_ELIMINADO=1)")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Alumno eliminado lógicamente"),
+        @ApiResponse(responseCode = "404", description = "No existe el alumno con el identificador indicado")
+    })
+    @DeleteMapping("/alumnos/{id}")
+    public ResponseEntity<AlumnoDto> eliminarAlumno(
+            @Parameter(description = "Cédula del alumno")
+            @PathVariable String id) {
+        PeticionLogger.log(LOGGER, "DELETE", "/api/v2/alumnos/" + id, "id=" + id);
+        Alumno alumnoEliminado = servicioAlumno.eliminarAlumno(id);
+        AlumnoDto respuesta = AlumnoDto.fabricarDeModelo(alumnoEliminado);
         return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
 }
