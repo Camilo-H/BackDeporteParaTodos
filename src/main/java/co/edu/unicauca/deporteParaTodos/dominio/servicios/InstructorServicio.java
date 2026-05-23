@@ -4,10 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IInstructorServicio;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IInstructorGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Instructor;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Perfil;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.InstructorDto;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.PerfilDto;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ErrorInternoException;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ListadoVacioExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.YaExisteElementoExcepcion;
@@ -58,6 +62,38 @@ public class InstructorServicio implements IInstructorServicio {
             throw new NoExisteExcepcion("No exoste el instructor con el identificador " + instructorId);
         }
         return instructorsGateway.eliminarInstructor(instructorId);
+    }
+
+    @Override
+    @Transactional
+    public InstructorDto registrarInstructor(PerfilDto perfilDto) {
+        // Validar que el perfil no exista
+        if (instructorsGateway.existeInstructor(perfilDto.getId())) {
+            throw new YaExisteElementoExcepcion(
+                    "El instructor con la identificación " + perfilDto.getId() + " ya se encuentra registrado");
+        }
+
+        // Convertir DTO a modelo de dominio
+        Perfil perfil = Perfil.fabricarDeDto(perfilDto);
+        if (perfil == null) {
+            throw new ErrorInternoException("Error al procesar los datos del instructor");
+        }
+
+        // Llamar al gateway para registrar el instructor atomicamente
+        // (crea perfil + alumno + instructor en una transacción)
+        Instructor instructorRegistrado = instructorsGateway.registrarInstructor(perfil, perfilDto.getTipoAlumno());
+
+        if (instructorRegistrado == null) {
+            throw new ErrorInternoException("Error al registrar el instructor");
+        }
+
+        // Convertir a DTO para respuesta
+        InstructorDto respuesta = InstructorDto.fabricarDeModelo(instructorRegistrado);
+        if (respuesta == null) {
+            throw new ErrorInternoException("Error al convertir el instructor a DTO");
+        }
+
+        return respuesta;
     }
 
 }

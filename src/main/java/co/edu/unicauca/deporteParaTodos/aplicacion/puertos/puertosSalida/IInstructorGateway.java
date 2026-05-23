@@ -3,6 +3,7 @@ package co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida;
 import java.util.List;
 import java.util.Optional;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Instructor;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Perfil;
 
 public interface IInstructorGateway {
     public boolean existeInstructor(String instructorId);
@@ -16,4 +17,6 @@ public interface IInstructorGateway {
     public Instructor actualizarInstructor(String instructorId, Instructor datosInstructor);
 
     public Instructor eliminarInstructor(String instructorId);
+
+    public Instructor registrarInstructor(Perfil perfil, String tipoAlumno);
 }

@@ -9,18 +9,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IInstructorServicio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.InstructorDto;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.PerfilDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.logs.PeticionLogger;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 
 @RestController
@@ -44,9 +48,6 @@ public class InstructoresRest {
         List<InstructorDto> respuesta = servicioInstructor.obtenerInstructores();
         return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
-    // falta endpoint para obtener un instructor por id, falta endpoint para crear
-    // un instructor, falta endpoint para actualizar un instructor, falta endpoint
-    // para eliminar un instructor
 
     @Operation(summary = "Obtiene un instructor por su identificador")
     @ApiResponses(value = {
@@ -59,6 +60,20 @@ public class InstructoresRest {
         PeticionLogger.log(LOGGER, "GET", "/api/v2/instructor", "idInstructor: " + idInstructor);
         InstructorDto respuesta = servicioInstructor.obtenerInstructor(idInstructor);
         return new ResponseEntity<>(respuesta, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Registra un nuevo instructor con su perfil de forma transparente (una llamada HTTP)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Instructor registrado exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos"),
+            @ApiResponse(responseCode = "409", description = "El instructor ya existe")
+    })
+    @PostMapping("/RegistroPerfilInstructor")
+    public ResponseEntity<InstructorDto> registrarInstructor(@RequestBody @Valid PerfilDto perfilDto) {
+        PeticionLogger.log(LOGGER, "POST", "/api/v2/RegistroPerfilInstructor",
+                "id: " + perfilDto.getId() + ", nombre: " + perfilDto.getNombre());
+        InstructorDto respuesta = servicioInstructor.registrarInstructor(perfilDto);
+        return new ResponseEntity<>(respuesta, HttpStatus.CREATED);
     }
 
 }

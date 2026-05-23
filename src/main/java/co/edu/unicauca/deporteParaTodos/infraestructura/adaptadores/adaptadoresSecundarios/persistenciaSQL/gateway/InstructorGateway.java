@@ -6,15 +6,17 @@ import java.util.Optional;
 
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Perfil;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IInstructorGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Instructor;
-import co.edu.unicauca.deporteParaTodos.dominio.modelo.Perfil;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.AlumnoEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.InstructorEntidad;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.PerfilEntidad;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IAlumnoRepositorio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IInstructorRepositorio;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IPerfilRepositorio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoImplementadoException;
 
@@ -23,6 +25,12 @@ public class InstructorGateway implements IInstructorGateway {
 
     @Autowired
     private IInstructorRepositorio repoInstructor;
+
+    @Autowired
+    private IPerfilRepositorio repoPerfil;
+
+    @Autowired
+    private IAlumnoRepositorio repoAlumno;
 
     @Qualifier("modelMapperGenerico")
     @Autowired
@@ -40,32 +48,14 @@ public class InstructorGateway implements IInstructorGateway {
         return instructor;
     }
 
-   /* @Override
+    // Nueva Implementacion para obtener instructores
+    @Override
     public List<Instructor> obtenerInstructores() {
-        List<Instructor> instructores = new ArrayList<>();
-        List<Object[]> resultados = repoInstructor.buscarInstructoresRaw(0);
-        resultados.forEach(registro -> {
-            Perfil perfil = new Perfil();
-            perfil.setId((String) registro[0]);
-            perfil.setNombre((String) registro[1]);
-            perfil.setCorreo((String) registro[2]);
-            perfil.setSexo((String) registro[3]);
-
-            Instructor instructor = new Instructor();
-            instructor.setPerfil(perfil);
-            instructores.add(instructor);
-        });
-        return instructores;
-    }*/
-    //Nueva Implementacion para obtener instructores
-   @Override
-   public List<Instructor> obtenerInstructores() {
-       List<Instructor> lista = new ArrayList<>();
-       repoInstructor.findAll()
-               .forEach(entidad -> lista.add(mapearEntidadADominio(entidad)));
-       return lista;
-   }
-
+        List<Instructor> lista = new ArrayList<>();
+        repoInstructor.findAll()
+                .forEach(entidad -> lista.add(mapearEntidadADominio(entidad)));
+        return lista;
+    }
 
     @Override
     public boolean existeInstructor(String instructorId) {
@@ -75,13 +65,6 @@ public class InstructorGateway implements IInstructorGateway {
     @Override
     public Instructor insertarInstructor(Instructor datosInstructor) {
         throw new NoImplementadoException();
-        /* InstructorEntidad entidad = mapper.map(datosInstructor, InstructorEntidad.class);
-        if (datosInstructor.getPerfil().getPerf_imagen() != null) {
-            ImagenEntidad imagen = mapper.map(datosInstructor.getPerfil().getPerf_imagen(), ImagenEntidad.class);
-            entidad.getPerfil().setPerf_imagen(imagen);
-        }
-        InstructorEntidad entidadGuardada = repoInstructor.save(entidad);
-        return mapper.map(entidadGuardada, Instructor.class); */
     }
 
     @Override
@@ -96,22 +79,6 @@ public class InstructorGateway implements IInstructorGateway {
     @Override
     public Instructor actualizarInstructor(String instructorId, Instructor datosInstructor) {
         throw new NoImplementadoException();
-        /* Optional<InstructorEntidad> entidadExistente = repoInstructor.findById(instructorId);
-        if (entidadExistente.isPresent()) {
-            InstructorEntidad entidad = entidadExistente.get();
-            entidad.getPerfil().setPerf_nombre(datosInstructor.getPerfil().getPerf_nombre());
-            entidad.getPerfil().setPerfcorreo(datosInstructor.getPerfil().getPerf_correo());
-            entidad.getPerfil().setPerf_tipo(datosInstructor.getPerfil().getPerf_tipo());
-            entidad.getPerfil().setPerf_Sexo(datosInstructor.getPerfil().getPerf_Sexo());
-            if (datosInstructor.getPerfil().getPerf_imagen() != null) {
-                ImagenEntidad imagen = mapper.map(datosInstructor.getPerfil().getPerf_imagen(), ImagenEntidad.class);
-                entidad.getPerfil().setPerf_imagen(imagen);
-            }
-            InstructorEntidad actulizado = repoInstructor.save(entidad);
-            return mapper.map(actulizado, Instructor.class);
-        }
-        throw new NoExisteExcepcion(); */
-
     }
 
     @Override
@@ -123,6 +90,35 @@ public class InstructorGateway implements IInstructorGateway {
             return mapper.map(entidad, Instructor.class);
         }
         throw new NoExisteExcepcion();
+    }
+
+    @Override
+    public Instructor registrarInstructor(Perfil perfil, String tipoAlumno) {
+        // [1] Crear perfil
+        PerfilEntidad entidadPerfil = PerfilEntidad.fabricarDeModelo(perfil, 0);
+        PerfilEntidad perfilGuardado = repoPerfil.save(entidadPerfil);
+        String perfilId = perfilGuardado.getPerf_id();
+
+        // [2] Registrar como alumno (vinculación al programa) - usando solo el ID
+        AlumnoEntidad entidadAlumno = new AlumnoEntidad();
+        entidadAlumno.setIdPerfil(perfilId);
+        entidadAlumno.setTipoAlumno(tipoAlumno);
+        entidadAlumno.setEliminado(0);
+        repoAlumno.save(entidadAlumno);
+
+        // [3] Registrar como instructor - usando solo el ID
+        InstructorEntidad entidadInstructor = new InstructorEntidad();
+        entidadInstructor.setIdPerfil(perfilId);
+        entidadInstructor.setEliminado(0);
+        InstructorEntidad instructorGuardado = repoInstructor.save(entidadInstructor);
+
+        // Construir objeto de dominio para retornar
+        Instructor instructorRegistrado = new Instructor();
+        instructorRegistrado.setInst_codigo(instructorGuardado.getIdPerfil());
+        instructorRegistrado.setPerfil(Perfil.fabricarDeEntidad(perfilGuardado));
+        instructorRegistrado.getPerfil().setTipoAlumno(tipoAlumno);
+
+        return instructorRegistrado;
     }
 
 }
