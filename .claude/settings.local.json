@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(\\(Get-ChildItem \"D:\\\\ACER\\\\Documents\\\\Practica_Codigo_Fuente\\\\Backend2026\\\\BackDeporteParaTodos\" -Force\\).Count)",
+      "PowerShell(\\(Get-ChildItem \"D:\\\\ACER\\\\Documents\\\\Practica_Codigo_Fuente\\\\Backend2026\\\\BackDeporteParaTodos\" -Force\\) | ForEach-Object { $_.Name })",
+      "PowerShell(head -20)"
+    ]
+  }
+}
