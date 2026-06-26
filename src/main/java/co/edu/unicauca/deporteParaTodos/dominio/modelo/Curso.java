@@ -24,6 +24,8 @@ public class Curso {
 
     private Integer imagenId;
 
+    private EstadoCurso estadoCurso;
+
     public static Curso fabricarDeEntidad(CursoEntidad entidad){
         try{
             Curso fabricado = new Curso();
@@ -32,6 +34,9 @@ public class Curso {
             fabricado.setDescripcion(entidad.getDescripcion());
             fabricado.setDeporte(entidad.getDeporte());
             fabricado.setImagenId(entidad.getObjImagen());
+            fabricado.setEstadoCurso(
+                Integer.valueOf(1).equals(entidad.getEliminado()) ? EstadoCurso.INACTIVO : EstadoCurso.ACTIVO
+            );
             return fabricado;
         }catch(Exception e){
             return null;
