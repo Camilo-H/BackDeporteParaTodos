@@ -60,4 +60,11 @@ public interface ICursoGateway{
      * @return curso con estado actualizado
      */
     public Curso cambiarEstadoCurso(String categoria, String nombreCurso, EstadoCurso estado);
+    /**
+     * Borrado lógico de un curso: setea meta_eliminado = 1 sin eliminar el registro
+     * @param categoria identificador de la categoria
+     * @param nombreCurso identificador del curso
+     * @return curso con meta_eliminado en 1
+     */
+    public Curso eliminarCursoPermanente(String categoria, String nombreCurso);
 }

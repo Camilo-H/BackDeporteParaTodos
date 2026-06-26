@@ -52,4 +52,13 @@ public interface ICursoServicio {
      * @return curso con estado actualizado
      */
     public CursoDto cambiarEstadoCurso(String categoria, String nombreCurso, EstadoCurso estado);
+    /***
+     * Borrado lógico de un curso: marca meta_eliminado=1
+     * Lanza NoExisteExcepcion si el curso no existe
+     * Lanza YaExisteElementoExcepcion si ya estaba eliminado (meta_eliminado=1)
+     * @param categoria identificador de la categoria
+     * @param nombreCurso identificador del curso
+     * @return curso con estadoCurso INACTIVO
+     */
+    public CursoDto eliminarCursoPermanente(String categoria, String nombreCurso);
 }

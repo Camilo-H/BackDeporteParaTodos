@@ -112,4 +112,17 @@ public class CursoServicio implements ICursoServicio {
         return CursoDto.fabricarDeModelo(actualizado);
     }
 
+    @Override
+    public CursoDto eliminarCursoPermanente(String categoria, String nombreCurso) {
+        if (!cursoGateway.existeCurso(categoria, nombreCurso)) {
+            throw new NoExisteExcepcion("El curso a eliminar no existe");
+        }
+        Curso actual = cursoGateway.obtenerCurso(categoria, nombreCurso);
+        if (EstadoCurso.INACTIVO.equals(actual.getEstadoCurso())) {
+            throw new YaExisteElementoExcepcion("El curso ya se encuentra eliminado");
+        }
+        Curso eliminado = cursoGateway.eliminarCursoPermanente(categoria, nombreCurso);
+        return CursoDto.fabricarDeModelo(eliminado);
+    }
+
 }
