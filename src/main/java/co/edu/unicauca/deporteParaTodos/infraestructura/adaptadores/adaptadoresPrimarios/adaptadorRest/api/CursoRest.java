@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.ICursoServicio;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoCurso;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CursoDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.logs.PeticionLogger;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,6 +26,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -113,11 +115,29 @@ public class CursoRest {
     @DeleteMapping("curso")
     public ResponseEntity<CursoDto> eliminarCurso(
         @Parameter(description = "Identificador de una categoria del sistema")
-        @RequestParam @NotBlank String categoria, 
+        @RequestParam @NotBlank String categoria,
         @Parameter(description = "Identificador de un curso en el sistema")
         @RequestParam @NotBlank String curso){
         PeticionLogger.log(LOGGER, "DELETE", "/api/v2/curso", "categoria=" + categoria + ", curso=" + curso);
         CursoDto dto = servicio.eliminarCurso(categoria, curso);
         return new ResponseEntity<>(dto,HttpStatus.OK);
+    }
+
+    @Operation(summary = "Cambia el estado de un curso (ACTIVO/INACTIVO)")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "estado del curso actualizado"),
+    })
+    @PatchMapping("/curso/estado")
+    public ResponseEntity<CursoDto> cambiarEstadoCurso(
+        @Parameter(description = "Identificador de la categoria del curso")
+        @RequestParam @NotBlank String prmCategoria,
+        @Parameter(description = "Identificador del curso")
+        @RequestParam @NotBlank String prmCurso,
+        @Parameter(description = "Nuevo estado: ACTIVO o INACTIVO")
+        @RequestParam EstadoCurso prmEstado) {
+        PeticionLogger.log(LOGGER, "PATCH", "/api/v2/curso/estado",
+            "prmCategoria=" + prmCategoria + ", prmCurso=" + prmCurso + ", prmEstado=" + prmEstado);
+        CursoDto dto = servicio.cambiarEstadoCurso(prmCategoria, prmCurso, prmEstado);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 }

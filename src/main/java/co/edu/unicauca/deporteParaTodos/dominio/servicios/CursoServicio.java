@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.ICursoServicio;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.ICursoGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Curso;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoCurso;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CursoDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ErrorInternoException;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.InsercionFallidaExepcion;
@@ -102,6 +103,13 @@ public class CursoServicio implements ICursoServicio {
         return dto;
     }
 
-    
+    @Override
+    public CursoDto cambiarEstadoCurso(String categoria, String nombreCurso, EstadoCurso estado) {
+        if (!cursoGateway.existeCurso(categoria, nombreCurso)) {
+            throw new NoExisteExcepcion("El curso al que se desea cambiar el estado no existe");
+        }
+        Curso actualizado = cursoGateway.cambiarEstadoCurso(categoria, nombreCurso, estado);
+        return CursoDto.fabricarDeModelo(actualizado);
+    }
 
 }

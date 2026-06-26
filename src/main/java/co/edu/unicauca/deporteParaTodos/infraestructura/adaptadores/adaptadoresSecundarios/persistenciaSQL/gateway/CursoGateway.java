@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.ICursoGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Curso;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoCurso;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CursoEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ids.CursoId;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.ICategoriaCursoRepositorio;
@@ -153,5 +154,18 @@ public class CursoGateway implements ICursoGateway{
             cursos.add(curso);
         });
         return cursos;
-    } 
+    }
+
+    @Override
+    public Curso cambiarEstadoCurso(String categoria, String nombreCurso, EstadoCurso estado) {
+        CursoId id = new CursoId(categoria, nombreCurso);
+        Optional<CursoEntidad> op = repoCurso.findById(id);
+        if (op.isEmpty()) {
+            throw new NoExisteExcepcion("gateway no encuentra el curso a cambiar estado");
+        }
+        CursoEntidad entidad = op.get();
+        entidad.setEliminado(EstadoCurso.INACTIVO.equals(estado) ? 1 : 0);
+        CursoEntidad respuesta = repoCurso.save(entidad);
+        return Curso.fabricarDeEntidad(respuesta);
+    }
 }
