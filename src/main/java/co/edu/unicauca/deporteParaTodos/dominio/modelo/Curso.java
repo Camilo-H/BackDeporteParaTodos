@@ -26,6 +26,8 @@ public class Curso {
 
     private EstadoCurso estadoCurso;
 
+    private String horario;
+
     public static Curso fabricarDeEntidad(CursoEntidad entidad){
         try{
             Curso fabricado = new Curso();
@@ -37,6 +39,7 @@ public class Curso {
             fabricado.setEstadoCurso(
                 Integer.valueOf(1).equals(entidad.getEliminado()) ? EstadoCurso.INACTIVO : EstadoCurso.ACTIVO
             );
+            fabricado.setHorario(entidad.getHorario());
             return fabricado;
         }catch(Exception e){
             return null;
@@ -51,6 +54,7 @@ public class Curso {
             fabricado.setDescripcion(dto.getDescripcion());
             fabricado.setDeporte(dto.getDeporte());
             fabricado.setImagenId(dto.getIdImagen());
+            fabricado.setHorario(dto.getHorario());
             return fabricado;
         }catch(Exception e){
             return null;

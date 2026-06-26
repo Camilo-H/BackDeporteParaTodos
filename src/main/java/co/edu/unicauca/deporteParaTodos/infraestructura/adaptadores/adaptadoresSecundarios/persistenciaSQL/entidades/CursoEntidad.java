@@ -42,6 +42,9 @@ public class CursoEntidad {
     @Column(name = "meta_eliminado")
     private Integer eliminado;
 
+    @Column(name = "CUR_HORARIO")
+    private String horario;
+
     public static CursoEntidad fabricarDeModelo(Curso curso){
         try{
             CursoEntidad entidad = new CursoEntidad();
@@ -50,6 +53,7 @@ public class CursoEntidad {
             entidad.setDescripcion(curso.getDescripcion());
             entidad.setDeporte(curso.getDeporte());
             entidad.setObjImagen(curso.getImagenId());
+            entidad.setHorario(curso.getHorario());
             return entidad;
         }catch(Exception e){
             return null;

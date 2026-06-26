@@ -120,6 +120,7 @@ public class CursoGateway implements ICursoGateway{
         actulizacion.setDescripcion(entidad.getDescripcion());
         actulizacion.setEliminado(0);
         actulizacion.setObjImagen(entidad.getObjImagen());
+        actulizacion.setHorario(entidad.getHorario());
         CursoEntidad respuesta = repoCurso.save(actulizacion);
         Curso insertado = Curso.fabricarDeEntidad(respuesta);
         if(insertado==null){
