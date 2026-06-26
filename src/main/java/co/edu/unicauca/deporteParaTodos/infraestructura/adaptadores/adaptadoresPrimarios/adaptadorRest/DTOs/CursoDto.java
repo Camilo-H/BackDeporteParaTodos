@@ -31,6 +31,8 @@ public class CursoDto {
 
     private EstadoCurso estadoCurso;
 
+    private String horario;
+
     public static CursoDto fabricarDeModelo(Curso curso){
         try{
             CursoDto dto = new CursoDto();
@@ -40,6 +42,7 @@ public class CursoDto {
             dto.setIdImagen(curso.getImagenId());
             dto.setDeporte(curso.getDeporte());
             dto.setEstadoCurso(curso.getEstadoCurso());
+            dto.setHorario(curso.getHorario());
             return dto;
         }catch(Exception e){
             return null;
