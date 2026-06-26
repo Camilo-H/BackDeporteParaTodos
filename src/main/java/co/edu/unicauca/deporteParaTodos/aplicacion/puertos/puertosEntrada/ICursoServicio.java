@@ -1,6 +1,7 @@
 package co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada;
 
 import java.util.List;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoCurso;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CursoDto;
 
 public interface ICursoServicio {
@@ -43,4 +44,12 @@ public interface ICursoServicio {
      * @return curso eliminado
      */
     public CursoDto eliminarCurso(String categoria, String curso);
+    /***
+     * Cambia el estado de un curso (ACTIVO/INACTIVO)
+     * @param categoria identificador de la categoria
+     * @param nombreCurso identificador del curso
+     * @param estado nuevo estado a aplicar
+     * @return curso con estado actualizado
+     */
+    public CursoDto cambiarEstadoCurso(String categoria, String nombreCurso, EstadoCurso estado);
 }

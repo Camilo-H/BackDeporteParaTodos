@@ -3,6 +3,7 @@ package co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida;
 import java.util.List;
 
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Curso;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoCurso;
 
 public interface ICursoGateway{
     /**
@@ -51,4 +52,12 @@ public interface ICursoGateway{
      * @return curso eliminado
      */
     public Curso eliminarCurso(String categoria, String curso);
+    /**
+     * Cambia el estado de un curso actualizando meta_eliminado en BD
+     * @param categoria identificador de la categoria
+     * @param nombreCurso identificador del curso
+     * @param estado nuevo estado (ACTIVO → 0, INACTIVO → 1)
+     * @return curso con estado actualizado
+     */
+    public Curso cambiarEstadoCurso(String categoria, String nombreCurso, EstadoCurso estado);
 }
