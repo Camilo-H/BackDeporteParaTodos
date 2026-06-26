@@ -111,16 +111,21 @@ public class CursoRest {
         return new ResponseEntity<>(dtoActualizado, HttpStatus.OK);
     }
 
-    @Operation(summary = "elimina un curso")
+    @Operation(summary = "Borrado lógico de un curso: setea meta_eliminado=1. Retorna 409 si ya estaba eliminado.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "curso eliminado lógicamente"),
+        @ApiResponse(responseCode = "404", description = "curso no encontrado"),
+        @ApiResponse(responseCode = "409", description = "el curso ya estaba eliminado"),
+    })
     @DeleteMapping("curso")
     public ResponseEntity<CursoDto> eliminarCurso(
         @Parameter(description = "Identificador de una categoria del sistema")
-        @RequestParam @NotBlank String categoria,
+        @RequestParam @NotBlank String prmCategoria,
         @Parameter(description = "Identificador de un curso en el sistema")
-        @RequestParam @NotBlank String curso){
-        PeticionLogger.log(LOGGER, "DELETE", "/api/v2/curso", "categoria=" + categoria + ", curso=" + curso);
-        CursoDto dto = servicio.eliminarCurso(categoria, curso);
-        return new ResponseEntity<>(dto,HttpStatus.OK);
+        @RequestParam @NotBlank String prmCurso){
+        PeticionLogger.log(LOGGER, "DELETE", "/api/v2/curso", "prmCategoria=" + prmCategoria + ", prmCurso=" + prmCurso);
+        CursoDto dto = servicio.eliminarCursoPermanente(prmCategoria, prmCurso);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @Operation(summary = "Cambia el estado de un curso (ACTIVO/INACTIVO)")

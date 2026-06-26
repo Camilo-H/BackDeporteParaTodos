@@ -168,4 +168,17 @@ public class CursoGateway implements ICursoGateway{
         CursoEntidad respuesta = repoCurso.save(entidad);
         return Curso.fabricarDeEntidad(respuesta);
     }
+
+    @Override
+    public Curso eliminarCursoPermanente(String categoria, String nombreCurso) {
+        CursoId id = new CursoId(categoria, nombreCurso);
+        Optional<CursoEntidad> op = repoCurso.findById(id);
+        if (op.isEmpty()) {
+            throw new NoExisteExcepcion("gateway no encuentra el curso a eliminar");
+        }
+        CursoEntidad entidad = op.get();
+        entidad.setEliminado(1);
+        CursoEntidad respuesta = repoCurso.save(entidad);
+        return Curso.fabricarDeEntidad(respuesta);
+    }
 }
