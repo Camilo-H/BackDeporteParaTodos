@@ -78,7 +78,7 @@ public class AsistenciaServicio implements IAsistenciaServicio {
             }
             if (Boolean.TRUE.equals(dto.getEstaAtendido())) {
                 if (!asistenciaGateway.existeAsistencia(alumnoId, claseId)) {
-                    Asistencia asistencia = new Asistencia(alumnoId, claseId);
+                    Asistencia asistencia = new Asistencia(alumnoId, claseId, 0);
                     asistenciaGateway.InsertarAsistencia(asistencia);
                 }
             } else {
@@ -109,6 +109,19 @@ public class AsistenciaServicio implements IAsistenciaServicio {
             return asistenciaGateway.eliminarAsitencia(perfId, clsId);
         }
         throw new NoExisteExcepcion();
+    }
+
+    @Override
+    public Asistencia eliminarAsistencia(String perfId, Long clsCodigo) {
+        if (!asistenciaGateway.existeAsistencia(perfId, clsCodigo.intValue())) {
+            throw new NoExisteExcepcion("La asistencia no existe");
+        }
+        Asistencia asistencia = asistenciaGateway.obtenerAsistencia(perfId, clsCodigo.intValue())
+                .orElseThrow(() -> new NoExisteExcepcion("La asistencia no existe"));
+        if (Integer.valueOf(1).equals(asistencia.getEliminado())) {
+            throw new YaExisteElementoExcepcion("La asistencia ya se encuentra eliminada");
+        }
+        return asistenciaGateway.eliminarAsistencia(perfId, clsCodigo);
     }
 
 }

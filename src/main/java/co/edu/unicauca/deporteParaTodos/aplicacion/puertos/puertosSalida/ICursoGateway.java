@@ -4,6 +4,7 @@ import java.util.List;
 
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Curso;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoCurso;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoInscripciones;
 
 public interface ICursoGateway{
     /**
@@ -31,6 +32,13 @@ public interface ICursoGateway{
      * @return lista de cursos en formato del dominio
      */
     public List<Curso> obtenerCursosDeCategoria(String nombreCategoria);
+    /**
+     * Obtiene todos los cursos de una categoria sin filtrar por estado,
+     * incluyendo los marcados como eliminados (meta_eliminado=1)
+     * @param nombreCategoria titulo de la categoria
+     * @return lista completa de cursos de la categoria
+     */
+    public List<Curso> obtenerTodosCursosDeCategoria(String nombreCategoria);
     /***
      * Registra un curso en el sistema
      * @param curso entidad a ser insertada
@@ -67,4 +75,12 @@ public interface ICursoGateway{
      * @return curso con meta_eliminado en 1
      */
     public Curso eliminarCursoPermanente(String categoria, String nombreCurso);
+    /**
+     * Cambia el estado de inscripciones de un curso (ABIERTO/CERRADO)
+     * @param categoria identificador de la categoria
+     * @param nombreCurso identificador del curso
+     * @param estado nuevo estado de inscripciones
+     * @return curso con estado de inscripciones actualizado
+     */
+    public Curso cambiarEstadoInscripciones(String categoria, String nombreCurso, EstadoInscripciones estado);
 }

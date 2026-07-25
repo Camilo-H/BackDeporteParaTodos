@@ -113,36 +113,29 @@ REST Controller -> IServicio (puerto entrada) -> Servicio (dominio)
 
 ### Bloque 1 — Fundamento (sin esto el frontend no puede avanzar)
 
-HE-03 HU-01 — Exponer estadoCurso en CursoDto
+~~HE-03 HU-01 — Exponer estadoCurso en CursoDto~~ ✅ COMPLETADA
+- EstadoCurso.java (enum ACTIVO/INACTIVO/CERRADO) existe en dominio/modelo/
+- Curso.java y CursoDto.java tienen el campo estadoCurso
+- Curso.fabricarDeEntidad mapea eliminado=1→INACTIVO, else→ACTIVO
+- GET /cursos retorna estadoCurso en el JSON
 
-- El campo eliminado existe en tbl_curso pero no está en CursoDto ni en el API
-- Crear enum EstadoCurso { ACTIVO, INACTIVO, CERRADO } en dominio/modelo/
-- Agregar estadoCurso al modelo Curso y al CursoDto
-- En CursoGateway: eliminado=0 -> ACTIVO, eliminado=1 -> INACTIVO
-- No cambiar endpoints existentes, solo agregar el campo al DTO de respuesta
-- Criterio: GET /cursos/{id} retorna estadoCurso en el JSON
+~~HE-05 HU-01 — Deshabilitar curso deportivo~~ ✅ COMPLETADA
+- PATCH /api/v2/curso/estado con @RequestParam prmCategoria, prmCurso, prmEstado
+- Servicio: cambiarEstadoCurso — lanza NoExisteExcepcion si no existe
+- Gateway: setEliminado(1) si INACTIVO, setEliminado(0) si ACTIVO
 
-HE-05 HU-01 — Deshabilitar curso deportivo
-
-- Endpoint: PATCH /cursos/{id}/estado
-- Body: { "estado": "INACTIVO" }
-- Respuesta: 200 OK con CursoDto actualizado
-- Lanzar NoExisteExcepcion si el curso no existe
-
-HE-05 HU-02 — Eliminación lógica de curso
-
-- Endpoint: DELETE /cursos/{id}
-- Borrado lógico: setEliminado(true), NO delete físico
-- Retornar 409 Conflict si ya está eliminado
+~~HE-05 HU-02 — Eliminación lógica de curso~~ ✅ COMPLETADA
+- DELETE /api/v2/curso con @RequestParam prmCategoria, prmCurso
+- Lanza NoExisteExcepcion (404) si no existe
+- Lanza YaExisteElementoExcepcion (409) si estadoCurso ya es INACTIVO
+- Gateway: setEliminado(1), NO delete físico
 
 ### Bloque 2 — Funcionalidades faltantes
 
-HE-04 HU-02 — Campo horario en Curso
-
-- El campo horario no está implementado
-- Agregar a modelo Curso, CursoEntidad, CursoDto
-- Persistir y exponer en GET y POST de cursos
-- Actualmente el frontend muestra "Horario por Definir" hardcodeado
+~~HE-04 HU-02 — Campo horario en Curso~~ ✅ COMPLETADA
+- CursoEntidad tiene @Column(name = "CUR_HORARIO") private String horario
+- Curso.java y CursoDto.java tienen el campo horario
+- POST y PUT persisten y exponen el campo horario
 
 HE-04 HU-04 — Estado de inscripciones al crear curso
 
@@ -155,11 +148,11 @@ HE-06 HU-04 — Cambiar estado de inscripciones de un curso
 - Endpoint: PATCH /cursos/{id}/inscripciones
 - Body: { "estadoInscripciones": "ABIERTO" }
 
-HE-AT HU-03 — Eliminar atención de un deportista
-
-- Endpoint: DELETE /asistencias/{id}
-- Borrado lógico
-- Lanzar NoExisteExcepcion si no existe
+~~HE-AT HU-03 — Eliminar atención de un deportista~~ ✅ COMPLETADA
+- DELETE /api/v2/asistencia con @RequestParam prmPerfId, prmClsCodigo
+- Borrado lógico: setEliminado(1) en TBL_ASISTENCIA
+- Lanza NoExisteExcepcion (404) si no existe
+- Lanza YaExisteElementoExcepcion (409) si ya estaba eliminada
 
 HE-18 — Cambiar estado general de inscripciones (masivo)
 

@@ -33,4 +33,12 @@ public interface ICursoRepositorio extends CrudRepository<CursoEntidad,CursoId>{
      * @return cantidad de categorias
      */
     long countByCategoriaCurso(String CategoriaCurso);
+
+    /**
+     * Obtiene todos los cursos de una categoria sin filtrar por eliminado
+     * (incluye activos e inactivos)
+     * @param categoriaCurso titulo de la categoria
+     * @return lista de CursoEntidad sin restriccion de estado
+     */
+    List<CursoEntidad> findByCategoriaCurso(String categoriaCurso);
 }

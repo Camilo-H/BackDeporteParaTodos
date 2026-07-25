@@ -78,6 +78,7 @@ co\edu\unicauca\deporteParaTodos\infraestructura\controladorExcepciones\excepcio
 co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\entidades\ids\InscripcionId.class
 co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresPrimarios\adaptadorRest\DTOs\ImagenDto.class
 co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\gateway\ImagenGateway.class
+co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresPrimarios\adaptadorRest\DTOs\InscripcionDto.class
 co\edu\unicauca\deporteParaTodos\infraestructura\controladorExcepciones\excepciones\NoImplementadoException.class
 co\edu\unicauca\deporteParaTodos\aplicacion\puertos\puertosEntrada\IAlumnoServicio.class
 co\edu\unicauca\deporteParaTodos\infraestructura\controladorExcepciones\formatoError\CodigoError.class
@@ -158,7 +159,6 @@ co\edu\unicauca\deporteParaTodos\infraestructura\controladorExcepciones\formatoE
 co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\gateway\FacultadGateway.class
 co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\gateway\CursoGateway.class
 co\edu\unicauca\deporteParaTodos\infraestructura\controladorExcepciones\excepciones\ArchivoNoConvertibleExcepcion.class
-co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\gateway\InscripcionGateway$1.class
 co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\repositorios\ICategoriaCursoRepositorio.class
 co\edu\unicauca\deporteParaTodos\aplicacion\puertos\puertosEntrada\IEstadisticaServicio.class
 co\edu\unicauca\deporteParaTodos\infraestructura\adaptadores\adaptadoresSecundarios\persistenciaSQL\gateway\ProgramaGateway.class

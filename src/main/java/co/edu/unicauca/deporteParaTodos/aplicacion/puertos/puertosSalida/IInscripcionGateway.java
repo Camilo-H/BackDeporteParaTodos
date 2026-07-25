@@ -1,21 +1,16 @@
 package co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida;
 
-import java.sql.Timestamp;
-import java.util.List;
-import java.util.Optional;
-
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Inscripcion;
-import jakarta.servlet.UnavailableException;
 
 public interface IInscripcionGateway {
 
-    public boolean existeInscripcion(Timestamp fecha) throws UnavailableException, Exception;
+    boolean existeInscripcion(String alumnoId, String categoria, String curso, int anio, int iterable);
 
-    public List<Inscripcion> obtenerInscripciones();
+    boolean existeInscripcionActiva(String alumnoId, String categoria, String curso, int anio, int iterable);
 
-    public Optional<Inscripcion> obteneInscripcion(Timestamp fecha);
+    Inscripcion obtenerInscripcion(String alumnoId, String categoria, String curso, int anio, int iterable);
 
-    public Inscripcion insertarInscripcion(Inscripcion datosInscripcion);
+    Inscripcion guardarInscripcion(Inscripcion inscripcion);
 
-    public Inscripcion eliminarInscripcion(Timestamp fecha);
+    Inscripcion desvincularInscripcion(String alumnoId, String categoria, String curso, int anio, int iterable);
 }

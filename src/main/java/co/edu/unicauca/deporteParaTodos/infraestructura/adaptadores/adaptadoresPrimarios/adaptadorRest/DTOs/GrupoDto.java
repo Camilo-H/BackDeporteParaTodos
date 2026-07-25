@@ -51,6 +51,8 @@ public class GrupoDto {
 
     private @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaIncripcionCierre;
 
+    private Integer periodo;
+
     public static GrupoDto fabricarDeModelo(Grupo grupo){
         try{
             GrupoDto dto = new GrupoDto();
@@ -65,6 +67,7 @@ public class GrupoDto {
             dto.setFechaIncripcionCierre(grupo.getFechaIncripcionCierre());
             dto.setIdInstructor(grupo.getIdInstructor());
             dto.setImagenGrupo(grupo.getImagenGrupo());
+            dto.setPeriodo(grupo.getPeriodo());
             return dto;
         }catch(Exception e){
             return null;

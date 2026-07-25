@@ -1,5 +1,6 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.gateway;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -103,8 +104,11 @@ public class GrupoGateway implements IGrupoGateway {
         if(!repoCurso.existsById(cursoId)){
             throw new NoExisteExcepcion("el curso al que intenta insertar un nuevo grupo no existe");
         }
-        //obtengo el año actual a cargar
-        Integer anio = java.time.Year.now().getValue();
+        // fuente única: fechaInscripcionApertura si existe, si no LocalDate.now()
+        LocalDate fechaRef = datosGrupo.getFechaInscripcionApertura() != null
+            ? datosGrupo.getFechaInscripcionApertura()
+            : LocalDate.now();
+        Integer anio = fechaRef.getYear();
         datosGrupo.setAnio(anio);
         //obtengo el iterable adecuado para la insercion
         Integer iterable = repoGrupo.countByCategoriaAndCursoAndAnio(datosGrupo.getCategoria(), datosGrupo.getCurso(), anio) + 1;
@@ -120,6 +124,9 @@ public class GrupoGateway implements IGrupoGateway {
             if(!repoInstructor.existsById(datosGrupo.getIdInstructor())){
                 throw new DependenciaFallida("el instructor identificado con "+datosGrupo.getIdInstructor()+" no existe en el sistema");
             }
+        }
+        if (datosGrupo.getPeriodo() <= 0) {
+            datosGrupo.setPeriodo(fechaRef.getMonthValue() >= 7 ? 2 : 1);
         }
         GrupoEntidad entidad = GrupoEntidad.fabricarDeModelo(datosGrupo);
         if(entidad==null){

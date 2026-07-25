@@ -3,6 +3,7 @@ package co.edu.unicauca.deporteParaTodos.dominio.modelo;
 
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CursoDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CursoEntidad;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoInscripciones;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,6 +29,8 @@ public class Curso {
 
     private String horario;
 
+    private EstadoInscripciones estadoInscripciones;
+
     public static Curso fabricarDeEntidad(CursoEntidad entidad){
         try{
             Curso fabricado = new Curso();
@@ -40,6 +43,11 @@ public class Curso {
                 Integer.valueOf(1).equals(entidad.getEliminado()) ? EstadoCurso.INACTIVO : EstadoCurso.ACTIVO
             );
             fabricado.setHorario(entidad.getHorario());
+            fabricado.setEstadoInscripciones(
+                entidad.getEstadoInscripciones() != null
+                    ? EstadoInscripciones.valueOf(entidad.getEstadoInscripciones())
+                    : EstadoInscripciones.ABIERTO
+            );
             return fabricado;
         }catch(Exception e){
             return null;
@@ -55,6 +63,7 @@ public class Curso {
             fabricado.setDeporte(dto.getDeporte());
             fabricado.setImagenId(dto.getIdImagen());
             fabricado.setHorario(dto.getHorario());
+            fabricado.setEstadoInscripciones(dto.getEstadoInscripciones());
             return fabricado;
         }catch(Exception e){
             return null;

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.ICursoServicio;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoCurso;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoInscripciones;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CursoDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.logs.PeticionLogger;
 import io.swagger.v3.oas.annotations.Operation;
@@ -66,6 +67,20 @@ public class CursoRest {
         ){
         PeticionLogger.log(LOGGER, "GET", "/api/v2/cursosbycategoria", "prmCategoria=" + prmCategoria);
         List<CursoDto> respuesta = servicio.cursosDeCategoria(prmCategoria);
+        return new ResponseEntity<>(respuesta, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Obtiene todos los cursos de una categoria incluyendo los inactivos/eliminados — uso exclusivo del panel de administración")
+    @ApiResponses(value ={
+        @ApiResponse(responseCode = "200", description = "listado completo de cursos sin filtro de estado"),
+    })
+    @GetMapping("/cursosbycategoria/todos")
+    public ResponseEntity<List<CursoDto>> obtenerTodosCursosPorCategoria(
+        @Parameter(description = "Identificador de una categoria del sistema")
+        @RequestParam String prmCategoria
+        ){
+        PeticionLogger.log(LOGGER, "GET", "/api/v2/cursosbycategoria/todos", "prmCategoria=" + prmCategoria);
+        List<CursoDto> respuesta = servicio.todosLosCursosDeCategoria(prmCategoria);
         return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
 
@@ -143,6 +158,25 @@ public class CursoRest {
         PeticionLogger.log(LOGGER, "PATCH", "/api/v2/curso/estado",
             "prmCategoria=" + prmCategoria + ", prmCurso=" + prmCurso + ", prmEstado=" + prmEstado);
         CursoDto dto = servicio.cambiarEstadoCurso(prmCategoria, prmCurso, prmEstado);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Cambia el estado de inscripciones de un curso (ABIERTO/CERRADO)")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "estado de inscripciones actualizado"),
+        @ApiResponse(responseCode = "404", description = "curso no encontrado"),
+    })
+    @PatchMapping("/curso/inscripciones")
+    public ResponseEntity<CursoDto> cambiarEstadoInscripciones(
+        @Parameter(description = "Identificador de la categoria del curso")
+        @RequestParam @NotBlank String prmCategoria,
+        @Parameter(description = "Identificador del curso")
+        @RequestParam @NotBlank String prmCurso,
+        @Parameter(description = "Nuevo estado de inscripciones: ABIERTO o CERRADO")
+        @RequestParam EstadoInscripciones prmEstado) {
+        PeticionLogger.log(LOGGER, "PATCH", "/api/v2/curso/inscripciones",
+            "prmCategoria=" + prmCategoria + ", prmCurso=" + prmCurso + ", prmEstado=" + prmEstado);
+        CursoDto dto = servicio.cambiarEstadoInscripciones(prmCategoria, prmCurso, prmEstado);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 }

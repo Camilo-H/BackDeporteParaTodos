@@ -17,4 +17,6 @@ public interface IAsistenciaServicio {
     public Asistencia InsertarAsistencia(Asistencia datosAsistencia);
 
     public Asistencia eliminarAsitencia(String perfId, int clsId);
+
+    public Asistencia eliminarAsistencia(String perfId, Long clsCodigo);
 }

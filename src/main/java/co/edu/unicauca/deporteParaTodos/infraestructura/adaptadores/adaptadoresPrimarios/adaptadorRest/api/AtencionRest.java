@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IAsistenciaServicio;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Asistencia;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.AtencionDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.logs.PeticionLogger;
 import io.swagger.v3.oas.annotations.Operation;
@@ -65,5 +67,23 @@ public class AtencionRest {
         PeticionLogger.log(LOGGER, "POST", "/api/v2/atenciones", "idClase=" + claseId + ", atenciones=" + atenciones);
         servicioAsistencia.registrarAtencionesPorClase(atenciones, claseId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Operation(summary = "Eliminación lógica de una asistencia (marca META_ELIMINADO=1)")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Asistencia eliminada correctamente"),
+        @ApiResponse(responseCode = "404", description = "La asistencia no existe"),
+        @ApiResponse(responseCode = "409", description = "La asistencia ya estaba eliminada")
+    })
+    @DeleteMapping("/asistencia")
+    public ResponseEntity<AtencionDto> eliminarAsistencia(
+            @Parameter(description = "Identificador del perfil del alumno")
+            @RequestParam String prmPerfId,
+            @Parameter(description = "Código de la clase")
+            @RequestParam Long prmClsCodigo) {
+        PeticionLogger.log(LOGGER, "DELETE", "/api/v2/asistencia",
+                "prmPerfId=" + prmPerfId + ", prmClsCodigo=" + prmClsCodigo);
+        Asistencia resultado = servicioAsistencia.eliminarAsistencia(prmPerfId, prmClsCodigo);
+        return new ResponseEntity<>(AtencionDto.fabricarDeModelo(resultado), HttpStatus.OK);
     }
 }

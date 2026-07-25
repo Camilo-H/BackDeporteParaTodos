@@ -83,4 +83,19 @@ public class AsistenciaGateway implements IAsistenciaGateway {
         throw new NoExisteExcepcion();
     }
 
+    @Override
+    public Asistencia eliminarAsistencia(String perfId, Long clsCodigo) {
+        AsistenciaId idAsistencia = new AsistenciaId();
+        idAsistencia.setPerfilId(perfId);
+        idAsistencia.setClaseCodigo(clsCodigo.intValue());
+        Optional<AsistenciaEntidad> op = repoAsistencia.findById(idAsistencia);
+        if (op.isEmpty()) {
+            throw new NoExisteExcepcion("La asistencia no existe");
+        }
+        AsistenciaEntidad entidad = op.get();
+        entidad.setEliminado(1);
+        AsistenciaEntidad guardada = repoAsistencia.save(entidad);
+        return Asistencia.fabricarDeEntidad(guardada);
+    }
+
 }
