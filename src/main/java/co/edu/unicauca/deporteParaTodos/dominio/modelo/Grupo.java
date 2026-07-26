@@ -38,6 +38,8 @@ public class Grupo {
 
     private LocalDate fechaIncripcionCierre;
 
+    private int periodo;
+
     public static Grupo fabricarDeEntidad(GrupoEntidad entidad){
         try{
             Grupo grupo = new Grupo();
@@ -52,6 +54,7 @@ public class Grupo {
             grupo.setIdInstructor(entidad.getIdInstructor());
             grupo.setImagenGrupo(entidad.getImagenGrupo());
             grupo.setIterable(entidad.getIterable());
+            grupo.setPeriodo(entidad.getPeriodo());
             return grupo;
         }catch(Exception e){
             return null;
@@ -60,17 +63,18 @@ public class Grupo {
     public static Grupo fabricarDeDto(GrupoDto dto){
         try{
             Grupo grupo = new Grupo(
-                dto.getCategoria(), 
-                dto.getCurso(), 
-                dto.getAnio(), 
-                dto.getIterable(), 
-                dto.getImagenGrupo(), 
-                dto.getCupos(), 
-                dto.getIdInstructor(), 
-                dto.getFechaCreacion(), 
-                dto.getFechaFinalizacion(), 
-                dto.getFechaInscripcionApertura(), 
-                dto.getFechaIncripcionCierre());
+                dto.getCategoria(),
+                dto.getCurso(),
+                dto.getAnio(),
+                dto.getIterable(),
+                dto.getImagenGrupo(),
+                dto.getCupos(),
+                dto.getIdInstructor(),
+                dto.getFechaCreacion(),
+                dto.getFechaFinalizacion(),
+                dto.getFechaInscripcionApertura(),
+                dto.getFechaIncripcionCierre(),
+                dto.getPeriodo() != null ? dto.getPeriodo() : 0);
             return grupo;
         }catch(Exception e){
             return null;

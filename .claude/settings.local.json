@@ -3,7 +3,13 @@
     "allow": [
       "PowerShell(\\(Get-ChildItem \"D:\\\\ACER\\\\Documents\\\\Practica_Codigo_Fuente\\\\Backend2026\\\\BackDeporteParaTodos\" -Force\\).Count)",
       "PowerShell(\\(Get-ChildItem \"D:\\\\ACER\\\\Documents\\\\Practica_Codigo_Fuente\\\\Backend2026\\\\BackDeporteParaTodos\" -Force\\) | ForEach-Object { $_.Name })",
-      "PowerShell(head -20)"
+      "PowerShell(head -20)",
+      "Bash(ls \"d:/ACER/Documents/Practica_Codigo_Fuente/\")",
+      "Read(//d/ACER/Documents/Practica_Codigo_Fuente/**)",
+      "PowerShell(cd \"d:\\\\ACER\\\\Documents\\\\Practica_Codigo_Fuente\\\\Backend2026\\\\BackDeporteParaTodos\"; mvn test -pl . 2>&1 | Select-String -Pattern \"BUILD|Tests run|ERROR|FAILURE|SUCCESS|YaExiste|AtencionDto\" | ForEach-Object { $_.Line })",
+      "PowerShell(cd \"d:\\\\ACER\\\\Documents\\\\Practica_Codigo_Fuente\\\\Backend2026\\\\BackDeporteParaTodos\"; mvn test -pl . 2>&1 | Select-String -Pattern \"BUILD|Tests run|ERROR|FAILURE|SUCCESS|cambiarEstadoInscripciones|EstadoInsc\" | ForEach-Object { $_.Line })",
+      "PowerShell(cd \"d:\\\\ACER\\\\Documents\\\\Practica_Codigo_Fuente\\\\Backend2026\\\\BackDeporteParaTodos\"; mvn test -pl . 2>&1 | Select-String -Pattern \"BUILD|Tests run|ERROR|FAILURE|SUCCESS|todosLosCursos\" | ForEach-Object { $_.Line })",
+      "PowerShell(cd \"d:\\\\ACER\\\\Documents\\\\Practica_Codigo_Fuente\\\\Backend2026\\\\BackDeporteParaTodos\"; mvn test -pl . 2>&1 | Select-String -Pattern \"BUILD|Tests run|ERROR|FAILURE|SUCCESS\" | ForEach-Object { $_.Line })"
     ]
   }
 }

@@ -12,12 +12,14 @@ import lombok.Setter;
 public class Asistencia {
     private String idPerfil;
     private Integer clsCodigo;
+    private Integer eliminado;
 
     public static Asistencia fabricarDeEntidad(co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.AsistenciaEntidad entidad) {
         try {
             Asistencia modelo = new Asistencia();
             modelo.setIdPerfil(entidad.getPerfilId());
             modelo.setClsCodigo(entidad.getClaseCodigo());
+            modelo.setEliminado(entidad.getEliminado());
             return modelo;
         } catch (Exception e) {
             return null;

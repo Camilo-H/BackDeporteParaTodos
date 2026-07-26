@@ -1,9 +1,5 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.api;
 
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,18 +7,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.InscripcionEntidad;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ids.InscripcionId;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IInscripcionRepositorio;
+import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IInscripcionServicio;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Inscripcion;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.InscripcionDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.logs.PeticionLogger;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("api/v2")
@@ -33,62 +30,33 @@ public class InscripcionRest {
     private static final Logger LOGGER = LoggerFactory.getLogger(InscripcionRest.class);
 
     @Autowired
-    IInscripcionRepositorio repositorio;
-    
-    /**
-     * si no existe registra un inscripcion con fecha de desvinculacion nula y fecha de inscripcion actual.
-     * si existe, cambia el valor de fecha desvinculaicon a null, para que sea una inscripcion activa nuevamente.
-     * @param entidad
-     * @return entidad guardada o actualizada
-     */
+    private IInscripcionServicio servicio;
+
     @PostMapping("/inscripcion")
-    //TODO: crear dto
-    public ResponseEntity<InscripcionEntidad> postMethodName(@RequestBody InscripcionEntidad entidad) {
-        PeticionLogger.log(LOGGER, "POST", "/api/v2/inscripcion", entidad);
-        InscripcionId id = new InscripcionId(entidad.getCategoria(), entidad.getCurso(), entidad.getAnio(), entidad.getIterable(), entidad.getAlumnoId());
-        boolean existe = repositorio.existsById(id);
-        InscripcionEntidad entidadGuardada;
-        if(existe){
-            Optional<InscripcionEntidad> optional = repositorio.findById(id);
-            entidadGuardada = optional.get();
-            entidadGuardada.setFechaDesvinculacion(null);
-            InscripcionEntidad actualizada = repositorio.save(entidadGuardada);
-            return new ResponseEntity<>(actualizada, HttpStatus.CREATED);
-        }
-        entidad.setFechaInscripcion(Timestamp.from(Instant.now()));
-        entidadGuardada = repositorio.save(entidad);
-        return new ResponseEntity<>(entidadGuardada, HttpStatus.CREATED);
-    }
-    
-    /**
-     * Valida si una inscripcion esta activa basandose en su existencia y en las fechas de inscripcion y desvinculacion
-     * @param entidad entidad a validar, puede contener las fechas en null
-     * @return false si no existe o si su fecha de desvisculacion esta registrada antes de la fecha actual, true en caso de que exista y su fecha de desvisculacion es nula o superior a la actual
-     */
-    @GetMapping("/validarInscripcion")
-    public ResponseEntity<Boolean> validarIncripcion(@RequestBody InscripcionEntidad entidad){
-        PeticionLogger.log(LOGGER, "GET", "/api/v2/validarInscripcion", entidad);
-        boolean respuesta = repositorio.existeInscripcionActiva(entidad.getAlumnoId(), entidad.getCategoria(), entidad.getCurso(), entidad.getAnio(), entidad.getIterable());
-        return new ResponseEntity<>(respuesta, HttpStatus.OK);
+    public ResponseEntity<InscripcionDto> inscribir(@RequestBody InscripcionDto dto) {
+        PeticionLogger.log(LOGGER, "POST", "/api/v2/inscripcion", dto);
+        Inscripcion inscripcion = Inscripcion.fabricarDeDto(dto);
+        Inscripcion resultado = servicio.inscribir(inscripcion);
+        return new ResponseEntity<>(InscripcionDto.fabricarDeModelo(resultado), HttpStatus.CREATED);
     }
 
-    /**
-     * cambia el valor de fecha desvinculacion a la fecha actual
-     * @param entidad inscripcion puede tener las fechas nulas, lo relevante en este caso son los id
-     * @return inscripcion actualizada
-     */
+    @GetMapping("/validarInscripcion")
+    public ResponseEntity<Boolean> validarInscripcion(
+            @RequestParam String alumnoId,
+            @RequestParam String categoria,
+            @RequestParam String curso,
+            @RequestParam int anio,
+            @RequestParam int iterable) {
+        PeticionLogger.log(LOGGER, "GET", "/api/v2/validarInscripcion", alumnoId);
+        boolean resultado = servicio.validarInscripcion(alumnoId, categoria, curso, anio, iterable);
+        return new ResponseEntity<>(resultado, HttpStatus.OK);
+    }
+
     @PutMapping("/desvincularInscripcion")
-    public ResponseEntity<InscripcionEntidad> eliminarInscripcion(@RequestBody InscripcionEntidad entidad){
-        PeticionLogger.log(LOGGER, "PUT", "/api/v2/desvincularInscripcion", entidad);
-        InscripcionId id = new InscripcionId(entidad.getCategoria(), entidad.getCurso(), entidad.getAnio(), entidad.getIterable(), entidad.getAlumnoId());
-        Optional<InscripcionEntidad> opcional = repositorio.findById(id);
-        if(opcional.isPresent()){
-            InscripcionEntidad actualizarEntidad;
-            actualizarEntidad = opcional.get();
-            actualizarEntidad.setFechaDesvinculacion(Timestamp.from(Instant.now()));
-            InscripcionEntidad actualizada = repositorio.save(actualizarEntidad);
-            return new ResponseEntity<>(actualizada, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<InscripcionDto> desvincularInscripcion(@RequestBody InscripcionDto dto) {
+        PeticionLogger.log(LOGGER, "PUT", "/api/v2/desvincularInscripcion", dto);
+        Inscripcion resultado = servicio.desvincularInscripcion(
+                dto.getAlumnoId(), dto.getCategoria(), dto.getCurso(), dto.getAnio(), dto.getIterable());
+        return new ResponseEntity<>(InscripcionDto.fabricarDeModelo(resultado), HttpStatus.OK);
     }
 }

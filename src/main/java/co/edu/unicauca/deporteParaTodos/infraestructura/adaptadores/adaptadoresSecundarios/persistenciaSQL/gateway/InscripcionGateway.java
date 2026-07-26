@@ -1,20 +1,18 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.gateway;
 
 import java.sql.Timestamp;
-import java.util.List;
+import java.time.Instant;
 import java.util.Optional;
 
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IInscripcionGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Inscripcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.InscripcionEntidad;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ids.InscripcionId;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IInscripcionRepositorio;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoImplementadoException;
-import jakarta.servlet.UnavailableException;
+import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
 
 @Service
 public class InscripcionGateway implements IInscripcionGateway {
@@ -22,53 +20,44 @@ public class InscripcionGateway implements IInscripcionGateway {
     @Autowired
     private IInscripcionRepositorio repoInscrp;
 
-    @Qualifier("modelMapperGenerico")
-    @Autowired
-    private ModelMapper mapper;
-
-    public boolean existeInscripcion(Timestamp fecha) throws Exception{
-        //TODO: modificar por cambio en base
-        //return false;
-        throw new NoImplementadoException();
-        //return repoInscrp.existsById(fecha);
+    @Override
+    public boolean existeInscripcion(String alumnoId, String categoria, String curso, int anio, int iterable) {
+        InscripcionId id = new InscripcionId(categoria, curso, anio, iterable, alumnoId);
+        return repoInscrp.existsById(id);
     }
 
     @Override
-    public List<Inscripcion> obtenerInscripciones() {
-        Iterable<InscripcionEntidad> entidades = repoInscrp.findAll();
-        List<Inscripcion> lista = mapper.map(entidades, new TypeToken<List<Inscripcion>>() {
-        }.getType());
-        return lista;
+    public boolean existeInscripcionActiva(String alumnoId, String categoria, String curso, int anio, int iterable) {
+        return repoInscrp.existeInscripcionActiva(alumnoId, categoria, curso, anio, iterable);
     }
 
     @Override
-    public Optional<Inscripcion> obteneInscripcion(Timestamp fecha) {
-        throw new NoImplementadoException();
-        /*if (existeInscripcion(fecha)) {
-            Optional<InscripcionEntidad> entidad = repoInscrp.findById(fecha);
-            return entidad.map(inscripcionEntidad -> mapper.map(inscripcionEntidad, Inscripcion.class));
+    public Inscripcion obtenerInscripcion(String alumnoId, String categoria, String curso, int anio, int iterable) {
+        InscripcionId id = new InscripcionId(categoria, curso, anio, iterable, alumnoId);
+        Optional<InscripcionEntidad> op = repoInscrp.findById(id);
+        if (op.isEmpty()) {
+            throw new NoExisteExcepcion("La inscripcion buscada no existe");
         }
-        return Optional.empty();*/
+        return Inscripcion.fabricarDeEntidad(op.get());
     }
 
     @Override
-    public Inscripcion insertarInscripcion(Inscripcion datosInscripcion) {
-        InscripcionEntidad entidad = mapper.map(datosInscripcion, InscripcionEntidad.class);
-        InscripcionEntidad insertada = repoInscrp.save(entidad);
-        return mapper.map(insertada, Inscripcion.class);
+    public Inscripcion guardarInscripcion(Inscripcion inscripcion) {
+        InscripcionEntidad entidad = InscripcionEntidad.fabricarDeModelo(inscripcion);
+        InscripcionEntidad guardada = repoInscrp.save(entidad);
+        return Inscripcion.fabricarDeEntidad(guardada);
     }
 
     @Override
-    public Inscripcion eliminarInscripcion(Timestamp fecha) {
-        throw new NoImplementadoException();
-        /*Optional<InscripcionEntidad> entidadExistente = repoInscrp.findById(fecha);
-        if (entidadExistente.isPresent()) {
-            InscripcionEntidad entidad = entidadExistente.get();
-            repoInscrp.delete(entidad);
-            return mapper.map(entidad, Inscripcion.class);
+    public Inscripcion desvincularInscripcion(String alumnoId, String categoria, String curso, int anio, int iterable) {
+        InscripcionId id = new InscripcionId(categoria, curso, anio, iterable, alumnoId);
+        Optional<InscripcionEntidad> op = repoInscrp.findById(id);
+        if (op.isEmpty()) {
+            throw new NoExisteExcepcion("La inscripcion a desvincular no existe");
         }
-        Inscripcion retorno = null;
-        return retorno;*/
+        InscripcionEntidad entidad = op.get();
+        entidad.setFechaDesvinculacion(Timestamp.from(Instant.now()));
+        InscripcionEntidad guardada = repoInscrp.save(entidad);
+        return Inscripcion.fabricarDeEntidad(guardada);
     }
-
 }

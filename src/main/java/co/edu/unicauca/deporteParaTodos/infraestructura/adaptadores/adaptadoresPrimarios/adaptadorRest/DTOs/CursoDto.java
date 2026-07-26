@@ -2,6 +2,7 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadores
 
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Curso;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoCurso;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoInscripciones;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -33,6 +34,8 @@ public class CursoDto {
 
     private String horario;
 
+    private EstadoInscripciones estadoInscripciones;
+
     public static CursoDto fabricarDeModelo(Curso curso){
         try{
             CursoDto dto = new CursoDto();
@@ -43,6 +46,7 @@ public class CursoDto {
             dto.setDeporte(curso.getDeporte());
             dto.setEstadoCurso(curso.getEstadoCurso());
             dto.setHorario(curso.getHorario());
+            dto.setEstadoInscripciones(curso.getEstadoInscripciones());
             return dto;
         }catch(Exception e){
             return null;

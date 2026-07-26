@@ -27,7 +27,7 @@ public class AtencionDto {
             AtencionDto dto = new AtencionDto();
             dto.setIdPerfil(modelo.getIdPerfil());
             dto.setIdClase(modelo.getClsCodigo());
-            dto.setEstaAtendido(Boolean.TRUE);
+            dto.setEstaAtendido(modelo.getEliminado() == null || modelo.getEliminado() != 1);
             return dto;
         } catch (Exception e) {
             return null;

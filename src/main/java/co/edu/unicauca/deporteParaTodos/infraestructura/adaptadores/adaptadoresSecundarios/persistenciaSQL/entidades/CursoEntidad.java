@@ -1,6 +1,7 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades;
 
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Curso;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoInscripciones;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ids.CursoId;
 
 import jakarta.persistence.Column;
@@ -45,6 +46,9 @@ public class CursoEntidad {
     @Column(name = "CUR_HORARIO")
     private String horario;
 
+    @Column(name = "CUR_ESTADO_INSCRIPCIONES")
+    private String estadoInscripciones;
+
     public static CursoEntidad fabricarDeModelo(Curso curso){
         try{
             CursoEntidad entidad = new CursoEntidad();
@@ -54,6 +58,11 @@ public class CursoEntidad {
             entidad.setDeporte(curso.getDeporte());
             entidad.setObjImagen(curso.getImagenId());
             entidad.setHorario(curso.getHorario());
+            entidad.setEstadoInscripciones(
+                curso.getEstadoInscripciones() != null
+                    ? curso.getEstadoInscripciones().name()
+                    : EstadoInscripciones.ABIERTO.name()
+            );
             return entidad;
         }catch(Exception e){
             return null;

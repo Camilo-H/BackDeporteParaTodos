@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.ICursoGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Curso;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoCurso;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoInscripciones;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CursoEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ids.CursoId;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.ICategoriaCursoRepositorio;
@@ -158,6 +159,17 @@ public class CursoGateway implements ICursoGateway{
     }
 
     @Override
+    public List<Curso> obtenerTodosCursosDeCategoria(String nombreCategoria) {
+        List<CursoEntidad> entidades = repoCurso.findByCategoriaCurso(nombreCategoria);
+        List<Curso> cursos = new ArrayList<>();
+        entidades.forEach(entidad -> {
+            Curso curso = Curso.fabricarDeEntidad(entidad);
+            cursos.add(curso);
+        });
+        return cursos;
+    }
+
+    @Override
     public Curso cambiarEstadoCurso(String categoria, String nombreCurso, EstadoCurso estado) {
         CursoId id = new CursoId(categoria, nombreCurso);
         Optional<CursoEntidad> op = repoCurso.findById(id);
@@ -179,6 +191,19 @@ public class CursoGateway implements ICursoGateway{
         }
         CursoEntidad entidad = op.get();
         entidad.setEliminado(1);
+        CursoEntidad respuesta = repoCurso.save(entidad);
+        return Curso.fabricarDeEntidad(respuesta);
+    }
+
+    @Override
+    public Curso cambiarEstadoInscripciones(String categoria, String nombreCurso, EstadoInscripciones estado) {
+        CursoId id = new CursoId(categoria, nombreCurso);
+        Optional<CursoEntidad> op = repoCurso.findById(id);
+        if (op.isEmpty()) {
+            throw new NoExisteExcepcion("gateway no encuentra el curso a cambiar estado de inscripciones");
+        }
+        CursoEntidad entidad = op.get();
+        entidad.setEstadoInscripciones(estado.name());
         CursoEntidad respuesta = repoCurso.save(entidad);
         return Curso.fabricarDeEntidad(respuesta);
     }

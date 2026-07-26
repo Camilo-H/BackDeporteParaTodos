@@ -66,23 +66,27 @@ public class GrupoEntidad {
     @Column(name = "GRP_FECHA_INSCRIP_CIERRE")
     private LocalDate fechaIncripcionCierre;
 
+    @Column(name = "GRP_PERIODO")
+    private int periodo;
+
     @Column(name = "META_ELIMINADO")
     private Integer eliminado;
 
     public static GrupoEntidad fabricarDeModelo(Grupo grupo){
         try{
             GrupoEntidad entidad = new GrupoEntidad(
-                grupo.getCategoria(), 
-                grupo.getCurso(), 
-                grupo.getAnio(), 
-                grupo.getIterable(), 
-                grupo.getImagenGrupo(), 
-                grupo.getCupos(), 
-                grupo.getIdInstructor(), 
-                grupo.getFechaCreacion(), 
-                grupo.getFechaFinalizacion(), 
+                grupo.getCategoria(),
+                grupo.getCurso(),
+                grupo.getAnio(),
+                grupo.getIterable(),
+                grupo.getImagenGrupo(),
+                grupo.getCupos(),
+                grupo.getIdInstructor(),
+                grupo.getFechaCreacion(),
+                grupo.getFechaFinalizacion(),
                 grupo.getFechaInscripcionApertura(),
                 grupo.getFechaIncripcionCierre(),
+                grupo.getPeriodo(),
                 0);
             return entidad;
         }catch(Exception e){

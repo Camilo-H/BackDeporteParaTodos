@@ -2,6 +2,7 @@ package co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada;
 
 import java.util.List;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoCurso;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoInscripciones;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CursoDto;
 
 public interface ICursoServicio {
@@ -16,6 +17,13 @@ public interface ICursoServicio {
      * @return lista de cursos en formato Dto
      */
     public List<CursoDto> cursosDeCategoria(String categoria);
+    /***
+     * Obtiene todos los cursos de una categoria sin filtrar por estado,
+     * incluyendo cursos marcados como inactivos/eliminados
+     * @param categoria titulo de la categoria
+     * @return lista completa de cursos en formato Dto
+     */
+    public List<CursoDto> todosLosCursosDeCategoria(String categoria);
     /***
      * Obtien un curso del sistema a partir del titulo de la categoria y el nombre del curso que fungen como identificadores
      * @param titulo identificador de la categoria
@@ -61,4 +69,13 @@ public interface ICursoServicio {
      * @return curso con estadoCurso INACTIVO
      */
     public CursoDto eliminarCursoPermanente(String categoria, String nombreCurso);
+    /***
+     * Cambia el estado de inscripciones de un curso (ABIERTO/CERRADO)
+     * Lanza NoExisteExcepcion si el curso no existe
+     * @param categoria identificador de la categoria
+     * @param nombreCurso identificador del curso
+     * @param estado nuevo estado de inscripciones
+     * @return curso con estadoInscripciones actualizado
+     */
+    public CursoDto cambiarEstadoInscripciones(String categoria, String nombreCurso, EstadoInscripciones estado);
 }

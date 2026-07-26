@@ -11,7 +11,7 @@ public class YaExisteElementoExcepcion extends RuntimeException {
     private final String codigo;
 
     public YaExisteElementoExcepcion(final String mensaje) {
-        super();
+        super(mensaje);
         llaveMensaje = CodigoError.YA_EXISTE.getLlaveMensaje();
         codigo = CodigoError.YA_EXISTE.getCodigo();
     }

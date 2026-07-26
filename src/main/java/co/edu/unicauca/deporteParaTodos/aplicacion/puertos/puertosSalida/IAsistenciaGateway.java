@@ -19,4 +19,5 @@ public interface IAsistenciaGateway {
 
     public Asistencia eliminarAsitencia(String perfId, int clsId);
 
+    public Asistencia eliminarAsistencia(String perfId, Long clsCodigo);
 }

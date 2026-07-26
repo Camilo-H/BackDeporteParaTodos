@@ -9,6 +9,7 @@ import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.ICurso
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.ICursoGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Curso;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoCurso;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoInscripciones;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CursoDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ErrorInternoException;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.InsercionFallidaExepcion;
@@ -40,6 +41,17 @@ public class CursoServicio implements ICursoServicio {
     @Override
     public List<CursoDto> cursosDeCategoria(String categoria) {
         List<Curso> cursos = cursoGateway.obtenerCursosDeCategoria(categoria);
+        List<CursoDto> dtos = new ArrayList<>();
+        cursos.forEach(curso -> {
+            CursoDto dto = CursoDto.fabricarDeModelo(curso);
+            dtos.add(dto);
+        });
+        return dtos;
+    }
+
+    @Override
+    public List<CursoDto> todosLosCursosDeCategoria(String categoria) {
+        List<Curso> cursos = cursoGateway.obtenerTodosCursosDeCategoria(categoria);
         List<CursoDto> dtos = new ArrayList<>();
         cursos.forEach(curso -> {
             CursoDto dto = CursoDto.fabricarDeModelo(curso);
@@ -109,6 +121,15 @@ public class CursoServicio implements ICursoServicio {
             throw new NoExisteExcepcion("El curso al que se desea cambiar el estado no existe");
         }
         Curso actualizado = cursoGateway.cambiarEstadoCurso(categoria, nombreCurso, estado);
+        return CursoDto.fabricarDeModelo(actualizado);
+    }
+
+    @Override
+    public CursoDto cambiarEstadoInscripciones(String categoria, String nombreCurso, EstadoInscripciones estado) {
+        if (!cursoGateway.existeCurso(categoria, nombreCurso)) {
+            throw new NoExisteExcepcion("El curso al que se desea cambiar el estado de inscripciones no existe");
+        }
+        Curso actualizado = cursoGateway.cambiarEstadoInscripciones(categoria, nombreCurso, estado);
         return CursoDto.fabricarDeModelo(actualizado);
     }
 
