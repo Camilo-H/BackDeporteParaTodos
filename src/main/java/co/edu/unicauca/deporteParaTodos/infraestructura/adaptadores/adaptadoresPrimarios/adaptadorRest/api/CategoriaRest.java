@@ -97,7 +97,7 @@ public class CategoriaRest {
      */
     @Operation(summary = "Elimina una categoria")
     @DeleteMapping("/categoria")
-    public ResponseEntity<CategoriaDto> deleteCategoria(@RequestParam String titulo){
+    public ResponseEntity<CategoriaDto> deleteCategoria(@RequestParam @NotBlank String titulo){
         PeticionLogger.log(LOGGER, "DELETE", "/api/v2/categoria", "titulo=" + titulo);
         CategoriaDto categoria = servicioCategoria.eliminarCategoria(titulo);
         return new ResponseEntity<>(categoria, HttpStatus.OK);

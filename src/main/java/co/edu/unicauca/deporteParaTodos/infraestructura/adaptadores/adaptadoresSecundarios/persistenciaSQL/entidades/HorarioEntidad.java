@@ -1,13 +1,11 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades;
 
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Horario;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinColumns;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -69,4 +67,19 @@ public class HorarioEntidad {
 
     @Column(name = "meta_eliminado")
     private Integer eliminado;
+
+    public static HorarioEntidad fabricarDeModelo(Horario h) {
+        HorarioEntidad e = new HorarioEntidad();
+        e.setId(h.getId());
+        e.setCategoria(h.getCategoria());
+        e.setCurso(h.getCurso());
+        e.setAnio(h.getAnio());
+        e.setIterable(h.getIterable());
+        e.setDia(h.getDia());
+        e.setHoraInicio(h.getHoraInicio());
+        e.setHoraFin(h.getHoraFin());
+        e.setEscenario(h.getEscenario());
+        e.setEliminado(h.getEliminado());
+        return e;
+    }
 }

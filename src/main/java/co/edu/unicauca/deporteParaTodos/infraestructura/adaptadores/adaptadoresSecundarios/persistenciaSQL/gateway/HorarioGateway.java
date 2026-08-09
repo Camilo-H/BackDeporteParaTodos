@@ -3,10 +3,7 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadores
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IHorarioGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Horario;
@@ -20,56 +17,61 @@ public class HorarioGateway implements IHorarioGateway {
     @Autowired
     private IHorarioRepositorio repoHorario;
 
-    @Qualifier("modelMapperGenerico")
-    @Autowired
-    private ModelMapper mapper;
-
     @Override
-    public boolean existeHorario(int id) {
+    public boolean existeHorario(Integer id) {
         return repoHorario.existsById(id);
     }
 
     @Override
-    public List<Horario> obtenerHorarios() {
-        Iterable<HorarioEntidad> entidades = repoHorario.findAll();
+    public List<Horario> listarHorariosPorGrupo(String categoria, String curso, int anio, int iterable) {
+        List<HorarioEntidad> entidades = repoHorario
+                .findByCategoriaAndCursoAndAnioAndIterableAndEliminado(categoria, curso, anio, iterable, 0);
         List<Horario> horarios = new ArrayList<>();
-        horarios = mapper.map(entidades, new TypeToken<List<Horario>>() {
-        }.getType());
+        entidades.forEach(e -> horarios.add(Horario.fabricarDeEntidad(e)));
         return horarios;
     }
 
     @Override
-    public Optional<Horario> obtenerHorario(int id) {
-        Optional<HorarioEntidad> entidad = repoHorario.findById(id);
-        if (entidad.isPresent()) {
-            return entidad.map(horarioEntidad -> mapper.map(horarioEntidad, Horario.class));
+    public Horario obtenerHorario(Integer id) {
+        Optional<HorarioEntidad> op = repoHorario.findById(id);
+        if (op.isEmpty()) {
+            throw new NoExisteExcepcion("El horario con id " + id + " no existe");
         }
-        return Optional.empty();
+        return Horario.fabricarDeEntidad(op.get());
     }
 
     @Override
-    public Horario insertatarHorario(Horario datosHorario) {
-        HorarioEntidad entidad = mapper.map(datosHorario, HorarioEntidad.class);
-        HorarioEntidad nuevoHorario = repoHorario.save(entidad);
-        return mapper.map(nuevoHorario, Horario.class);
+    public Horario insertarHorario(Horario datosHorario) {
+        HorarioEntidad entidad = HorarioEntidad.fabricarDeModelo(datosHorario);
+        entidad.setEliminado(0);
+        HorarioEntidad guardado = repoHorario.save(entidad);
+        return Horario.fabricarDeEntidad(guardado);
     }
 
     @Override
-    public Horario actualizarHorario(int id, Horario datosHorario) {
-        if (existeHorario(id)) {
-            HorarioEntidad entidad = mapper.map(datosHorario, HorarioEntidad.class);
-            HorarioEntidad horarioActualizado = repoHorario.save(entidad);
-            return mapper.map(horarioActualizado, Horario.class);
+    public Horario actualizarHorario(Integer id, Horario datosHorario) {
+        Optional<HorarioEntidad> op = repoHorario.findById(id);
+        if (op.isEmpty()) {
+            throw new NoExisteExcepcion("El horario con id " + id + " no existe");
         }
-        throw new NoExisteExcepcion();
+        HorarioEntidad entidad = op.get();
+        entidad.setDia(datosHorario.getDia());
+        entidad.setHoraInicio(datosHorario.getHoraInicio());
+        entidad.setHoraFin(datosHorario.getHoraFin());
+        entidad.setEscenario(datosHorario.getEscenario());
+        HorarioEntidad guardado = repoHorario.save(entidad);
+        return Horario.fabricarDeEntidad(guardado);
     }
 
     @Override
-    public Horario eliminarHorario(int id) {
-        Optional<HorarioEntidad> entidadExistente = repoHorario.findById(null);
-        HorarioEntidad respuesta = entidadExistente.get();
-        repoHorario.delete(respuesta);
-        return mapper.map(respuesta, Horario.class);
+    public Horario eliminarHorario(Integer id) {
+        Optional<HorarioEntidad> op = repoHorario.findById(id);
+        if (op.isEmpty()) {
+            throw new NoExisteExcepcion("El horario con id " + id + " no existe");
+        }
+        HorarioEntidad entidad = op.get();
+        entidad.setEliminado(1);
+        HorarioEntidad guardado = repoHorario.save(entidad);
+        return Horario.fabricarDeEntidad(guardado);
     }
-
 }

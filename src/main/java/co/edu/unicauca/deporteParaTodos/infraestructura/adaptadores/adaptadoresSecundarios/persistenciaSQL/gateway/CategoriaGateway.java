@@ -6,7 +6,6 @@ import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.ICatego
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Categoria;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CategoriaCursoEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.ICategoriaCursoRepositorio;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.ICursoRepositorio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IImagenRepositorio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.DependenciaFallida;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoConvertibleException;
@@ -25,8 +24,6 @@ public class CategoriaGateway implements ICategoriaCursoGateway {
     @Autowired
     private IImagenRepositorio repoImagen;
 
-    @Autowired
-    private ICursoRepositorio repoCurso;
 
     @Override
     public boolean existeCategoria(String nombreCategoria) {
@@ -103,29 +100,19 @@ public class CategoriaGateway implements ICategoriaCursoGateway {
 
     @Override
     public Categoria eliminarCategoria(String nombreCategoria) {
-        
-        //verificar si existe la categoria
         Optional<CategoriaCursoEntidad> entidadExistente = repoCategoria.findById(nombreCategoria);
-        if(entidadExistente.isEmpty()){
-            throw new NoExisteExcepcion("La categoria con el titulo "+nombreCategoria+" no existe.");
+        if (entidadExistente.isEmpty()) {
+            throw new NoExisteExcepcion("La categoria con el titulo " + nombreCategoria + " no existe.");
         }
         CategoriaCursoEntidad entidad = entidadExistente.get();
-        Categoria respuesta = Categoria.fabricarDeEntidad(entidad);
 
-        //verificar si poseen cursos asociados
-        long cantidadCursos = repoCurso.countByCategoriaCurso(nombreCategoria);
-        
-        //si no posee eliminamos todos
-        if(cantidadCursos==0){
-                //eliminamos imagen
-            repoImagen.deleteById(entidad.getCat_imagen());
-                //eliminamos categoria
-            repoCategoria.deleteById(nombreCategoria);
-            return respuesta;
+        if (entidad.getEliminado() == 1) {
+            throw new YaExisteElementoExcepcion("La categoria ya se encuentra eliminada");
         }
-        //si posee dependencias, marcamos como eliminado
+
         repoCategoria.marcarComoEliminado(nombreCategoria);
-        return respuesta;
+        entidad.setEliminado(1);
+        return Categoria.fabricarDeEntidad(entidad);
     }
 
 }

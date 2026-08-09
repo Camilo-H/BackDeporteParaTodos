@@ -9,7 +9,16 @@
       "PowerShell(cd \"d:\\\\ACER\\\\Documents\\\\Practica_Codigo_Fuente\\\\Backend2026\\\\BackDeporteParaTodos\"; mvn test -pl . 2>&1 | Select-String -Pattern \"BUILD|Tests run|ERROR|FAILURE|SUCCESS|YaExiste|AtencionDto\" | ForEach-Object { $_.Line })",
       "PowerShell(cd \"d:\\\\ACER\\\\Documents\\\\Practica_Codigo_Fuente\\\\Backend2026\\\\BackDeporteParaTodos\"; mvn test -pl . 2>&1 | Select-String -Pattern \"BUILD|Tests run|ERROR|FAILURE|SUCCESS|cambiarEstadoInscripciones|EstadoInsc\" | ForEach-Object { $_.Line })",
       "PowerShell(cd \"d:\\\\ACER\\\\Documents\\\\Practica_Codigo_Fuente\\\\Backend2026\\\\BackDeporteParaTodos\"; mvn test -pl . 2>&1 | Select-String -Pattern \"BUILD|Tests run|ERROR|FAILURE|SUCCESS|todosLosCursos\" | ForEach-Object { $_.Line })",
-      "PowerShell(cd \"d:\\\\ACER\\\\Documents\\\\Practica_Codigo_Fuente\\\\Backend2026\\\\BackDeporteParaTodos\"; mvn test -pl . 2>&1 | Select-String -Pattern \"BUILD|Tests run|ERROR|FAILURE|SUCCESS\" | ForEach-Object { $_.Line })"
+      "PowerShell(cd \"d:\\\\ACER\\\\Documents\\\\Practica_Codigo_Fuente\\\\Backend2026\\\\BackDeporteParaTodos\"; mvn test -pl . 2>&1 | Select-String -Pattern \"BUILD|Tests run|ERROR|FAILURE|SUCCESS\" | ForEach-Object { $_.Line })",
+      "Bash(find /d/ACER/Documents -name \"list-grupos.component.ts\" 2>/dev/null | head -10)",
+      "Read(//d/ACER/Documents/**)",
+      "Bash(find /d/ACER/Documents -name \"horario-dto.ts\" -o -name \"horario.service.ts\" -o -name \"list-grupos.component.html\" 2>/dev/null)",
+      "PowerShell(cd \"d:\\\\ACER\\\\Documents\\\\Practica_Codigo_Fuente\\\\Backend2026\\\\BackDeporteParaTodos\"; mvn test 2>&1 | Select-String -Pattern \"Tests run|BUILD|ERROR|FAILURE|HorarioServicioTest|EscenarioServicioTest|GrupoGatewayTest\" | ForEach-Object { $_.Line })",
+      "Bash(find \"/d/ACER/Documents/Practica_Codigo_Fuente/Fronted2026/DeporteParaTodosFront/src\" -type f -name \"*.ts\" | grep -iE \"instructor|autenticacion|auth\" | sort)",
+      "Read(//d/ACER/Documents/Practica_Codigo_Fuente/Fronted2026/DeporteParaTodosFront/src/**)",
+      "Bash(find \"/d/ACER/Documents/Practica_Codigo_Fuente/Fronted2026/DeporteParaTodosFront/src\" -type f \\\\\\( -name \"*.ts\" -o -name \"*.html\" \\\\\\) | grep -iE \"instructor\" | sort)",
+      "PowerShell(cd \"d:\\\\ACER\\\\Documents\\\\Practica_Codigo_Fuente\\\\Backend2026\\\\BackDeporteParaTodos\"; mvn test 2>&1 | Select-String -Pattern \"Tests run|BUILD|ERROR|FAILURE|CategoriaGatewayTest|GrupoGatewayTest|HorarioServicioTest|EscenarioServicioTest\" | ForEach-Object { $_.Line })",
+      "Bash(mvn test *)"
     ]
   }
 }

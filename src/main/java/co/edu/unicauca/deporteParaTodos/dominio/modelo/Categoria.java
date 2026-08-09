@@ -25,12 +25,15 @@ public class Categoria {
 
     private List<Curso> cursos;
 
+    private int eliminado;
+
     static public Categoria fabricarDeEntidad(CategoriaCursoEntidad entidad){
         try{
             Categoria fabricado = new Categoria();
             fabricado.setTitulo(entidad.getTitulo());
             fabricado.setDescripcion(entidad.getDescripcion());
             fabricado.setImagen(entidad.getCat_imagen());
+            fabricado.setEliminado(entidad.getEliminado());
             return fabricado;
         }catch(Exception e){
             return null;
