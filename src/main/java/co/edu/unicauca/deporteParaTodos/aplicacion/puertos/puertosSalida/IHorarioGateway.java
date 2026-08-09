@@ -1,21 +1,19 @@
 package co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida;
 
 import java.util.List;
-import java.util.Optional;
-
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Horario;
 
 public interface IHorarioGateway {
-    
-    public boolean existeHorario(int id);
-    
-    public List<Horario> obtenerHorarios();
 
-    public Optional<Horario> obtenerHorario (int id);
+    boolean existeHorario(Integer id);
 
-    public Horario insertatarHorario(Horario datosHorario);
+    List<Horario> listarHorariosPorGrupo(String categoria, String curso, int anio, int iterable);
 
-    public Horario actualizarHorario(int id, Horario datosHorario); 
+    Horario obtenerHorario(Integer id);
 
-    public Horario eliminarHorario (int id);
+    Horario insertarHorario(Horario datosHorario);
+
+    Horario actualizarHorario(Integer id, Horario datosHorario);
+
+    Horario eliminarHorario(Integer id);
 }

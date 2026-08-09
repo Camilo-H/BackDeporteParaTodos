@@ -46,7 +46,7 @@ public class AlumnoEntidad {
         try {
             AlumnoEntidad entidad = new AlumnoEntidad();
             entidad.setIdPerfil(perfil.getId());
-            entidad.setAlm_codigo(null);
+            entidad.setAlm_codigo(perfil.getAlumnoCodigo());
             entidad.setTipoAlumno(perfil.getTipoAlumno());
             entidad.setEliminado(eliminado);
             return entidad;
