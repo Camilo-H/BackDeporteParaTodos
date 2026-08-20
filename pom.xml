@@ -15,6 +15,11 @@
 	<description>desarrollo de prueba spring</description>
 	<properties>
 		<java.version>17</java.version>
+		<sonar.organization>camilo-h</sonar.organization>
+		<sonar.projectKey>Camilo-H_BackDeporteParaTodos</sonar.projectKey>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+		<sonar.exclusions>**/entidades/**,**/excepciones/**,**/DTOs/**,**/*Application.java</sonar.exclusions>
 	</properties>
 	<dependencies>
 
@@ -108,7 +113,57 @@
 					<parameters>true</parameters>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+				<version>5.7.0.6970</version>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.11</version>
+				<configuration>
+					<excludes>
+						<exclude>**/entidades/**</exclude>
+						<exclude>**/excepciones/**</exclude>
+						<exclude>**/DTOs/**</exclude>
+						<exclude>**/*Application.class</exclude>
+					</excludes>
+				</configuration>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<goals><goal>prepare-agent</goal></goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>verify</phase>
+						<goals><goal>report</goal></goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>skip-integration-tests</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<excludes>
+								<!-- Requiere conexion Oracle local (jdbc:oracle:thin:@localhost:1521:xe).
+								     No disponible en CI. Los 163 tests Mockito restantes se ejecutan normalmente. -->
+								<exclude>**/DesarrollopruebaApplicationTests.java</exclude>
+							</excludes>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>
