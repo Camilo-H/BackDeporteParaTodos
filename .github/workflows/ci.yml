@@ -28,6 +28,11 @@ jobs:
       - name: Build and run unit tests
         run: mvn --batch-mode --update-snapshots verify -P skip-integration-tests
 
+      - name: SonarCloud analysis
+        run: mvn --batch-mode sonar:sonar -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Upload JaCoCo coverage report
         if: always()
         uses: actions/upload-artifact@v7
