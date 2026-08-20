@@ -31,8 +31,9 @@ jobs:
         run: mvn --batch-mode --update-snapshots verify -P skip-integration-tests
 
       - name: SonarCloud analysis
-        run: mvn --batch-mode sonar:sonar -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+        run: mvn --batch-mode sonar:sonar
         env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload JaCoCo coverage report
