@@ -43,7 +43,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .cors(Customizer.withDefaults())
-            .csrf(AbstractHttpConfigurer::disable)
+            // CSRF deshabilitado intencionalmente: API stateless con JWT en Authorization header.
+            // El riesgo CSRF aplica solo a flujos basados en cookies; aqui no se usan cookies de sesion
+            // (SessionCreationPolicy.STATELESS) y CORS esta restringido a origenes explicitamente permitidos.
+            // Referencia: https://docs.spring.io/spring-security/reference/features/exploits/csrf.html
+            .csrf(AbstractHttpConfigurer::disable) // NOSONAR: jwt-stateless-no-csrf-risk
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())

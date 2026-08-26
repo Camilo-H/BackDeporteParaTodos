@@ -87,13 +87,16 @@ class RestExceptionHandlerTest {
         // --- Grupo A: excepciones del framework (disparadas por Spring MVC) ---
 
         @PostMapping("/test/bodyvalido")
+        // Cuerpo vacio a proposito: Spring lanza MethodArgumentNotValidException antes de llegar aqui
         void bodyValido(@RequestBody @Valid DtoDeTest dto) {}
 
         @PostMapping("/test/jsonroto")
+        // Cuerpo vacio a proposito: Jackson lanza HttpMessageNotReadableException antes de llegar aqui
         void jsonRoto(@RequestBody DtoDeTest dto) {}
 
         // Endpoint utilizado por handlerMethodValidation_retorna400 via webAppContextSetup
         @GetMapping("/test/paramblank")
+        // Cuerpo vacio a proposito: MethodValidationInterceptor lanza HandlerMethodValidationException antes de llegar aqui
         void paramBlank(@RequestParam @NotBlank String titulo) {}
     }
 
