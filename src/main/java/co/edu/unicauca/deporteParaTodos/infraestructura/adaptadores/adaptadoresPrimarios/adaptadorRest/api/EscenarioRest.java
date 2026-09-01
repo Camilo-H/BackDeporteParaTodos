@@ -1,8 +1,10 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.api;
 
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IEscenarioServicio;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Escenario;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.EscenarioDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.logs.PeticionLogger;
+import co.edu.unicauca.deporteParaTodos.infraestructura.mappers.EscenarioMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/v2")
@@ -41,7 +44,8 @@ public class EscenarioRest {
     @GetMapping("/escenarios")
     public ResponseEntity<List<EscenarioDto>> listarEscenarios() {
         PeticionLogger.log(LOGGER, "GET", "/api/v2/escenarios", "sin datos");
-        List<EscenarioDto> respuesta = servicio.listarEscenarios();
+        List<EscenarioDto> respuesta = servicio.listarEscenarios()
+                .stream().map(EscenarioMapper::toDto).collect(Collectors.toList());
         return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
 
@@ -53,8 +57,8 @@ public class EscenarioRest {
     @GetMapping("/escenario")
     public ResponseEntity<EscenarioDto> obtenerEscenario(@RequestParam Integer prmId) {
         PeticionLogger.log(LOGGER, "GET", "/api/v2/escenario", "prmId=" + prmId);
-        EscenarioDto dto = servicio.obtenerEscenario(prmId);
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+        Escenario escenario = servicio.obtenerEscenario(prmId);
+        return new ResponseEntity<>(EscenarioMapper.toDto(escenario), HttpStatus.OK);
     }
 
     @Operation(summary = "Registra un nuevo escenario en el sistema")
@@ -65,8 +69,8 @@ public class EscenarioRest {
     @PostMapping("/escenario")
     public ResponseEntity<EscenarioDto> insertarEscenario(@RequestBody @Valid EscenarioDto dto) {
         PeticionLogger.log(LOGGER, "POST", "/api/v2/escenario", dto);
-        EscenarioDto guardado = servicio.insertarEscenario(dto);
-        return new ResponseEntity<>(guardado, HttpStatus.CREATED);
+        Escenario guardado = servicio.insertarEscenario(EscenarioMapper.fromDto(dto));
+        return new ResponseEntity<>(EscenarioMapper.toDto(guardado), HttpStatus.CREATED);
     }
 
     @Operation(summary = "Actualiza los datos de un escenario")
@@ -80,8 +84,8 @@ public class EscenarioRest {
             @RequestParam Integer prmId,
             @RequestBody @Valid EscenarioDto dto) {
         PeticionLogger.log(LOGGER, "PUT", "/api/v2/escenario", "prmId=" + prmId);
-        EscenarioDto actualizado = servicio.actualizarEscenario(prmId, dto);
-        return new ResponseEntity<>(actualizado, HttpStatus.OK);
+        Escenario actualizado = servicio.actualizarEscenario(prmId, EscenarioMapper.fromDto(dto));
+        return new ResponseEntity<>(EscenarioMapper.toDto(actualizado), HttpStatus.OK);
     }
 
     @Operation(summary = "Eliminación lógica de un escenario (meta_eliminado=1)")
@@ -93,7 +97,7 @@ public class EscenarioRest {
     @DeleteMapping("/escenario")
     public ResponseEntity<EscenarioDto> eliminarEscenario(@RequestParam Integer prmId) {
         PeticionLogger.log(LOGGER, "DELETE", "/api/v2/escenario", "prmId=" + prmId);
-        EscenarioDto eliminado = servicio.eliminarEscenario(prmId);
-        return new ResponseEntity<>(eliminado, HttpStatus.OK);
+        Escenario eliminado = servicio.eliminarEscenario(prmId);
+        return new ResponseEntity<>(EscenarioMapper.toDto(eliminado), HttpStatus.OK);
     }
 }

@@ -5,6 +5,7 @@ import co.edu.unicauca.deporteParaTodos.dominio.modelo.Escenario;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.EscenarioEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IEscenarioRepositorio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
+import co.edu.unicauca.deporteParaTodos.infraestructura.mappers.EscenarioMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class EscenarioGateway implements IEscenarioGateway {
     public List<Escenario> listarEscenarios() {
         List<EscenarioEntidad> entidades = repoEscenario.findByEliminado(0);
         List<Escenario> escenarios = new ArrayList<>();
-        entidades.forEach(entidad -> escenarios.add(Escenario.fabricarDeEntidad(entidad)));
+        entidades.forEach(entidad -> escenarios.add(EscenarioMapper.toDominio(entidad)));
         return escenarios;
     }
 
@@ -32,7 +33,7 @@ public class EscenarioGateway implements IEscenarioGateway {
         if (op.isEmpty()) {
             throw new NoExisteExcepcion("El escenario con id " + id + " no existe");
         }
-        return Escenario.fabricarDeEntidad(op.get());
+        return EscenarioMapper.toDominio(op.get());
     }
 
     @Override
@@ -47,10 +48,10 @@ public class EscenarioGateway implements IEscenarioGateway {
 
     @Override
     public Escenario insertarEscenario(Escenario escenario) {
-        EscenarioEntidad entidad = EscenarioEntidad.fabricarDeModelo(escenario);
+        EscenarioEntidad entidad = EscenarioMapper.toEntidad(escenario);
         entidad.setEliminado(0);
         EscenarioEntidad guardado = repoEscenario.save(entidad);
-        return Escenario.fabricarDeEntidad(guardado);
+        return EscenarioMapper.toDominio(guardado);
     }
 
     @Override
@@ -65,7 +66,7 @@ public class EscenarioGateway implements IEscenarioGateway {
         entidad.setNumTribunas(escenario.getNumTribunas());
         entidad.setDisponible(escenario.isDisponible() ? 1 : 0);
         EscenarioEntidad guardado = repoEscenario.save(entidad);
-        return Escenario.fabricarDeEntidad(guardado);
+        return EscenarioMapper.toDominio(guardado);
     }
 
     @Override
@@ -77,6 +78,6 @@ public class EscenarioGateway implements IEscenarioGateway {
         EscenarioEntidad entidad = op.get();
         entidad.setEliminado(1);
         EscenarioEntidad guardado = repoEscenario.save(entidad);
-        return Escenario.fabricarDeEntidad(guardado);
+        return EscenarioMapper.toDominio(guardado);
     }
 }
