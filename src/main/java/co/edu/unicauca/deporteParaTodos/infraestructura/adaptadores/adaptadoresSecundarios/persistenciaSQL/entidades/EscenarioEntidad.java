@@ -1,6 +1,5 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades;
 
-import co.edu.unicauca.deporteParaTodos.dominio.modelo.Escenario;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -42,18 +41,4 @@ public class EscenarioEntidad {
     @Column(name = "META_ELIMINADO")
     private Integer eliminado;
 
-    public static EscenarioEntidad fabricarDeModelo(Escenario escenario) {
-        try {
-            EscenarioEntidad entidad = new EscenarioEntidad();
-            entidad.setId(escenario.getId());
-            entidad.setNombre(escenario.getNombre());
-            entidad.setDescripcion(escenario.getDescripcion());
-            entidad.setNumTribunas(escenario.getNumTribunas());
-            entidad.setDisponible(escenario.isDisponible() ? 1 : 0);
-            entidad.setEliminado(escenario.getEliminado() != null ? escenario.getEliminado() : 0);
-            return entidad;
-        } catch (Exception e) {
-            return null;
-        }
-    }
 }

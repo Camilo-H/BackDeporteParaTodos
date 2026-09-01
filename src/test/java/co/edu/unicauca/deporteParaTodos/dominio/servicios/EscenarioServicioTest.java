@@ -2,7 +2,6 @@ package co.edu.unicauca.deporteParaTodos.dominio.servicios;
 
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IEscenarioGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Escenario;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.EscenarioDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ListadoVacioExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.YaExisteElementoExcepcion;
@@ -48,22 +47,13 @@ class EscenarioServicioTest {
         return e;
     }
 
-    private EscenarioDto dtoBase() {
-        EscenarioDto dto = new EscenarioDto();
-        dto.setNombre(NOMBRE);
-        dto.setDescripcion("Natación.");
-        dto.setNumTribunas(0);
-        dto.setDisponible(true);
-        return dto;
-    }
-
     // --- listarEscenarios ---
 
     @Test
-    void listarEscenarios_exitoso_retornaListaDtos() {
+    void listarEscenarios_exitoso_retornaListaEscenarios() {
         when(escenarioGateway.listarEscenarios()).thenReturn(List.of(escenarioActivo()));
 
-        List<EscenarioDto> resultado = escenarioServicio.listarEscenarios();
+        List<Escenario> resultado = escenarioServicio.listarEscenarios();
 
         assertEquals(1, resultado.size());
         assertEquals(NOMBRE, resultado.get(0).getNombre());
@@ -80,11 +70,11 @@ class EscenarioServicioTest {
     // --- obtenerEscenario ---
 
     @Test
-    void obtenerEscenario_exitoso_retornaDto() {
+    void obtenerEscenario_exitoso_retornaEscenario() {
         when(escenarioGateway.existeEscenario(ID)).thenReturn(true);
         when(escenarioGateway.obtenerEscenario(ID)).thenReturn(escenarioActivo());
 
-        EscenarioDto resultado = escenarioServicio.obtenerEscenario(ID);
+        Escenario resultado = escenarioServicio.obtenerEscenario(ID);
 
         assertNotNull(resultado);
         assertEquals(NOMBRE, resultado.getNombre());
@@ -103,11 +93,11 @@ class EscenarioServicioTest {
     // --- insertarEscenario ---
 
     @Test
-    void insertarEscenario_exitoso_retornaDto() {
+    void insertarEscenario_exitoso_retornaEscenario() {
         when(escenarioGateway.existeEscenarioPorNombre(NOMBRE)).thenReturn(false);
         when(escenarioGateway.insertarEscenario(any())).thenReturn(escenarioActivo());
 
-        EscenarioDto resultado = escenarioServicio.insertarEscenario(dtoBase());
+        Escenario resultado = escenarioServicio.insertarEscenario(escenarioActivo());
 
         assertNotNull(resultado);
         assertEquals(NOMBRE, resultado.getNombre());
@@ -118,7 +108,8 @@ class EscenarioServicioTest {
     void insertarEscenario_yaExiste_lanzaYaExisteElementoExcepcion() {
         when(escenarioGateway.existeEscenarioPorNombre(NOMBRE)).thenReturn(true);
 
-        assertThrows(YaExisteElementoExcepcion.class, () -> escenarioServicio.insertarEscenario(dtoBase()));
+        assertThrows(YaExisteElementoExcepcion.class,
+                () -> escenarioServicio.insertarEscenario(escenarioActivo()));
 
         verify(escenarioGateway, never()).insertarEscenario(any());
     }
@@ -126,7 +117,7 @@ class EscenarioServicioTest {
     // --- actualizarEscenario ---
 
     @Test
-    void actualizarEscenario_exitoso_retornaDto() {
+    void actualizarEscenario_exitoso_retornaEscenario() {
         Escenario actualizado = escenarioActivo();
         actualizado.setDescripcion("Nueva descripción");
 
@@ -134,7 +125,7 @@ class EscenarioServicioTest {
         when(escenarioGateway.obtenerEscenario(ID)).thenReturn(escenarioActivo());
         when(escenarioGateway.actualizarEscenario(eq(ID), any())).thenReturn(actualizado);
 
-        EscenarioDto resultado = escenarioServicio.actualizarEscenario(ID, dtoBase());
+        Escenario resultado = escenarioServicio.actualizarEscenario(ID, escenarioActivo());
 
         assertNotNull(resultado);
         assertEquals(NOMBRE, resultado.getNombre());
@@ -145,24 +136,25 @@ class EscenarioServicioTest {
     void actualizarEscenario_noExiste_lanzaNoExisteExcepcion() {
         when(escenarioGateway.existeEscenario(ID)).thenReturn(false);
 
-        assertThrows(NoExisteExcepcion.class, () -> escenarioServicio.actualizarEscenario(ID, dtoBase()));
+        assertThrows(NoExisteExcepcion.class,
+                () -> escenarioServicio.actualizarEscenario(ID, escenarioActivo()));
 
         verify(escenarioGateway, never()).actualizarEscenario(any(), any());
     }
 
     @Test
     void actualizarEscenario_nombreDuplicado_lanzaYaExisteElementoExcepcion() {
-        EscenarioDto dtoNuevoNombre = dtoBase();
-        dtoNuevoNombre.setNombre("Coliseo Cubierto Universitario");
+        Escenario datosNuevoNombre = escenarioActivo();
+        datosNuevoNombre.setNombre("Coliseo Cubierto Universitario");
 
-        Escenario actual = escenarioActivo(); // tiene nombre "Piscina Olímpica"
+        Escenario actual = escenarioActivo(); // nombre "Piscina Olímpica"
 
         when(escenarioGateway.existeEscenario(ID)).thenReturn(true);
         when(escenarioGateway.obtenerEscenario(ID)).thenReturn(actual);
         when(escenarioGateway.existeEscenarioPorNombre("Coliseo Cubierto Universitario")).thenReturn(true);
 
         assertThrows(YaExisteElementoExcepcion.class,
-            () -> escenarioServicio.actualizarEscenario(ID, dtoNuevoNombre));
+                () -> escenarioServicio.actualizarEscenario(ID, datosNuevoNombre));
 
         verify(escenarioGateway, never()).actualizarEscenario(any(), any());
     }
@@ -170,16 +162,17 @@ class EscenarioServicioTest {
     // --- eliminarEscenario ---
 
     @Test
-    void eliminarEscenario_exitoso_retornaDto() {
+    void eliminarEscenario_exitoso_retornaEscenarioEliminado() {
         Escenario eliminado = escenarioEliminado();
 
         when(escenarioGateway.existeEscenario(ID)).thenReturn(true);
         when(escenarioGateway.obtenerEscenario(ID)).thenReturn(escenarioActivo());
         when(escenarioGateway.eliminarEscenario(ID)).thenReturn(eliminado);
 
-        EscenarioDto resultado = escenarioServicio.eliminarEscenario(ID);
+        Escenario resultado = escenarioServicio.eliminarEscenario(ID);
 
         assertNotNull(resultado);
+        assertEquals(1, resultado.getEliminado());
         verify(escenarioGateway).eliminarEscenario(ID);
     }
 
@@ -197,7 +190,8 @@ class EscenarioServicioTest {
         when(escenarioGateway.existeEscenario(ID)).thenReturn(true);
         when(escenarioGateway.obtenerEscenario(ID)).thenReturn(escenarioEliminado());
 
-        assertThrows(YaExisteElementoExcepcion.class, () -> escenarioServicio.eliminarEscenario(ID));
+        assertThrows(YaExisteElementoExcepcion.class,
+                () -> escenarioServicio.eliminarEscenario(ID));
 
         verify(escenarioGateway, never()).eliminarEscenario(any());
     }

@@ -1,6 +1,5 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs;
 
-import co.edu.unicauca.deporteParaTodos.dominio.modelo.Escenario;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
@@ -26,17 +25,4 @@ public class EscenarioDto {
 
     private Boolean disponible;
 
-    public static EscenarioDto fabricarDeModelo(Escenario escenario) {
-        try {
-            EscenarioDto dto = new EscenarioDto();
-            dto.setId(escenario.getId());
-            dto.setNombre(escenario.getNombre());
-            dto.setDescripcion(escenario.getDescripcion());
-            dto.setNumTribunas(escenario.getNumTribunas());
-            dto.setDisponible(escenario.isDisponible());
-            return dto;
-        } catch (Exception e) {
-            return null;
-        }
-    }
 }
