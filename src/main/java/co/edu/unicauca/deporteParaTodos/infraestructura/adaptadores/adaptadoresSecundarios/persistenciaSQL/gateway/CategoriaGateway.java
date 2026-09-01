@@ -10,6 +10,7 @@ import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresS
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.DependenciaFallida;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoConvertibleException;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
+import co.edu.unicauca.deporteParaTodos.infraestructura.mappers.CategoriaMapper;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.YaExisteElementoExcepcion;
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +36,7 @@ public class CategoriaGateway implements ICategoriaCursoGateway {
         List<CategoriaCursoEntidad> listaEntidades = repoCategoria.findByEliminado(0);
         List<Categoria> listaCategorias = new ArrayList<>();
         listaEntidades.forEach(entidad ->{
-            Categoria categoria = Categoria.fabricarDeEntidad(entidad);
+            Categoria categoria = CategoriaMapper.toDominio(entidad);
             if(categoria!=null){
                 listaCategorias.add(categoria);
             }
@@ -48,7 +49,7 @@ public class CategoriaGateway implements ICategoriaCursoGateway {
         CategoriaCursoEntidad entidadRecuperada = repoCategoria.findById(nombreCategoria).orElseThrow(
             () -> new NoExisteExcepcion()
         );
-        return Categoria.fabricarDeEntidad(entidadRecuperada);
+        return CategoriaMapper.toDominio(entidadRecuperada);
     }
 
     @Override
@@ -64,7 +65,7 @@ public class CategoriaGateway implements ICategoriaCursoGateway {
         }
 
         //conversion de datos
-        CategoriaCursoEntidad entidadInsertar = CategoriaCursoEntidad.fabricarDeModelo(datosCategoria, 0);
+        CategoriaCursoEntidad entidadInsertar = CategoriaMapper.toEntidad(datosCategoria);
         if(entidadInsertar == null){
             throw new NoConvertibleException();
         }
@@ -73,7 +74,7 @@ public class CategoriaGateway implements ICategoriaCursoGateway {
         CategoriaCursoEntidad entidadInsertada = repoCategoria.save(entidadInsertar);
 
         //conversion
-        Categoria categoriacreada = Categoria.fabricarDeEntidad(entidadInsertada);
+        Categoria categoriacreada = CategoriaMapper.toDominio(entidadInsertada);
 
         return categoriacreada;
     }
@@ -95,7 +96,7 @@ public class CategoriaGateway implements ICategoriaCursoGateway {
         entidadCategoriaExistente.setCat_imagen(prmcategoria.getImagen());
         //actualizo
         CategoriaCursoEntidad entidadActualizada = repoCategoria.save(entidadCategoriaExistente);
-        return Categoria.fabricarDeEntidad(entidadActualizada);
+        return CategoriaMapper.toDominio(entidadActualizada);
     }
 
     @Override
@@ -112,7 +113,7 @@ public class CategoriaGateway implements ICategoriaCursoGateway {
 
         repoCategoria.marcarComoEliminado(nombreCategoria);
         entidad.setEliminado(1);
-        return Categoria.fabricarDeEntidad(entidad);
+        return CategoriaMapper.toDominio(entidad);
     }
 
 }

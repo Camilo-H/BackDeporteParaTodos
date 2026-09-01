@@ -1,7 +1,6 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs;
 
 
-import co.edu.unicauca.deporteParaTodos.dominio.modelo.Categoria;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -24,15 +23,4 @@ public class CategoriaDto {
     @NotNull(message = "{categoria.imagenid.null}")
     private Integer imagenId;
 
-    public static CategoriaDto fabricarDeModelo(Categoria modelo){
-        try{
-            CategoriaDto dto = new CategoriaDto();
-            dto.setTitulo(modelo.getTitulo());
-            dto.setDescripcion(modelo.getDescripcion());
-            dto.setImagenId(modelo.getImagen());
-            return dto;
-        }catch(Exception e){
-            return null;
-        }
-    }
 }

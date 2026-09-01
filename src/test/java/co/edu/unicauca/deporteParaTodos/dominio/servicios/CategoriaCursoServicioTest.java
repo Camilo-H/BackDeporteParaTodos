@@ -2,10 +2,7 @@ package co.edu.unicauca.deporteParaTodos.dominio.servicios;
 
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.ICategoriaCursoGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Categoria;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CategoriaDto;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ErrorInternoException;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.InsercionFallidaExepcion;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoConvertibleException;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,23 +36,15 @@ class CategoriaCursoServicioTest {
         return c;
     }
 
-    private CategoriaDto categoriaDto() {
-        CategoriaDto dto = new CategoriaDto();
-        dto.setTitulo(TITULO);
-        dto.setDescripcion("Deportes acuaticos");
-        dto.setImagenId(1);
-        return dto;
-    }
-
     // ──────────────────────────────────────────────────────────────────────────
     // recuperarCategoriasCurso
     // ──────────────────────────────────────────────────────────────────────────
 
     @Test
-    void recuperarCategoriasCurso_listaNoVacia_retornaDtosMapeados() {
+    void recuperarCategoriasCurso_listaNoVacia_retornaCategorias() {
         when(categoriaCursoGateway.obtenerCategorias()).thenReturn(List.of(categoriaModelo()));
 
-        List<CategoriaDto> resultado = categoriaCursoServicio.recuperarCategoriasCurso();
+        List<Categoria> resultado = categoriaCursoServicio.recuperarCategoriasCurso();
 
         assertEquals(1, resultado.size());
         assertEquals(TITULO, resultado.get(0).getTitulo());
@@ -65,11 +54,10 @@ class CategoriaCursoServicioTest {
     @Test
     void recuperarCategoriasCurso_listaVacia_retornaListaVaciaSinExcepcion() {
         // DISEÑO INTENCIONAL (C): el servicio documenta explicitamente que no es necesario
-        // lanzar excepcion cuando la lista esta vacia. Diferente a obtenerAlumnos,
-        // obtenerInstructores, etc., que si lanzan ListadoVacioExcepcion.
+        // lanzar excepcion cuando la lista esta vacia.
         when(categoriaCursoGateway.obtenerCategorias()).thenReturn(List.of());
 
-        List<CategoriaDto> resultado = categoriaCursoServicio.recuperarCategoriasCurso();
+        List<Categoria> resultado = categoriaCursoServicio.recuperarCategoriasCurso();
 
         assertNotNull(resultado);
         assertTrue(resultado.isEmpty(),
@@ -81,10 +69,10 @@ class CategoriaCursoServicioTest {
     // ──────────────────────────────────────────────────────────────────────────
 
     @Test
-    void insertarCategoria_exitosa_retornaDtoMapeado() {
+    void insertarCategoria_exitosa_retornaCategoria() {
         when(categoriaCursoGateway.registrarCategoria(any(Categoria.class))).thenReturn(categoriaModelo());
 
-        CategoriaDto resultado = categoriaCursoServicio.insertarCategoria(categoriaDto());
+        Categoria resultado = categoriaCursoServicio.insertarCategoria(categoriaModelo());
 
         assertNotNull(resultado);
         assertEquals(TITULO, resultado.getTitulo());
@@ -92,21 +80,11 @@ class CategoriaCursoServicioTest {
     }
 
     @Test
-    void insertarCategoria_dtoNulo_lanzaNoConvertibleException() {
-        // Categoria.fabricarDeDto(null) lanza NPE internamente, la captura y retorna null.
-        // El servicio detecta el null y lanza NoConvertibleException antes de llamar al gateway.
-        assertThrows(NoConvertibleException.class,
-                () -> categoriaCursoServicio.insertarCategoria(null));
-
-        verifyNoInteractions(categoriaCursoGateway);
-    }
-
-    @Test
     void insertarCategoria_gatewayRetornaNull_lanzaInsercionFallidaExepcion() {
         when(categoriaCursoGateway.registrarCategoria(any(Categoria.class))).thenReturn(null);
 
         assertThrows(InsercionFallidaExepcion.class,
-                () -> categoriaCursoServicio.insertarCategoria(categoriaDto()));
+                () -> categoriaCursoServicio.insertarCategoria(categoriaModelo()));
     }
 
     // ──────────────────────────────────────────────────────────────────────────
@@ -114,27 +92,13 @@ class CategoriaCursoServicioTest {
     // ──────────────────────────────────────────────────────────────────────────
 
     @Test
-    void obtenerCategoriaCursoPorId_exitosa_retornaDtoMapeado() {
+    void obtenerCategoriaCursoPorId_exitosa_retornaCategoria() {
         when(categoriaCursoGateway.obtenerCategoria(TITULO)).thenReturn(categoriaModelo());
 
-        CategoriaDto resultado = categoriaCursoServicio.obtenerCategoriaCursoPorId(TITULO);
+        Categoria resultado = categoriaCursoServicio.obtenerCategoriaCursoPorId(TITULO);
 
         assertNotNull(resultado);
         assertEquals(TITULO, resultado.getTitulo());
-    }
-
-    @Test
-    void obtenerCategoriaCursoPorId_gatewayRetornaNull_lanzaErrorInterno_comportamientoActual() {
-        // COMPORTAMIENTO CUESTIONABLE (A): si la categoria no existe el gateway retorna null,
-        // la conversion a DTO falla silenciosamente, y el servicio lanza ErrorInternoException.
-        // Deberia lanzar NoExisteExcepcion (como hace actualizarCategoria con existeCategoria).
-        // Riesgo: el cliente recibe 500/error interno en vez de 404 cuando la categoria no existe.
-        when(categoriaCursoGateway.obtenerCategoria(TITULO)).thenReturn(null);
-
-        assertThrows(ErrorInternoException.class,
-                () -> categoriaCursoServicio.obtenerCategoriaCursoPorId(TITULO),
-                "obtenerCategoriaCursoPorId lanza ErrorInternoException cuando la categoria no existe " +
-                "en lugar de NoExisteExcepcion");
     }
 
     // ──────────────────────────────────────────────────────────────────────────
@@ -146,43 +110,32 @@ class CategoriaCursoServicioTest {
         when(categoriaCursoGateway.existeCategoria(TITULO)).thenReturn(false);
 
         assertThrows(NoExisteExcepcion.class,
-                () -> categoriaCursoServicio.actualizarCategoria(TITULO, categoriaDto()));
-
-        verify(categoriaCursoGateway, never()).actualizarCategoria(any(), any());
-    }
-
-    @Test
-    void actualizarCategoria_datosNulos_lanzaErrorInterno() {
-        // Categoria.fabricarDeDto(null) retorna null → el servicio lanza ErrorInternoException.
-        when(categoriaCursoGateway.existeCategoria(TITULO)).thenReturn(true);
-
-        assertThrows(ErrorInternoException.class,
-                () -> categoriaCursoServicio.actualizarCategoria(TITULO, null));
+                () -> categoriaCursoServicio.actualizarCategoria(TITULO, categoriaModelo()));
 
         verify(categoriaCursoGateway, never()).actualizarCategoria(any(), any());
     }
 
     @Test
     void actualizarCategoria_gatewayRetornaNull_retornaNullSinExcepcion_comportamientoActual() {
-        // COMPORTAMIENTO CUESTIONABLE (B): si el gateway retorna null, CategoriaDto.fabricarDeModelo(null)
-        // captura la NPE y retorna null silenciosamente. El servicio retorna null al caller
-        // sin lanzar excepcion. Inconsistente con insertarCategoria que si guarda contra null.
+        // COMPORTAMIENTO CUESTIONABLE (B): si el gateway retorna null, el servicio lo
+        // retorna directamente sin lanzar excepcion. Inconsistente con insertarCategoria
+        // que si guarda contra null. Documentado para que no pase como accidental.
         when(categoriaCursoGateway.existeCategoria(TITULO)).thenReturn(true);
         when(categoriaCursoGateway.actualizarCategoria(eq(TITULO), any(Categoria.class))).thenReturn(null);
 
-        CategoriaDto resultado = categoriaCursoServicio.actualizarCategoria(TITULO, categoriaDto());
+        Categoria resultado = categoriaCursoServicio.actualizarCategoria(TITULO, categoriaModelo());
 
         assertNull(resultado,
                 "actualizarCategoria retorna null sin excepcion cuando el gateway retorna null");
     }
 
     @Test
-    void actualizarCategoria_exitosa_retornaDtoMapeado() {
+    void actualizarCategoria_exitosa_retornaCategoria() {
         when(categoriaCursoGateway.existeCategoria(TITULO)).thenReturn(true);
         when(categoriaCursoGateway.actualizarCategoria(eq(TITULO), any(Categoria.class)))
                 .thenReturn(categoriaModelo());
 
-        CategoriaDto resultado = categoriaCursoServicio.actualizarCategoria(TITULO, categoriaDto());
+        Categoria resultado = categoriaCursoServicio.actualizarCategoria(TITULO, categoriaModelo());
 
         assertNotNull(resultado);
         assertEquals(TITULO, resultado.getTitulo());
@@ -194,36 +147,27 @@ class CategoriaCursoServicioTest {
     // ──────────────────────────────────────────────────────────────────────────
 
     @Test
-    void eliminarCategoria_exitosa_retornaDtoConEliminadoActualizado() {
+    void eliminarCategoria_exitosa_retornaCategoriaEliminada() {
         Categoria eliminada = categoriaModelo();
         eliminada.setEliminado(1);
         when(categoriaCursoGateway.eliminarCategoria(TITULO)).thenReturn(eliminada);
 
-        CategoriaDto resultado = categoriaCursoServicio.eliminarCategoria(TITULO);
+        Categoria resultado = categoriaCursoServicio.eliminarCategoria(TITULO);
 
         assertNotNull(resultado);
         assertEquals(TITULO, resultado.getTitulo());
+        assertEquals(1, resultado.getEliminado());
         verify(categoriaCursoGateway).eliminarCategoria(TITULO);
     }
 
     @Test
     void eliminarCategoria_gatewayLanzaNoExiste_propagaSinInterceptar() {
-        // El gateway es la autoridad: lanza NoExisteExcepcion (o YaExisteElementoExcepcion)
-        // directamente. El servicio no duplica la guarda con existeCategoria — deja propagar.
+        // El gateway es la autoridad: lanza NoExisteExcepcion directamente.
+        // El servicio no duplica la guarda — deja propagar.
         when(categoriaCursoGateway.eliminarCategoria(TITULO))
                 .thenThrow(new NoExisteExcepcion("No existe la categoria " + TITULO));
 
         assertThrows(NoExisteExcepcion.class,
-                () -> categoriaCursoServicio.eliminarCategoria(TITULO));
-    }
-
-    @Test
-    void eliminarCategoria_gatewayRetornaNull_lanzaErrorInterno() {
-        // Red de seguridad del servicio: si el gateway retorna null en vez de lanzar
-        // excepcion, el if(categoria==null) captura el caso y lanza ErrorInternoException.
-        when(categoriaCursoGateway.eliminarCategoria(TITULO)).thenReturn(null);
-
-        assertThrows(ErrorInternoException.class,
                 () -> categoriaCursoServicio.eliminarCategoria(TITULO));
     }
 }
