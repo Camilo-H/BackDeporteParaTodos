@@ -2,8 +2,6 @@ package co.edu.unicauca.deporteParaTodos.dominio.modelo;
 
 import java.util.List;
 
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CategoriaDto;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CategoriaCursoEntidad;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,28 +25,4 @@ public class Categoria {
 
     private int eliminado;
 
-    static public Categoria fabricarDeEntidad(CategoriaCursoEntidad entidad){
-        try{
-            Categoria fabricado = new Categoria();
-            fabricado.setTitulo(entidad.getTitulo());
-            fabricado.setDescripcion(entidad.getDescripcion());
-            fabricado.setImagen(entidad.getCat_imagen());
-            fabricado.setEliminado(entidad.getEliminado());
-            return fabricado;
-        }catch(Exception e){
-            return null;
-        }
-    }
-
-    static public Categoria fabricarDeDto(CategoriaDto dto){
-        try{
-            Categoria fabricado = new Categoria();
-            fabricado.setTitulo(dto.getTitulo());
-            fabricado.setDescripcion(dto.getDescripcion());
-            fabricado.setImagen(dto.getImagenId());
-            return fabricado;
-        }catch(Exception e){
-            return null;
-        }
-    }
 }
