@@ -207,4 +207,94 @@ class CursoServicioTest {
 
         verify(cursoGateway, never()).cambiarEstadoInscripciones(any(), any(), any());
     }
+
+    // --- recuperarCursos ---
+
+    @Test
+    void recuperarCursos_delegaAlGateway() {
+        Curso curso = new Curso();
+        curso.setNombre(NOMBRE);
+        curso.setCategoriaCurso(CATEGORIA);
+        when(cursoGateway.obtenerCursos()).thenReturn(java.util.List.of(curso));
+
+        java.util.List<Curso> resultado = cursoServicio.recuperarCursos();
+
+        assertEquals(1, resultado.size());
+        verify(cursoGateway).obtenerCursos();
+    }
+
+    // --- obtenerCurso ---
+
+    @Test
+    void obtenerCurso_existente_retornaCurso() {
+        Curso curso = new Curso();
+        curso.setNombre(NOMBRE);
+        curso.setCategoriaCurso(CATEGORIA);
+        when(cursoGateway.existeCurso(CATEGORIA, NOMBRE)).thenReturn(true);
+        when(cursoGateway.obtenerCurso(CATEGORIA, NOMBRE)).thenReturn(curso);
+
+        Curso resultado = cursoServicio.obtenerCurso(CATEGORIA, NOMBRE);
+
+        assertNotNull(resultado);
+        assertEquals(NOMBRE, resultado.getNombre());
+        verify(cursoGateway).obtenerCurso(CATEGORIA, NOMBRE);
+    }
+
+    // --- insertarCurso ---
+
+    @Test
+    void insertarCurso_nuevo_retornaCursoInsertado() {
+        Curso nuevo = new Curso();
+        nuevo.setNombre(NOMBRE);
+        nuevo.setCategoriaCurso(CATEGORIA);
+        nuevo.setDescripcion("Descripcion");
+        nuevo.setDeporte("Natacion");
+        nuevo.setImagenId(1);
+        when(cursoGateway.existeCurso(CATEGORIA, NOMBRE)).thenReturn(false);
+        when(cursoGateway.insertarCurso(nuevo)).thenReturn(nuevo);
+
+        Curso resultado = cursoServicio.insertarCurso(nuevo);
+
+        assertNotNull(resultado);
+        assertEquals(NOMBRE, resultado.getNombre());
+        verify(cursoGateway).insertarCurso(nuevo);
+    }
+
+    // --- actualizarCurso ---
+
+    @Test
+    void actualizarCurso_existente_retornaCursoActualizado() {
+        Curso datos = new Curso();
+        datos.setNombre(NOMBRE);
+        datos.setCategoriaCurso(CATEGORIA);
+        datos.setDescripcion("Nueva descripcion");
+        datos.setDeporte("Natacion");
+        datos.setImagenId(1);
+        when(cursoGateway.existeCurso(CATEGORIA, NOMBRE)).thenReturn(true);
+        when(cursoGateway.actualizarCurso(CATEGORIA, NOMBRE, datos)).thenReturn(datos);
+
+        Curso resultado = cursoServicio.actualizarCurso(CATEGORIA, NOMBRE, datos);
+
+        assertNotNull(resultado);
+        assertEquals("Nueva descripcion", resultado.getDescripcion());
+        verify(cursoGateway).actualizarCurso(CATEGORIA, NOMBRE, datos);
+    }
+
+    // --- eliminarCurso ---
+
+    @Test
+    void eliminarCurso_existente_retornaCursoEliminado() {
+        Curso cursoEliminado = new Curso();
+        cursoEliminado.setNombre(NOMBRE);
+        cursoEliminado.setCategoriaCurso(CATEGORIA);
+        cursoEliminado.setEstadoCurso(EstadoCurso.INACTIVO);
+        when(cursoGateway.existeCurso(CATEGORIA, NOMBRE)).thenReturn(true);
+        when(cursoGateway.eliminarCurso(CATEGORIA, NOMBRE)).thenReturn(cursoEliminado);
+
+        Curso resultado = cursoServicio.eliminarCurso(CATEGORIA, NOMBRE);
+
+        assertNotNull(resultado);
+        assertEquals(EstadoCurso.INACTIVO, resultado.getEstadoCurso());
+        verify(cursoGateway).eliminarCurso(CATEGORIA, NOMBRE);
+    }
 }
