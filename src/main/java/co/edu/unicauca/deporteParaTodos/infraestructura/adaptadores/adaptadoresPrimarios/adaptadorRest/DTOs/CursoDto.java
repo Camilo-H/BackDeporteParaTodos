@@ -1,6 +1,5 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs;
 
-import co.edu.unicauca.deporteParaTodos.dominio.modelo.Curso;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoCurso;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoInscripciones;
 import jakarta.validation.constraints.NotBlank;
@@ -36,21 +35,5 @@ public class CursoDto {
 
     private EstadoInscripciones estadoInscripciones;
 
-    public static CursoDto fabricarDeModelo(Curso curso){
-        try{
-            CursoDto dto = new CursoDto();
-            dto.setCategoriaCurso(curso.getCategoriaCurso());
-            dto.setNombre(curso.getNombre());
-            dto.setDescripcion(curso.getDescripcion());
-            dto.setIdImagen(curso.getImagenId());
-            dto.setDeporte(curso.getDeporte());
-            dto.setEstadoCurso(curso.getEstadoCurso());
-            dto.setHorario(curso.getHorario());
-            dto.setEstadoInscripciones(curso.getEstadoInscripciones());
-            return dto;
-        }catch(Exception e){
-            return null;
-        }
-    }
-
 }
+

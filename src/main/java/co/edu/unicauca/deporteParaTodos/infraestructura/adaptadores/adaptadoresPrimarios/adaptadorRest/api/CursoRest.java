@@ -1,6 +1,7 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.api;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,10 +16,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.ICursoServicio;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Curso;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoCurso;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoInscripciones;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CursoDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.logs.PeticionLogger;
+import co.edu.unicauca.deporteParaTodos.infraestructura.mappers.CursoMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -50,7 +53,9 @@ public class CursoRest {
     @GetMapping("/cursos")
     public ResponseEntity<List<CursoDto>> obtenerCursos(){
         PeticionLogger.log(LOGGER, "GET", "/api/v2/cursos", "sin datos");
-        List<CursoDto> respuesta = servicio.recuperarCursos();
+        List<CursoDto> respuesta = servicio.recuperarCursos().stream()
+            .map(CursoMapper::toDto)
+            .collect(Collectors.toList());
         return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
 
@@ -64,7 +69,9 @@ public class CursoRest {
         @RequestParam String prmCategoria
         ){
         PeticionLogger.log(LOGGER, "GET", "/api/v2/cursosbycategoria", "prmCategoria=" + prmCategoria);
-        List<CursoDto> respuesta = servicio.cursosDeCategoria(prmCategoria);
+        List<CursoDto> respuesta = servicio.cursosDeCategoria(prmCategoria).stream()
+            .map(CursoMapper::toDto)
+            .collect(Collectors.toList());
         return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
 
@@ -78,7 +85,9 @@ public class CursoRest {
         @RequestParam String prmCategoria
         ){
         PeticionLogger.log(LOGGER, "GET", "/api/v2/cursosbycategoria/todos", "prmCategoria=" + prmCategoria);
-        List<CursoDto> respuesta = servicio.todosLosCursosDeCategoria(prmCategoria);
+        List<CursoDto> respuesta = servicio.todosLosCursosDeCategoria(prmCategoria).stream()
+            .map(CursoMapper::toDto)
+            .collect(Collectors.toList());
         return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
 
@@ -89,12 +98,12 @@ public class CursoRest {
     @GetMapping("/curso")
     public ResponseEntity<CursoDto> obtenerCurso(
         @Parameter(description = "Identificador de una categoria del sistema")
-        @RequestParam String prmCategoria, 
+        @RequestParam String prmCategoria,
         @Parameter(description = "Identificador de un curso en el sistema")
         @RequestParam String prmCurso) {
         PeticionLogger.log(LOGGER, "GET", "/api/v2/curso", "prmCategoria=" + prmCategoria + ", prmCurso=" + prmCurso);
-        CursoDto dto = servicio.obtenerCurso(prmCategoria, prmCurso);
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+        Curso curso = servicio.obtenerCurso(prmCategoria, prmCurso);
+        return new ResponseEntity<>(CursoMapper.toDto(curso), HttpStatus.OK);
     }
 
     @Operation(summary = "registrar curso en el sistema, no manipula los id")
@@ -104,10 +113,10 @@ public class CursoRest {
     @PostMapping("/curso")
     public ResponseEntity<CursoDto> postAgregarCurso(@RequestBody @Valid CursoDto dto) {
         PeticionLogger.log(LOGGER, "POST", "/api/v2/curso", dto);
-        CursoDto dtoGuardado = servicio.insertarCurso(dto);
-        return new ResponseEntity<>(dtoGuardado,HttpStatus.CREATED);
+        Curso guardado = servicio.insertarCurso(CursoMapper.fromDto(dto));
+        return new ResponseEntity<>(CursoMapper.toDto(guardado), HttpStatus.CREATED);
     }
-    
+
     @Operation(summary = "actualiza curso en el sistema")
     @ApiResponses(value ={
         @ApiResponse(responseCode = "200", description = "curso actualizado, no manipula los id"),
@@ -115,13 +124,13 @@ public class CursoRest {
     @PutMapping("curso")
     public ResponseEntity<CursoDto> actualizarCurso(
         @Parameter(description = "Identificador de una categoria del sistema")
-        @RequestParam @NotBlank String categoria, 
+        @RequestParam @NotBlank String categoria,
         @Parameter(description = "Identificador de un curso en el sistema")
         @RequestParam @NotBlank String curso,
         @RequestBody @Valid CursoDto dto) {
         PeticionLogger.log(LOGGER, "PUT", "/api/v2/curso", "categoria=" + categoria + ", curso=" + curso + ", body=" + dto);
-        CursoDto dtoActualizado = servicio.actualizarCurso(categoria, curso, dto);
-        return new ResponseEntity<>(dtoActualizado, HttpStatus.OK);
+        Curso actualizado = servicio.actualizarCurso(categoria, curso, CursoMapper.fromDto(dto));
+        return new ResponseEntity<>(CursoMapper.toDto(actualizado), HttpStatus.OK);
     }
 
     @Operation(summary = "Borrado lógico de un curso: setea meta_eliminado=1. Retorna 409 si ya estaba eliminado.")
@@ -137,8 +146,8 @@ public class CursoRest {
         @Parameter(description = "Identificador de un curso en el sistema")
         @RequestParam @NotBlank String prmCurso){
         PeticionLogger.log(LOGGER, "DELETE", "/api/v2/curso", "prmCategoria=" + prmCategoria + ", prmCurso=" + prmCurso);
-        CursoDto dto = servicio.eliminarCursoPermanente(prmCategoria, prmCurso);
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+        Curso eliminado = servicio.eliminarCursoPermanente(prmCategoria, prmCurso);
+        return new ResponseEntity<>(CursoMapper.toDto(eliminado), HttpStatus.OK);
     }
 
     @Operation(summary = "Cambia el estado de un curso (ACTIVO/INACTIVO)")
@@ -155,8 +164,8 @@ public class CursoRest {
         @RequestParam EstadoCurso prmEstado) {
         PeticionLogger.log(LOGGER, "PATCH", "/api/v2/curso/estado",
             "prmCategoria=" + prmCategoria + ", prmCurso=" + prmCurso + ", prmEstado=" + prmEstado);
-        CursoDto dto = servicio.cambiarEstadoCurso(prmCategoria, prmCurso, prmEstado);
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+        Curso actualizado = servicio.cambiarEstadoCurso(prmCategoria, prmCurso, prmEstado);
+        return new ResponseEntity<>(CursoMapper.toDto(actualizado), HttpStatus.OK);
     }
 
     @Operation(summary = "Cambia el estado de inscripciones de un curso (ABIERTO/CERRADO)")
@@ -174,7 +183,7 @@ public class CursoRest {
         @RequestParam EstadoInscripciones prmEstado) {
         PeticionLogger.log(LOGGER, "PATCH", "/api/v2/curso/inscripciones",
             "prmCategoria=" + prmCategoria + ", prmCurso=" + prmCurso + ", prmEstado=" + prmEstado);
-        CursoDto dto = servicio.cambiarEstadoInscripciones(prmCategoria, prmCurso, prmEstado);
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+        Curso actualizado = servicio.cambiarEstadoInscripciones(prmCategoria, prmCurso, prmEstado);
+        return new ResponseEntity<>(CursoMapper.toDto(actualizado), HttpStatus.OK);
     }
 }
