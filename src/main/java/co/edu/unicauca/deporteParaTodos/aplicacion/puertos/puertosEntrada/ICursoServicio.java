@@ -1,57 +1,57 @@
 package co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada;
 
 import java.util.List;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Curso;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoCurso;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoInscripciones;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CursoDto;
 
 public interface ICursoServicio {
     /***
      * Obtiene todos los cursos del sistema sin restricciones
-     * @return lista de cursos en formato Dto
+     * @return lista de cursos en dominio
      */
-    public List<CursoDto> recuperarCursos();
+    public List<Curso> recuperarCursos();
     /***
      * Obteine todos los cursos de una categoria que esten disponibles
      * @param categoria
-     * @return lista de cursos en formato Dto
+     * @return lista de cursos en dominio
      */
-    public List<CursoDto> cursosDeCategoria(String categoria);
+    public List<Curso> cursosDeCategoria(String categoria);
     /***
      * Obtiene todos los cursos de una categoria sin filtrar por estado,
      * incluyendo cursos marcados como inactivos/eliminados
      * @param categoria titulo de la categoria
-     * @return lista completa de cursos en formato Dto
+     * @return lista completa de cursos en dominio
      */
-    public List<CursoDto> todosLosCursosDeCategoria(String categoria);
+    public List<Curso> todosLosCursosDeCategoria(String categoria);
     /***
      * Obtien un curso del sistema a partir del titulo de la categoria y el nombre del curso que fungen como identificadores
      * @param titulo identificador de la categoria
      * @param nombre identificador del curso
      * @return curso encontrado
      */
-    public CursoDto obtenerCurso(String titulo, String nombre);
+    public Curso obtenerCurso(String titulo, String nombre);
     /***
      * Inserta un curso en el sistema
-     * @param datosCurso informacion del curso
+     * @param datosCurso informacion del curso en dominio
      * @return curso registrado
      */
-    public CursoDto insertarCurso(CursoDto datosCurso);
+    public Curso insertarCurso(Curso datosCurso);
     /***
      * Actualiza la informacion de un curso en el sistema, no altera los identificadores
      * @param categoria identificador de la categoria a la que pertenece el curso
      * @param curso identificador del curso
-     * @param datCurso datos a actualizar
-     * @return datos actualizador
+     * @param datCurso datos a actualizar en dominio
+     * @return datos actualizados
      */
-    public CursoDto actualizarCurso(String categoria, String curso, CursoDto datCurso);
+    public Curso actualizarCurso(String categoria, String curso, Curso datCurso);
     /***
      * marca como eliminado un curso
      * @param categoria, identificador de la categoria
      * @param curso, identificador del curso
      * @return curso eliminado
      */
-    public CursoDto eliminarCurso(String categoria, String curso);
+    public Curso eliminarCurso(String categoria, String curso);
     /***
      * Cambia el estado de un curso (ACTIVO/INACTIVO)
      * @param categoria identificador de la categoria
@@ -59,7 +59,7 @@ public interface ICursoServicio {
      * @param estado nuevo estado a aplicar
      * @return curso con estado actualizado
      */
-    public CursoDto cambiarEstadoCurso(String categoria, String nombreCurso, EstadoCurso estado);
+    public Curso cambiarEstadoCurso(String categoria, String nombreCurso, EstadoCurso estado);
     /***
      * Borrado lógico de un curso: marca meta_eliminado=1
      * Lanza NoExisteExcepcion si el curso no existe
@@ -68,7 +68,7 @@ public interface ICursoServicio {
      * @param nombreCurso identificador del curso
      * @return curso con estadoCurso INACTIVO
      */
-    public CursoDto eliminarCursoPermanente(String categoria, String nombreCurso);
+    public Curso eliminarCursoPermanente(String categoria, String nombreCurso);
     /***
      * Cambia el estado de inscripciones de un curso (ABIERTO/CERRADO)
      * Lanza NoExisteExcepcion si el curso no existe
@@ -77,5 +77,5 @@ public interface ICursoServicio {
      * @param estado nuevo estado de inscripciones
      * @return curso con estadoInscripciones actualizado
      */
-    public CursoDto cambiarEstadoInscripciones(String categoria, String nombreCurso, EstadoInscripciones estado);
+    public Curso cambiarEstadoInscripciones(String categoria, String nombreCurso, EstadoInscripciones estado);
 }

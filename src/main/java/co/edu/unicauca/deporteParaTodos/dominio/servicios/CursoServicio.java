@@ -1,6 +1,5 @@
 package co.edu.unicauca.deporteParaTodos.dominio.servicios;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +9,9 @@ import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.ICursoG
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Curso;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoCurso;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoInscripciones;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CursoDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ErrorInternoException;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.InsercionFallidaExepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoProcesableEntidadException;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.YaExisteElementoExcepcion;
 
 @Service
@@ -23,118 +20,83 @@ public class CursoServicio implements ICursoServicio {
     @Autowired
     private ICursoGateway cursoGateway;
 
-    /***
-     * Retorna todos los cursos del sistema
-     */
     @Override
-    public List<CursoDto> recuperarCursos() {
-        List<Curso> cursos = cursoGateway.obtenerCursos();
-        List<CursoDto> dtos = new ArrayList<>();
-        System.out.println("cursos encontrados: "+cursos.size());
-        cursos.forEach(curso -> {
-            CursoDto dto = CursoDto.fabricarDeModelo(curso);
-            dtos.add(dto);
-        });
-        return dtos;
+    public List<Curso> recuperarCursos() {
+        return cursoGateway.obtenerCursos();
     }
 
     @Override
-    public List<CursoDto> cursosDeCategoria(String categoria) {
-        List<Curso> cursos = cursoGateway.obtenerCursosDeCategoria(categoria);
-        List<CursoDto> dtos = new ArrayList<>();
-        cursos.forEach(curso -> {
-            CursoDto dto = CursoDto.fabricarDeModelo(curso);
-            dtos.add(dto);
-        });
-        return dtos;
+    public List<Curso> cursosDeCategoria(String categoria) {
+        return cursoGateway.obtenerCursosDeCategoria(categoria);
     }
 
     @Override
-    public List<CursoDto> todosLosCursosDeCategoria(String categoria) {
-        List<Curso> cursos = cursoGateway.obtenerTodosCursosDeCategoria(categoria);
-        List<CursoDto> dtos = new ArrayList<>();
-        cursos.forEach(curso -> {
-            CursoDto dto = CursoDto.fabricarDeModelo(curso);
-            dtos.add(dto);
-        });
-        return dtos;
+    public List<Curso> todosLosCursosDeCategoria(String categoria) {
+        return cursoGateway.obtenerTodosCursosDeCategoria(categoria);
     }
 
     @Override
-    public CursoDto obtenerCurso(String titulo, String nombre) {
-        if(!cursoGateway.existeCurso(titulo, nombre)){
+    public Curso obtenerCurso(String titulo, String nombre) {
+        if (!cursoGateway.existeCurso(titulo, nombre)) {
             throw new NoExisteExcepcion();
         }
         Curso respuesta = cursoGateway.obtenerCurso(titulo, nombre);
-        if(respuesta==null){
+        if (respuesta == null) {
             throw new ErrorInternoException();
         }
-        CursoDto dto = CursoDto.fabricarDeModelo(respuesta);
-        return dto;
+        return respuesta;
     }
 
     @Override
-    public CursoDto insertarCurso(CursoDto datosCurso) {
-        if(cursoGateway.existeCurso(datosCurso.getCategoriaCurso(), datosCurso.getNombre())){
-            throw new YaExisteElementoExcepcion("el curso notado con categoria "+datosCurso.getCategoriaCurso()+" y nombre "+datosCurso.getNombre()+" ya se encuentra en el sistema");
+    public Curso insertarCurso(Curso datosCurso) {
+        if (cursoGateway.existeCurso(datosCurso.getCategoriaCurso(), datosCurso.getNombre())) {
+            throw new YaExisteElementoExcepcion("el curso notado con categoria " + datosCurso.getCategoriaCurso() + " y nombre " + datosCurso.getNombre() + " ya se encuentra en el sistema");
         }
-        Curso curso = Curso.fabricarDeDto(datosCurso);
-        if(curso==null){
-            throw new NoProcesableEntidadException("No fue posible convertir de dto a modelo en entrada servicio");
-        }
-        Curso respuesta = cursoGateway.insertarCurso(curso);
-        if(respuesta == null){
+        Curso respuesta = cursoGateway.insertarCurso(datosCurso);
+        if (respuesta == null) {
             throw new InsercionFallidaExepcion("Error en la insercion o conversion de retorno fallida, se ha respondido con nulo");
         }
-        return CursoDto.fabricarDeModelo(respuesta);
+        return respuesta;
     }
 
     @Override
-    public CursoDto actualizarCurso(String categoria, String curso, CursoDto datCurso) {
-        if(!cursoGateway.existeCurso(categoria, curso)){
+    public Curso actualizarCurso(String categoria, String curso, Curso datCurso) {
+        if (!cursoGateway.existeCurso(categoria, curso)) {
             throw new NoExisteExcepcion("el curso notado no existe en el sistema");
         }
-        Curso datos = Curso.fabricarDeDto(datCurso);
-        if(curso==null){
-            throw new NoProcesableEntidadException("No fue posible convertir de dto a modelo en entrada servicio");
-        }
-        Curso actualizado = cursoGateway.actualizarCurso(categoria, curso, datos);
-        if(actualizado==null){
+        Curso actualizado = cursoGateway.actualizarCurso(categoria, curso, datCurso);
+        if (actualizado == null) {
             throw new InsercionFallidaExepcion("Error en la insercion o conversion de retorno fallida, se ha respondido con nulo");
         }
-        return CursoDto.fabricarDeModelo(actualizado);
+        return actualizado;
     }
 
     @Override
-    public CursoDto eliminarCurso(String categoria, String curso) {
-        if(!cursoGateway.existeCurso(categoria, curso)){
+    public Curso eliminarCurso(String categoria, String curso) {
+        if (!cursoGateway.existeCurso(categoria, curso)) {
             throw new NoExisteExcepcion("El curso a eliminar no existe");
         }
-        Curso eliminado = cursoGateway.eliminarCurso(categoria, curso);
-        CursoDto dto = CursoDto.fabricarDeModelo(eliminado);
-        return dto;
+        return cursoGateway.eliminarCurso(categoria, curso);
     }
 
     @Override
-    public CursoDto cambiarEstadoCurso(String categoria, String nombreCurso, EstadoCurso estado) {
+    public Curso cambiarEstadoCurso(String categoria, String nombreCurso, EstadoCurso estado) {
         if (!cursoGateway.existeCurso(categoria, nombreCurso)) {
             throw new NoExisteExcepcion("El curso al que se desea cambiar el estado no existe");
         }
-        Curso actualizado = cursoGateway.cambiarEstadoCurso(categoria, nombreCurso, estado);
-        return CursoDto.fabricarDeModelo(actualizado);
+        return cursoGateway.cambiarEstadoCurso(categoria, nombreCurso, estado);
     }
 
     @Override
-    public CursoDto cambiarEstadoInscripciones(String categoria, String nombreCurso, EstadoInscripciones estado) {
+    public Curso cambiarEstadoInscripciones(String categoria, String nombreCurso, EstadoInscripciones estado) {
         if (!cursoGateway.existeCurso(categoria, nombreCurso)) {
             throw new NoExisteExcepcion("El curso al que se desea cambiar el estado de inscripciones no existe");
         }
-        Curso actualizado = cursoGateway.cambiarEstadoInscripciones(categoria, nombreCurso, estado);
-        return CursoDto.fabricarDeModelo(actualizado);
+        return cursoGateway.cambiarEstadoInscripciones(categoria, nombreCurso, estado);
     }
 
     @Override
-    public CursoDto eliminarCursoPermanente(String categoria, String nombreCurso) {
+    public Curso eliminarCursoPermanente(String categoria, String nombreCurso) {
         if (!cursoGateway.existeCurso(categoria, nombreCurso)) {
             throw new NoExisteExcepcion("El curso a eliminar no existe");
         }
@@ -142,8 +104,6 @@ public class CursoServicio implements ICursoServicio {
         if (EstadoCurso.INACTIVO.equals(actual.getEstadoCurso())) {
             throw new YaExisteElementoExcepcion("El curso ya se encuentra eliminado");
         }
-        Curso eliminado = cursoGateway.eliminarCursoPermanente(categoria, nombreCurso);
-        return CursoDto.fabricarDeModelo(eliminado);
+        return cursoGateway.eliminarCursoPermanente(categoria, nombreCurso);
     }
-
 }

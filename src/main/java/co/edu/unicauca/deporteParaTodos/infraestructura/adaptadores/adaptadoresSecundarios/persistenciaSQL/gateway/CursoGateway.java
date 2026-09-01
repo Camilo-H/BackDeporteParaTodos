@@ -18,6 +18,7 @@ import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresS
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IDeporteRepositorio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IImagenRepositorio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.DependenciaFallida;
+import co.edu.unicauca.deporteParaTodos.infraestructura.mappers.CursoMapper;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoProcesableEntidadException;
 
@@ -51,7 +52,7 @@ public class CursoGateway implements ICursoGateway{
         Iterable<CursoEntidad> respuesta = repoCurso.findAll();
         List<Curso> cursos = new ArrayList<>();
         respuesta.forEach(entidad -> {
-            Curso curso = Curso.fabricarDeEntidad(entidad);
+            Curso curso = CursoMapper.toDominio(entidad);
             cursos.add(curso);
         });
         return cursos;
@@ -63,7 +64,7 @@ public class CursoGateway implements ICursoGateway{
         Optional<CursoEntidad> resultado = repoCurso.findById(id);
         if(resultado.isPresent()){
             CursoEntidad entidad = resultado.get();
-            Curso curso = Curso.fabricarDeEntidad(entidad);
+            Curso curso = CursoMapper.toDominio(entidad);
             return curso;
         }
         return null;
@@ -72,7 +73,7 @@ public class CursoGateway implements ICursoGateway{
 
     @Override
     public Curso insertarCurso(Curso curso) {
-        CursoEntidad entidad = CursoEntidad.fabricarDeModelo(curso);
+        CursoEntidad entidad = CursoMapper.toEntidad(curso);
         if (entidad==null) {
             throw new NoProcesableEntidadException("No fue posible convertir de modelo a entidad en ingreso del gateway");
         }
@@ -89,7 +90,7 @@ public class CursoGateway implements ICursoGateway{
         }
         entidad.setEliminado(0);
         CursoEntidad respuesta = repoCurso.save(entidad);
-        Curso insertado = Curso.fabricarDeEntidad(respuesta);
+        Curso insertado = CursoMapper.toDominio(respuesta);
         if(insertado==null){
             throw new NoProcesableEntidadException("No fue posible convertir de entidad a modelo en salida del gateway");
         }
@@ -98,7 +99,7 @@ public class CursoGateway implements ICursoGateway{
 
     @Override
     public Curso actualizarCurso(String categoria, String nombre, Curso curso) {
-        CursoEntidad entidad = CursoEntidad.fabricarDeModelo(curso);
+        CursoEntidad entidad = CursoMapper.toEntidad(curso);
         if (entidad==null) {
             throw new NoProcesableEntidadException("No fue posible convertir de modelo a entidad en ingreso del gateway");
         }
@@ -123,7 +124,7 @@ public class CursoGateway implements ICursoGateway{
         actulizacion.setObjImagen(entidad.getObjImagen());
         actulizacion.setHorario(entidad.getHorario());
         CursoEntidad respuesta = repoCurso.save(actulizacion);
-        Curso insertado = Curso.fabricarDeEntidad(respuesta);
+        Curso insertado = CursoMapper.toDominio(respuesta);
         if(insertado==null){
             throw new NoProcesableEntidadException("No fue posible convertir de entidad a modelo en salida del gateway");
         }
@@ -143,7 +144,7 @@ public class CursoGateway implements ICursoGateway{
         CursoEntidad entidad = op.get();
         entidad.setEliminado(1);
         CursoEntidad respuesta = repoCurso.save(entidad);
-        Curso respuestaModelo = Curso.fabricarDeEntidad(respuesta);
+        Curso respuestaModelo = CursoMapper.toDominio(respuesta);
         return respuestaModelo;
     }
 
@@ -152,7 +153,7 @@ public class CursoGateway implements ICursoGateway{
         List<CursoEntidad> entidades = repoCurso.findByCategoriaCursoAndEliminado(nombreCategoria, 0);
         List<Curso> cursos = new ArrayList<>();
         entidades.forEach(entidad -> {
-            Curso curso = Curso.fabricarDeEntidad(entidad);
+            Curso curso = CursoMapper.toDominio(entidad);
             cursos.add(curso);
         });
         return cursos;
@@ -163,7 +164,7 @@ public class CursoGateway implements ICursoGateway{
         List<CursoEntidad> entidades = repoCurso.findByCategoriaCurso(nombreCategoria);
         List<Curso> cursos = new ArrayList<>();
         entidades.forEach(entidad -> {
-            Curso curso = Curso.fabricarDeEntidad(entidad);
+            Curso curso = CursoMapper.toDominio(entidad);
             cursos.add(curso);
         });
         return cursos;
@@ -179,7 +180,7 @@ public class CursoGateway implements ICursoGateway{
         CursoEntidad entidad = op.get();
         entidad.setEliminado(EstadoCurso.INACTIVO.equals(estado) ? 1 : 0);
         CursoEntidad respuesta = repoCurso.save(entidad);
-        return Curso.fabricarDeEntidad(respuesta);
+        return CursoMapper.toDominio(respuesta);
     }
 
     @Override
@@ -192,7 +193,7 @@ public class CursoGateway implements ICursoGateway{
         CursoEntidad entidad = op.get();
         entidad.setEliminado(1);
         CursoEntidad respuesta = repoCurso.save(entidad);
-        return Curso.fabricarDeEntidad(respuesta);
+        return CursoMapper.toDominio(respuesta);
     }
 
     @Override
@@ -205,6 +206,6 @@ public class CursoGateway implements ICursoGateway{
         CursoEntidad entidad = op.get();
         entidad.setEstadoInscripciones(estado.name());
         CursoEntidad respuesta = repoCurso.save(entidad);
-        return Curso.fabricarDeEntidad(respuesta);
+        return CursoMapper.toDominio(respuesta);
     }
 }

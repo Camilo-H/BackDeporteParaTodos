@@ -4,7 +4,6 @@ import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.ICursoG
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Curso;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoCurso;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoInscripciones;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CursoDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.YaExisteElementoExcepcion;
 import org.junit.jupiter.api.Test;
@@ -42,7 +41,7 @@ class CursoServicioTest {
         when(cursoGateway.cambiarEstadoCurso(CATEGORIA, NOMBRE, EstadoCurso.INACTIVO))
             .thenReturn(cursoActualizado);
 
-        CursoDto resultado = cursoServicio.cambiarEstadoCurso(CATEGORIA, NOMBRE, EstadoCurso.INACTIVO);
+        Curso resultado = cursoServicio.cambiarEstadoCurso(CATEGORIA, NOMBRE, EstadoCurso.INACTIVO);
 
         assertNotNull(resultado);
         assertEquals(EstadoCurso.INACTIVO, resultado.getEstadoCurso());
@@ -83,7 +82,7 @@ class CursoServicioTest {
         when(cursoGateway.obtenerCurso(CATEGORIA, NOMBRE)).thenReturn(cursoActivo);
         when(cursoGateway.eliminarCursoPermanente(CATEGORIA, NOMBRE)).thenReturn(cursoEliminado);
 
-        CursoDto resultado = cursoServicio.eliminarCursoPermanente(CATEGORIA, NOMBRE);
+        Curso resultado = cursoServicio.eliminarCursoPermanente(CATEGORIA, NOMBRE);
 
         assertNotNull(resultado);
         assertEquals(EstadoCurso.INACTIVO, resultado.getEstadoCurso());
@@ -134,7 +133,7 @@ class CursoServicioTest {
         when(cursoGateway.obtenerCursosDeCategoria(CATEGORIA))
             .thenReturn(java.util.List.of(cursoActivo));
 
-        java.util.List<CursoDto> resultado = cursoServicio.cursosDeCategoria(CATEGORIA);
+        java.util.List<Curso> resultado = cursoServicio.cursosDeCategoria(CATEGORIA);
 
         assertEquals(1, resultado.size());
         assertTrue(resultado.stream().allMatch(d -> EstadoCurso.ACTIVO.equals(d.getEstadoCurso())),
@@ -166,7 +165,7 @@ class CursoServicioTest {
         when(cursoGateway.obtenerTodosCursosDeCategoria(CATEGORIA))
             .thenReturn(java.util.List.of(cursoActivo, cursoInactivo));
 
-        java.util.List<CursoDto> resultado = cursoServicio.todosLosCursosDeCategoria(CATEGORIA);
+        java.util.List<Curso> resultado = cursoServicio.todosLosCursosDeCategoria(CATEGORIA);
 
         assertEquals(2, resultado.size());
         assertTrue(resultado.stream().anyMatch(d -> EstadoCurso.INACTIVO.equals(d.getEstadoCurso())),
@@ -192,7 +191,7 @@ class CursoServicioTest {
         when(cursoGateway.cambiarEstadoInscripciones(CATEGORIA, NOMBRE, EstadoInscripciones.CERRADO))
             .thenReturn(cursoCerrado);
 
-        CursoDto resultado = cursoServicio.cambiarEstadoInscripciones(CATEGORIA, NOMBRE, EstadoInscripciones.CERRADO);
+        Curso resultado = cursoServicio.cambiarEstadoInscripciones(CATEGORIA, NOMBRE, EstadoInscripciones.CERRADO);
 
         assertNotNull(resultado);
         assertEquals(EstadoInscripciones.CERRADO, resultado.getEstadoInscripciones());
@@ -207,5 +206,95 @@ class CursoServicioTest {
             () -> cursoServicio.cambiarEstadoInscripciones(CATEGORIA, NOMBRE, EstadoInscripciones.CERRADO));
 
         verify(cursoGateway, never()).cambiarEstadoInscripciones(any(), any(), any());
+    }
+
+    // --- recuperarCursos ---
+
+    @Test
+    void recuperarCursos_delegaAlGateway() {
+        Curso curso = new Curso();
+        curso.setNombre(NOMBRE);
+        curso.setCategoriaCurso(CATEGORIA);
+        when(cursoGateway.obtenerCursos()).thenReturn(java.util.List.of(curso));
+
+        java.util.List<Curso> resultado = cursoServicio.recuperarCursos();
+
+        assertEquals(1, resultado.size());
+        verify(cursoGateway).obtenerCursos();
+    }
+
+    // --- obtenerCurso ---
+
+    @Test
+    void obtenerCurso_existente_retornaCurso() {
+        Curso curso = new Curso();
+        curso.setNombre(NOMBRE);
+        curso.setCategoriaCurso(CATEGORIA);
+        when(cursoGateway.existeCurso(CATEGORIA, NOMBRE)).thenReturn(true);
+        when(cursoGateway.obtenerCurso(CATEGORIA, NOMBRE)).thenReturn(curso);
+
+        Curso resultado = cursoServicio.obtenerCurso(CATEGORIA, NOMBRE);
+
+        assertNotNull(resultado);
+        assertEquals(NOMBRE, resultado.getNombre());
+        verify(cursoGateway).obtenerCurso(CATEGORIA, NOMBRE);
+    }
+
+    // --- insertarCurso ---
+
+    @Test
+    void insertarCurso_nuevo_retornaCursoInsertado() {
+        Curso nuevo = new Curso();
+        nuevo.setNombre(NOMBRE);
+        nuevo.setCategoriaCurso(CATEGORIA);
+        nuevo.setDescripcion("Descripcion");
+        nuevo.setDeporte("Natacion");
+        nuevo.setImagenId(1);
+        when(cursoGateway.existeCurso(CATEGORIA, NOMBRE)).thenReturn(false);
+        when(cursoGateway.insertarCurso(nuevo)).thenReturn(nuevo);
+
+        Curso resultado = cursoServicio.insertarCurso(nuevo);
+
+        assertNotNull(resultado);
+        assertEquals(NOMBRE, resultado.getNombre());
+        verify(cursoGateway).insertarCurso(nuevo);
+    }
+
+    // --- actualizarCurso ---
+
+    @Test
+    void actualizarCurso_existente_retornaCursoActualizado() {
+        Curso datos = new Curso();
+        datos.setNombre(NOMBRE);
+        datos.setCategoriaCurso(CATEGORIA);
+        datos.setDescripcion("Nueva descripcion");
+        datos.setDeporte("Natacion");
+        datos.setImagenId(1);
+        when(cursoGateway.existeCurso(CATEGORIA, NOMBRE)).thenReturn(true);
+        when(cursoGateway.actualizarCurso(CATEGORIA, NOMBRE, datos)).thenReturn(datos);
+
+        Curso resultado = cursoServicio.actualizarCurso(CATEGORIA, NOMBRE, datos);
+
+        assertNotNull(resultado);
+        assertEquals("Nueva descripcion", resultado.getDescripcion());
+        verify(cursoGateway).actualizarCurso(CATEGORIA, NOMBRE, datos);
+    }
+
+    // --- eliminarCurso ---
+
+    @Test
+    void eliminarCurso_existente_retornaCursoEliminado() {
+        Curso cursoEliminado = new Curso();
+        cursoEliminado.setNombre(NOMBRE);
+        cursoEliminado.setCategoriaCurso(CATEGORIA);
+        cursoEliminado.setEstadoCurso(EstadoCurso.INACTIVO);
+        when(cursoGateway.existeCurso(CATEGORIA, NOMBRE)).thenReturn(true);
+        when(cursoGateway.eliminarCurso(CATEGORIA, NOMBRE)).thenReturn(cursoEliminado);
+
+        Curso resultado = cursoServicio.eliminarCurso(CATEGORIA, NOMBRE);
+
+        assertNotNull(resultado);
+        assertEquals(EstadoCurso.INACTIVO, resultado.getEstadoCurso());
+        verify(cursoGateway).eliminarCurso(CATEGORIA, NOMBRE);
     }
 }
