@@ -3,7 +3,7 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.mappers;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Categoria;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CategoriaDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CategoriaCursoEntidad;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoProcesableEntidadException;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.NoProcesableEntidadException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -62,15 +62,9 @@ class CategoriaMapperTest {
         assertEquals(0, resultado.getEliminado());
     }
 
-    // ── toDominio catch: return null silencioso ────────────────────────────────
-    // Documenta el comportamiento actual: captura cualquier excepcion y retorna
-    // null en lugar de propagarla — analogo a MapperImagen y CursoMapper.
-    // No es el diseno ideal, pero queda documentado para que no pase como accidental.
-
     @Test
-    void toDominio_entidadNula_retornaNull() {
-        Categoria resultado = CategoriaMapper.toDominio(null);
-        assertNull(resultado);
+    void toDominio_entidadNula_lanzaNoProcesableEntidadException() {
+        assertThrows(NoProcesableEntidadException.class, () -> CategoriaMapper.toDominio(null));
     }
 
     // ── toEntidad ──────────────────────────────────────────────────────────────
@@ -102,12 +96,9 @@ class CategoriaMapperTest {
         assertEquals(0, resultado.getEliminado());
     }
 
-    // ── toEntidad catch: return null silencioso ────────────────────────────────
-
     @Test
-    void toEntidad_categoriaNula_retornaNull() {
-        CategoriaCursoEntidad resultado = CategoriaMapper.toEntidad(null);
-        assertNull(resultado);
+    void toEntidad_categoriaNula_lanzaNoProcesableEntidadException() {
+        assertThrows(NoProcesableEntidadException.class, () -> CategoriaMapper.toEntidad(null));
     }
 
     // ── toDto ──────────────────────────────────────────────────────────────────
@@ -124,12 +115,9 @@ class CategoriaMapperTest {
         assertEquals(Integer.valueOf(1), resultado.getImagenId());
     }
 
-    // ── toDto catch: return null silencioso ────────────────────────────────────
-
     @Test
-    void toDto_categoriaNula_retornaNull() {
-        CategoriaDto resultado = CategoriaMapper.toDto(null);
-        assertNull(resultado);
+    void toDto_categoriaNula_lanzaNoProcesableEntidadException() {
+        assertThrows(NoProcesableEntidadException.class, () -> CategoriaMapper.toDto(null));
     }
 
     // ── fromDto ────────────────────────────────────────────────────────────────

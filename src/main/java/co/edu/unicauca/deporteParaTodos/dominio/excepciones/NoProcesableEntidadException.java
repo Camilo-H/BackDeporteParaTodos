@@ -1,12 +1,11 @@
-package co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones;
+package co.edu.unicauca.deporteParaTodos.dominio.excepciones;
 
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.formatoError.CodigoError;
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
-public class NoProcesableEntidadException extends RuntimeException{
+public class NoProcesableEntidadException extends RuntimeException {
     private final String llaveMensaje;
     private final String codigo;
 

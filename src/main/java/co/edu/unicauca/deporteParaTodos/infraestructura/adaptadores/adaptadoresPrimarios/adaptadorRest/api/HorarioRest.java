@@ -1,6 +1,7 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.api;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IHorarioServicio;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Horario;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.HorarioDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.logs.PeticionLogger;
+import co.edu.unicauca.deporteParaTodos.infraestructura.mappers.HorarioMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -45,7 +48,10 @@ public class HorarioRest {
             @RequestParam int iterable) {
         PeticionLogger.log(LOGGER, "GET", "/api/v2/horarios",
                 "categoria=" + categoria + ", curso=" + curso + ", anio=" + anio + ", iterable=" + iterable);
-        List<HorarioDto> respuesta = servicio.listarHorariosPorGrupo(categoria, curso, anio, iterable);
+        List<Horario> horarios = servicio.listarHorariosPorGrupo(categoria, curso, anio, iterable);
+        List<HorarioDto> respuesta = horarios.stream()
+                .map(HorarioMapper::toDto)
+                .collect(Collectors.toList());
         return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
 
@@ -57,8 +63,8 @@ public class HorarioRest {
     @GetMapping("/horario")
     public ResponseEntity<HorarioDto> obtenerHorario(@RequestParam Integer prmId) {
         PeticionLogger.log(LOGGER, "GET", "/api/v2/horario", "prmId=" + prmId);
-        HorarioDto dto = servicio.obtenerHorario(prmId);
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+        Horario horario = servicio.obtenerHorario(prmId);
+        return new ResponseEntity<>(HorarioMapper.toDto(horario), HttpStatus.OK);
     }
 
     @Operation(summary = "Registra un nuevo horario para un grupo")
@@ -68,8 +74,8 @@ public class HorarioRest {
     @PostMapping("/horario")
     public ResponseEntity<HorarioDto> insertarHorario(@RequestBody @Valid HorarioDto dto) {
         PeticionLogger.log(LOGGER, "POST", "/api/v2/horario", dto);
-        HorarioDto guardado = servicio.insertarHorario(dto);
-        return new ResponseEntity<>(guardado, HttpStatus.CREATED);
+        Horario guardado = servicio.insertarHorario(HorarioMapper.fromDto(dto));
+        return new ResponseEntity<>(HorarioMapper.toDto(guardado), HttpStatus.CREATED);
     }
 
     @Operation(summary = "Actualiza los datos de un horario")
@@ -82,8 +88,8 @@ public class HorarioRest {
             @RequestParam Integer prmId,
             @RequestBody @Valid HorarioDto dto) {
         PeticionLogger.log(LOGGER, "PUT", "/api/v2/horario", "prmId=" + prmId);
-        HorarioDto actualizado = servicio.actualizarHorario(prmId, dto);
-        return new ResponseEntity<>(actualizado, HttpStatus.OK);
+        Horario actualizado = servicio.actualizarHorario(prmId, HorarioMapper.fromDto(dto));
+        return new ResponseEntity<>(HorarioMapper.toDto(actualizado), HttpStatus.OK);
     }
 
     @Operation(summary = "Eliminación lógica de un horario (meta_eliminado=1)")
@@ -95,7 +101,7 @@ public class HorarioRest {
     @DeleteMapping("/horario")
     public ResponseEntity<HorarioDto> eliminarHorario(@RequestParam Integer prmId) {
         PeticionLogger.log(LOGGER, "DELETE", "/api/v2/horario", "prmId=" + prmId);
-        HorarioDto eliminado = servicio.eliminarHorario(prmId);
-        return new ResponseEntity<>(eliminado, HttpStatus.OK);
+        Horario eliminado = servicio.eliminarHorario(prmId);
+        return new ResponseEntity<>(HorarioMapper.toDto(eliminado), HttpStatus.OK);
     }
 }

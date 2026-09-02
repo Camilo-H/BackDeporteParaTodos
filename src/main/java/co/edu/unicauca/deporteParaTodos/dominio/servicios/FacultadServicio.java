@@ -8,7 +8,7 @@ import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IFacul
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IFacultadGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Facultad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.FacultadDto;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ListadoVacioExcepcion;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.ListadoVacioExcepcion;
 
 @Service
 public class FacultadServicio implements IFacultadServicio {

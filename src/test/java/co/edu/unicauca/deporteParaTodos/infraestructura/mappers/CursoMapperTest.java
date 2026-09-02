@@ -5,7 +5,7 @@ import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoCurso;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoInscripciones;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CursoDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CursoEntidad;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoProcesableEntidadException;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.NoProcesableEntidadException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -182,27 +182,20 @@ class CursoMapperTest {
         assertThrows(NoProcesableEntidadException.class, () -> CursoMapper.fromDto(null));
     }
 
-    // ── catch blocks: return null silencioso ───────────────────────────────────
-    // Documenta el comportamiento actual: los tres métodos de "lectura" capturan
-    // cualquier excepción y retornan null en lugar de propagarla — comportamiento
-    // análogo a MapperImagen. No es el diseño ideal, pero está correctamente
-    // documentado aquí para que no pase como accidental.
+    // ── catch blocks: throw NoProcesableEntidadException ─────────────────────
 
     @Test
-    void toDominio_entidadNula_retornaNull() {
-        Curso resultado = CursoMapper.toDominio(null);
-        assertNull(resultado);
+    void toDominio_entidadNula_lanzaNoProcesableEntidadException() {
+        assertThrows(NoProcesableEntidadException.class, () -> CursoMapper.toDominio(null));
     }
 
     @Test
-    void toEntidad_cursoNulo_retornaNull() {
-        CursoEntidad resultado = CursoMapper.toEntidad(null);
-        assertNull(resultado);
+    void toEntidad_cursoNulo_lanzaNoProcesableEntidadException() {
+        assertThrows(NoProcesableEntidadException.class, () -> CursoMapper.toEntidad(null));
     }
 
     @Test
-    void toDto_cursoNulo_retornaNull() {
-        CursoDto resultado = CursoMapper.toDto(null);
-        assertNull(resultado);
+    void toDto_cursoNulo_lanzaNoProcesableEntidadException() {
+        assertThrows(NoProcesableEntidadException.class, () -> CursoMapper.toDto(null));
     }
 }

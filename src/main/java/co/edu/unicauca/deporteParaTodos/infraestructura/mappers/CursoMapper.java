@@ -5,7 +5,7 @@ import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoCurso;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.EstadoInscripciones;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CursoDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CursoEntidad;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoProcesableEntidadException;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.NoProcesableEntidadException;
 
 public class CursoMapper {
 
@@ -28,7 +28,7 @@ public class CursoMapper {
             );
             return fabricado;
         } catch (Exception e) {
-            return null;
+            throw new NoProcesableEntidadException("No fue posible convertir CursoEntidad a dominio: " + e.getMessage());
         }
     }
 
@@ -48,7 +48,7 @@ public class CursoMapper {
             );
             return entidad;
         } catch (Exception e) {
-            return null;
+            throw new NoProcesableEntidadException("No fue posible convertir Curso a entidad: " + e.getMessage());
         }
     }
 
@@ -65,7 +65,7 @@ public class CursoMapper {
             dto.setEstadoInscripciones(curso.getEstadoInscripciones());
             return dto;
         } catch (Exception e) {
-            return null;
+            throw new NoProcesableEntidadException("No fue posible convertir Curso a DTO: " + e.getMessage());
         }
     }
 

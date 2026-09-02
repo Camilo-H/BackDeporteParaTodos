@@ -14,7 +14,7 @@ import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IProgra
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Programa;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ProgramaEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IProgramaRepositorio;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.NoExisteExcepcion;
 
 @Service
 public class ProgramaGateway implements IProgramaGateway {

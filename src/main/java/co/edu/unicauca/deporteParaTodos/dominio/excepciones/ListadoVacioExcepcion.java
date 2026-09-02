@@ -1,11 +1,10 @@
-package co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones;
+package co.edu.unicauca.deporteParaTodos.dominio.excepciones;
 
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.formatoError.CodigoError;
 import lombok.Getter;
 
 @Getter
-public class ListadoVacioExcepcion extends RuntimeException{
-    
+public class ListadoVacioExcepcion extends RuntimeException {
+
     private final String llaveMensaje;
     private final String codigo;
 

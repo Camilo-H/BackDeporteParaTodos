@@ -9,7 +9,8 @@ import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IHorari
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Horario;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.HorarioEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IHorarioRepositorio;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.NoExisteExcepcion;
+import co.edu.unicauca.deporteParaTodos.infraestructura.mappers.HorarioMapper;
 
 @Service
 public class HorarioGateway implements IHorarioGateway {
@@ -27,7 +28,7 @@ public class HorarioGateway implements IHorarioGateway {
         List<HorarioEntidad> entidades = repoHorario
                 .findByCategoriaAndCursoAndAnioAndIterableAndEliminado(categoria, curso, anio, iterable, 0);
         List<Horario> horarios = new ArrayList<>();
-        entidades.forEach(e -> horarios.add(Horario.fabricarDeEntidad(e)));
+        entidades.forEach(e -> horarios.add(HorarioMapper.toDominio(e)));
         return horarios;
     }
 
@@ -37,15 +38,15 @@ public class HorarioGateway implements IHorarioGateway {
         if (op.isEmpty()) {
             throw new NoExisteExcepcion("El horario con id " + id + " no existe");
         }
-        return Horario.fabricarDeEntidad(op.get());
+        return HorarioMapper.toDominio(op.get());
     }
 
     @Override
     public Horario insertarHorario(Horario datosHorario) {
-        HorarioEntidad entidad = HorarioEntidad.fabricarDeModelo(datosHorario);
+        HorarioEntidad entidad = HorarioMapper.toEntidad(datosHorario);
         entidad.setEliminado(0);
         HorarioEntidad guardado = repoHorario.save(entidad);
-        return Horario.fabricarDeEntidad(guardado);
+        return HorarioMapper.toDominio(guardado);
     }
 
     @Override
@@ -60,7 +61,7 @@ public class HorarioGateway implements IHorarioGateway {
         entidad.setHoraFin(datosHorario.getHoraFin());
         entidad.setEscenario(datosHorario.getEscenario());
         HorarioEntidad guardado = repoHorario.save(entidad);
-        return Horario.fabricarDeEntidad(guardado);
+        return HorarioMapper.toDominio(guardado);
     }
 
     @Override
@@ -72,6 +73,6 @@ public class HorarioGateway implements IHorarioGateway {
         HorarioEntidad entidad = op.get();
         entidad.setEliminado(1);
         HorarioEntidad guardado = repoHorario.save(entidad);
-        return Horario.fabricarDeEntidad(guardado);
+        return HorarioMapper.toDominio(guardado);
     }
 }

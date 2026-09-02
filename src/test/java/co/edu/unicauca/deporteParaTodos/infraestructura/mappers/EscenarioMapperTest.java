@@ -3,7 +3,7 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.mappers;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Escenario;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.EscenarioDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.EscenarioEntidad;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoProcesableEntidadException;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.NoProcesableEntidadException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -70,15 +70,9 @@ class EscenarioMapperTest {
         assertFalse(resultado.isDisponible(), "disponible == 0 debe mapear a false (no != 0)");
     }
 
-    // ── toDominio catch: return null silencioso ────────────────────────────────
-    // Documenta el comportamiento actual: captura cualquier excepcion y retorna
-    // null en lugar de propagarla — analogo a CursoMapper y CategoriaMapper.
-    // No es el diseno ideal, pero queda documentado para que no pase como accidental.
-
     @Test
-    void toDominio_entidadNula_retornaNull() {
-        Escenario resultado = EscenarioMapper.toDominio(null);
-        assertNull(resultado);
+    void toDominio_entidadNula_lanzaNoProcesableEntidadException() {
+        assertThrows(NoProcesableEntidadException.class, () -> EscenarioMapper.toDominio(null));
     }
 
     // ── toEntidad ──────────────────────────────────────────────────────────────
@@ -109,12 +103,9 @@ class EscenarioMapperTest {
         assertEquals(0, resultado.getDisponible(), "disponible false debe mapear a 0 (ternario ? 1 : 0)");
     }
 
-    // ── toEntidad catch: return null silencioso ────────────────────────────────
-
     @Test
-    void toEntidad_escenarioNulo_retornaNull() {
-        EscenarioEntidad resultado = EscenarioMapper.toEntidad(null);
-        assertNull(resultado);
+    void toEntidad_escenarioNulo_lanzaNoProcesableEntidadException() {
+        assertThrows(NoProcesableEntidadException.class, () -> EscenarioMapper.toEntidad(null));
     }
 
     // ── toDto ──────────────────────────────────────────────────────────────────
@@ -133,12 +124,9 @@ class EscenarioMapperTest {
         assertTrue(resultado.getDisponible());
     }
 
-    // ── toDto catch: return null silencioso ────────────────────────────────────
-
     @Test
-    void toDto_escenarioNulo_retornaNull() {
-        EscenarioDto resultado = EscenarioMapper.toDto(null);
-        assertNull(resultado);
+    void toDto_escenarioNulo_lanzaNoProcesableEntidadException() {
+        assertThrows(NoProcesableEntidadException.class, () -> EscenarioMapper.toDto(null));
     }
 
     // ── fromDto ────────────────────────────────────────────────────────────────

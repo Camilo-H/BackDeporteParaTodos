@@ -3,7 +3,7 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.mappers;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Categoria;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.CategoriaDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CategoriaCursoEntidad;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoProcesableEntidadException;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.NoProcesableEntidadException;
 
 public class CategoriaMapper {
 
@@ -16,7 +16,7 @@ public class CategoriaMapper {
             fabricado.setEliminado(entidad.getEliminado());
             return fabricado;
         } catch (Exception e) {
-            return null;
+            throw new NoProcesableEntidadException("No fue posible convertir CategoriaCursoEntidad a dominio: " + e.getMessage());
         }
     }
 
@@ -29,7 +29,7 @@ public class CategoriaMapper {
             entidad.setEliminado(categoria.getEliminado());
             return entidad;
         } catch (Exception e) {
-            return null;
+            throw new NoProcesableEntidadException("No fue posible convertir Categoria a entidad: " + e.getMessage());
         }
     }
 
@@ -41,7 +41,7 @@ public class CategoriaMapper {
             dto.setImagenId(categoria.getImagen());
             return dto;
         } catch (Exception e) {
-            return null;
+            throw new NoProcesableEntidadException("No fue posible convertir Categoria a DTO: " + e.getMessage());
         }
     }
 

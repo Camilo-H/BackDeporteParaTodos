@@ -1,21 +1,20 @@
-package co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones;
+package co.edu.unicauca.deporteParaTodos.dominio.excepciones;
 
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.formatoError.CodigoError;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class ErrorInternoException extends RuntimeException{
+public class ErrorInternoException extends RuntimeException {
     private final String llaveMensaje;
     private final String codigo;
 
-    public ErrorInternoException(){
+    public ErrorInternoException() {
         this.llaveMensaje = CodigoError.NO_CONVERTIBLE.getLlaveMensaje();
         this.codigo = CodigoError.NO_CONVERTIBLE.getCodigo();
     }
 
-    public ErrorInternoException( String msg){
+    public ErrorInternoException(String msg) {
         this.llaveMensaje = msg;
         this.codigo = CodigoError.NO_CONVERTIBLE.getCodigo();
     }
