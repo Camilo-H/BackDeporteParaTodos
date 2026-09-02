@@ -3,7 +3,7 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.mappers;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Escenario;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.EscenarioDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.EscenarioEntidad;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoProcesableEntidadException;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.NoProcesableEntidadException;
 
 public class EscenarioMapper {
 
@@ -18,7 +18,7 @@ public class EscenarioMapper {
             escenario.setEliminado(entidad.getEliminado());
             return escenario;
         } catch (Exception e) {
-            return null;
+            throw new NoProcesableEntidadException("No fue posible convertir EscenarioEntidad a dominio: " + e.getMessage());
         }
     }
 
@@ -33,7 +33,7 @@ public class EscenarioMapper {
             entidad.setEliminado(escenario.getEliminado() != null ? escenario.getEliminado() : 0);
             return entidad;
         } catch (Exception e) {
-            return null;
+            throw new NoProcesableEntidadException("No fue posible convertir Escenario a entidad: " + e.getMessage());
         }
     }
 
@@ -47,7 +47,7 @@ public class EscenarioMapper {
             dto.setDisponible(escenario.isDisponible());
             return dto;
         } catch (Exception e) {
-            return null;
+            throw new NoProcesableEntidadException("No fue posible convertir Escenario a DTO: " + e.getMessage());
         }
     }
 

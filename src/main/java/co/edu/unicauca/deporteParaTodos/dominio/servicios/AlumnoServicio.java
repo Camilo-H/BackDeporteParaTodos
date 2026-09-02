@@ -11,9 +11,9 @@ import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IPerfil
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Alumno;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Perfil;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.AlumnoDto;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ListadoVacioExcepcion;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.YaExisteElementoExcepcion;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.ListadoVacioExcepcion;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.NoExisteExcepcion;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.YaExisteElementoExcepcion;
 
 @Service
 public class AlumnoServicio implements IAlumnoServicio {

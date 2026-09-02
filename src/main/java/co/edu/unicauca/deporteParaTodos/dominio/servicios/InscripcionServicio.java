@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IInscripcionServicio;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IInscripcionGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Inscripcion;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.NoExisteExcepcion;
 
 @Service
 public class InscripcionServicio implements IInscripcionServicio {

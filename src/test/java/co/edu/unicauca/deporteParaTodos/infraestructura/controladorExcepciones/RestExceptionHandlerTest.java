@@ -1,5 +1,6 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones;
 
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.*;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.ConstraintViolationException;

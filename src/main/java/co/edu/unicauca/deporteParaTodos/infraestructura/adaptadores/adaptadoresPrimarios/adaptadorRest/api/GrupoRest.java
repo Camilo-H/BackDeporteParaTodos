@@ -1,6 +1,7 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.api;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IGrupoServicio;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Grupo;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.GrupoDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.logs.PeticionLogger;
+import co.edu.unicauca.deporteParaTodos.infraestructura.mappers.GrupoMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -36,86 +39,90 @@ public class GrupoRest {
     private IGrupoServicio servicio;
 
     @Operation(summary = "Obtiene todos los grupos del sistema sin discriminar su estado eliminado")
-    @ApiResponses(value ={
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Grupos recuperados"),
     })
     @GetMapping("/grupos")
-    public ResponseEntity<List<GrupoDto>> obtenerCursos(){
+    public ResponseEntity<List<GrupoDto>> obtenerCursos() {
         PeticionLogger.log(LOGGER, "GET", "/api/v2/grupos", "sin datos");
-        List<GrupoDto> dtos = servicio.obtenerTodosGrupos();
+        List<GrupoDto> dtos = servicio.obtenerTodosGrupos().stream()
+                .map(GrupoMapper::toDto)
+                .collect(Collectors.toList());
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
-    
+
     @Operation(summary = "Obtiene todos los grupos disponibles del sistema")
-    @ApiResponses(value ={
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Grupos recuperados"),
     })
     @GetMapping("gruposNoEliminados")
-    public ResponseEntity<List<GrupoDto>> obtenerCursosNoeliminados(){
+    public ResponseEntity<List<GrupoDto>> obtenerCursosNoeliminados() {
         PeticionLogger.log(LOGGER, "GET", "/api/v2/gruposNoEliminados", "sin datos");
-        List<GrupoDto> dtos = servicio.obtenerGruposDisponibles();
+        List<GrupoDto> dtos = servicio.obtenerGruposDisponibles().stream()
+                .map(GrupoMapper::toDto)
+                .collect(Collectors.toList());
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
-    
+
     @Operation(summary = "Obtiene todos los grupos disponibles del sistema para un curso")
-    @ApiResponses(value ={
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Grupos recuperados"),
     })
     @GetMapping("gruposCurso")
-    public ResponseEntity<List<GrupoDto>> obtenerGruposDe(@RequestParam String prmCategoria, @RequestParam String prmCurso){
+    public ResponseEntity<List<GrupoDto>> obtenerGruposDe(@RequestParam String prmCategoria, @RequestParam String prmCurso) {
         PeticionLogger.log(LOGGER, "GET", "/api/v2/gruposCurso", "prmCategoria=" + prmCategoria + ", prmCurso=" + prmCurso);
-        List<GrupoDto> dtos = servicio.obtenerGruposDeCurso(prmCategoria, prmCurso);
+        List<GrupoDto> dtos = servicio.obtenerGruposDeCurso(prmCategoria, prmCurso).stream()
+                .map(GrupoMapper::toDto)
+                .collect(Collectors.toList());
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
     @Operation(summary = "Obtiene todos los grupos del sistema disponibles a la inscripcion")
-    @ApiResponses(value ={
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Grupos recuperados"),
     })
     @GetMapping("/gruposInscripcion")
     public ResponseEntity<List<GrupoDto>> obtenerGruposInscripcion() {
         PeticionLogger.log(LOGGER, "GET", "/api/v2/gruposInscripcion", "sin datos");
-        List<GrupoDto> dtos = servicio.obtenerGruposInscripcionDisponible();
+        List<GrupoDto> dtos = servicio.obtenerGruposInscripcionDisponible().stream()
+                .map(GrupoMapper::toDto)
+                .collect(Collectors.toList());
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
-    
+
     @Operation(summary = "Obtiene todos los grupos del sistema asociados a un instructor")
-    @ApiResponses(value ={
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Grupos recuperados"),
     })
     @GetMapping("/gruposInstructor")
     public ResponseEntity<List<GrupoDto>> obtnerGruposInstructor(@RequestParam String idInstructor) {
         PeticionLogger.log(LOGGER, "GET", "/api/v2/gruposInstructor", "idInstructor=" + idInstructor);
-        List<GrupoDto> dtos = servicio.obtenerGruposInstructor(idInstructor);
-        return new ResponseEntity<>(dtos,HttpStatus.OK);
+        List<GrupoDto> dtos = servicio.obtenerGruposInstructor(idInstructor).stream()
+                .map(GrupoMapper::toDto)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
-    /**
-     * lo valores de anio e iterable no son tenidos en cuenta para la insercion
-     * @param dto
-     * @return
-     */
     @Operation(summary = "Inserta un registro en el sistema, los valores de anio e iterable son calculados internamete por el servidor, reportes de error por json malformados pueden ser causados por fechas no formateadas adecuadamente")
-    @ApiResponses(value ={
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Grupo insertado"),
     })
     @PostMapping("/grupo")
     public ResponseEntity<GrupoDto> postGrupo(@RequestBody @Valid GrupoDto dto) {
         PeticionLogger.log(LOGGER, "POST", "/api/v2/grupo", dto);
-        GrupoDto guardado = servicio.insertarGrupo(dto);
-        return new ResponseEntity<>(guardado, HttpStatus.CREATED);
+        Grupo grupo = GrupoMapper.fromDto(dto);
+        Grupo guardado = servicio.insertarGrupo(grupo);
+        return new ResponseEntity<>(GrupoMapper.toDto(guardado), HttpStatus.CREATED);
     }
 
     @Operation(summary = "obtiene un grupo del sistema")
-    @ApiResponses(value ={
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "grupo encontrado"),
     })
     @GetMapping("/grupo")
     public ResponseEntity<GrupoDto> obtenerGrupo(@RequestParam String categoria, @RequestParam String curso, @RequestParam Integer anio, @RequestParam Integer iterable) {
         PeticionLogger.log(LOGGER, "GET", "/api/v2/grupo", "categoria=" + categoria + ", curso=" + curso + ", anio=" + anio + ", iterable=" + iterable);
-        GrupoDto dto = servicio.obtenerGrupo(categoria, curso, anio, iterable);
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+        Grupo grupo = servicio.obtenerGrupo(categoria, curso, anio, iterable);
+        return new ResponseEntity<>(GrupoMapper.toDto(grupo), HttpStatus.OK);
     }
-    
-    
 }

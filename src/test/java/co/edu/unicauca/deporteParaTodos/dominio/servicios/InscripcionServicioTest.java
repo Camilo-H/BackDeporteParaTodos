@@ -15,7 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IInscripcionGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Inscripcion;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.NoExisteExcepcion;
 
 @ExtendWith(MockitoExtension.class)
 class InscripcionServicioTest {

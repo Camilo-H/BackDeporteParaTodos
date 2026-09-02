@@ -2,7 +2,6 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadores
 
 import java.time.LocalDate;
 
-import co.edu.unicauca.deporteParaTodos.dominio.modelo.Grupo;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ids.GrupoId;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -71,26 +70,4 @@ public class GrupoEntidad {
 
     @Column(name = "META_ELIMINADO")
     private Integer eliminado;
-
-    public static GrupoEntidad fabricarDeModelo(Grupo grupo){
-        try{
-            GrupoEntidad entidad = new GrupoEntidad(
-                grupo.getCategoria(),
-                grupo.getCurso(),
-                grupo.getAnio(),
-                grupo.getIterable(),
-                grupo.getImagenGrupo(),
-                grupo.getCupos(),
-                grupo.getIdInstructor(),
-                grupo.getFechaCreacion(),
-                grupo.getFechaFinalizacion(),
-                grupo.getFechaInscripcionApertura(),
-                grupo.getFechaIncripcionCierre(),
-                grupo.getPeriodo(),
-                0);
-            return entidad;
-        }catch(Exception e){
-            return null;
-        }
-    }
 }

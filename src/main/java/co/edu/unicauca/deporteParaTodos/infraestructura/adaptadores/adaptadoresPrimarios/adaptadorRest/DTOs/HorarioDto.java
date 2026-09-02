@@ -1,6 +1,5 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs;
 
-import co.edu.unicauca.deporteParaTodos.dominio.modelo.Horario;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
@@ -39,17 +38,4 @@ public class HorarioDto {
 
     private String escenario;
 
-    public static HorarioDto fabricarDeModelo(Horario h) {
-        HorarioDto dto = new HorarioDto();
-        dto.setId(h.getId());
-        dto.setCategoria(h.getCategoria());
-        dto.setCurso(h.getCurso());
-        dto.setAnio(h.getAnio());
-        dto.setIterable(h.getIterable());
-        dto.setDia(h.getDia());
-        dto.setHoraInicio(h.getHoraInicio());
-        dto.setHoraFin(h.getHoraFin());
-        dto.setEscenario(h.getEscenario());
-        return dto;
-    }
 }

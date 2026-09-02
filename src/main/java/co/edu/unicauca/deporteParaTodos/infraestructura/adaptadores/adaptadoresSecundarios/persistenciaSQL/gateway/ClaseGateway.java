@@ -10,7 +10,7 @@ import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IClaseG
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Clase;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ClaseEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IClaseRepositorio;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.NoExisteExcepcion;
 
 @Service
 public class ClaseGateway implements IClaseGateway {

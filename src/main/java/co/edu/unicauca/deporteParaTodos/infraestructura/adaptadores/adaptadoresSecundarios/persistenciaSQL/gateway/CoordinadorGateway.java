@@ -12,7 +12,7 @@ import co.edu.unicauca.deporteParaTodos.dominio.modelo.Coordinador;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.ICoordinadorGateway;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.CoordinadorEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.ICoordinadorRepositorio;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.NoExisteExcepcion;
 
 @Service
 public class CoordinadorGateway implements ICoordinadorGateway {

@@ -2,9 +2,7 @@ package co.edu.unicauca.deporteParaTodos.dominio.servicios;
 
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IGrupoGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Grupo;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.GrupoDto;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoProcesableEntidadException;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.NoExisteExcepcion;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -46,28 +44,15 @@ class GrupoServicioTest {
         return g;
     }
 
-    private GrupoDto grupoDto() {
-        GrupoDto dto = new GrupoDto();
-        dto.setCategoria(CATEGORIA);
-        dto.setCurso(CURSO);
-        dto.setAnio(ANIO);
-        dto.setIterable(ITERABLE);
-        dto.setCupos(20);
-        dto.setImagenGrupo(1);
-        dto.setFechaCreacion(LocalDate.of(2025, 1, 15));
-        dto.setPeriodo(1);
-        return dto;
-    }
-
     // ──────────────────────────────────────────────────────────────────────────
     // obtenerTodosGrupos
     // ──────────────────────────────────────────────────────────────────────────
 
     @Test
-    void obtenerTodosGrupos_delegaAlGatewayYMapeaADtos() {
+    void obtenerTodosGrupos_delegaAlGateway() {
         when(grupoGateway.obtenerTodosGrupos()).thenReturn(List.of(grupoModelo(), grupoModelo()));
 
-        List<GrupoDto> resultado = grupoServicio.obtenerTodosGrupos();
+        List<Grupo> resultado = grupoServicio.obtenerTodosGrupos();
 
         assertEquals(2, resultado.size());
         verify(grupoGateway).obtenerTodosGrupos();
@@ -78,10 +63,10 @@ class GrupoServicioTest {
     // ──────────────────────────────────────────────────────────────────────────
 
     @Test
-    void obtenerGruposDisponibles_delegaAlGatewayYMapeaADtos() {
+    void obtenerGruposDisponibles_delegaAlGateway() {
         when(grupoGateway.obtenerGruposDisponibles()).thenReturn(List.of(grupoModelo()));
 
-        List<GrupoDto> resultado = grupoServicio.obtenerGruposDisponibles();
+        List<Grupo> resultado = grupoServicio.obtenerGruposDisponibles();
 
         assertEquals(1, resultado.size());
         verify(grupoGateway).obtenerGruposDisponibles();
@@ -95,7 +80,7 @@ class GrupoServicioTest {
     void obtenerGruposDeCurso_delegaAlGatewayConParametros() {
         when(grupoGateway.obtenerGruposDeCurso(CATEGORIA, CURSO)).thenReturn(List.of(grupoModelo()));
 
-        List<GrupoDto> resultado = grupoServicio.obtenerGruposDeCurso(CATEGORIA, CURSO);
+        List<Grupo> resultado = grupoServicio.obtenerGruposDeCurso(CATEGORIA, CURSO);
 
         assertEquals(1, resultado.size());
         verify(grupoGateway).obtenerGruposDeCurso(CATEGORIA, CURSO);
@@ -109,7 +94,7 @@ class GrupoServicioTest {
     void obtenerGruposInscripcionDisponible_delegaAlGateway() {
         when(grupoGateway.obtenerGruposInscripcionDisponible()).thenReturn(List.of(grupoModelo()));
 
-        List<GrupoDto> resultado = grupoServicio.obtenerGruposInscripcionDisponible();
+        List<Grupo> resultado = grupoServicio.obtenerGruposInscripcionDisponible();
 
         assertEquals(1, resultado.size());
         verify(grupoGateway).obtenerGruposInscripcionDisponible();
@@ -123,7 +108,7 @@ class GrupoServicioTest {
     void obtenerGruposInstructor_delegaAlGatewayConIdInstructor() {
         when(grupoGateway.obtenerGruposInstructor("INS001")).thenReturn(List.of(grupoModelo()));
 
-        List<GrupoDto> resultado = grupoServicio.obtenerGruposInstructor("INS001");
+        List<Grupo> resultado = grupoServicio.obtenerGruposInstructor("INS001");
 
         assertEquals(1, resultado.size());
         verify(grupoGateway).obtenerGruposInstructor("INS001");
@@ -134,10 +119,10 @@ class GrupoServicioTest {
     // ──────────────────────────────────────────────────────────────────────────
 
     @Test
-    void insertarGrupo_exitoso_convierteYDelegaAlGateway() {
+    void insertarGrupo_exitoso_delegaAlGateway() {
         when(grupoGateway.insertarGrupo(any())).thenReturn(grupoModelo());
 
-        GrupoDto resultado = grupoServicio.insertarGrupo(grupoDto());
+        Grupo resultado = grupoServicio.insertarGrupo(grupoModelo());
 
         assertNotNull(resultado);
         assertEquals(CATEGORIA, resultado.getCategoria());
@@ -145,14 +130,10 @@ class GrupoServicioTest {
     }
 
     @Test
-    void insertarGrupo_sinNullCheckDeConversion_pasaNullAlGateway_comportamientoActual() {
-        // COMPORTAMIENTO CUESTIONABLE: insertarGrupo no verifica si Grupo.fabricarDeDto()
-        // retorna null (a diferencia de actualizarGrupo que sí lo hace con NoProcesableEntidadException).
-        // Si el DTO es nulo, la conversión falla silenciosamente y se pasa null al gateway.
+    void insertarGrupo_conNulo_delegaNuloAlGateway() {
         when(grupoGateway.insertarGrupo(nullable(Grupo.class))).thenReturn(grupoModelo());
 
-        assertDoesNotThrow(() -> grupoServicio.insertarGrupo(null),
-                "insertarGrupo no lanza NoProcesableEntidadException cuando la conversion falla");
+        assertDoesNotThrow(() -> grupoServicio.insertarGrupo(null));
 
         verify(grupoGateway).insertarGrupo(null);
     }
@@ -162,11 +143,11 @@ class GrupoServicioTest {
     // ──────────────────────────────────────────────────────────────────────────
 
     @Test
-    void obtenerGrupoPorId_exitoso_retornaDtoMapeado() {
+    void obtenerGrupoPorId_exitoso_retornaGrupo() {
         when(grupoGateway.obtenerGrupoPorId(CATEGORIA, CURSO, ANIO, ITERABLE))
                 .thenReturn(grupoModelo());
 
-        GrupoDto resultado = grupoServicio.obtenerGrupoPorId(CATEGORIA, CURSO, ANIO, ITERABLE);
+        Grupo resultado = grupoServicio.obtenerGrupoPorId(CATEGORIA, CURSO, ANIO, ITERABLE);
 
         assertNotNull(resultado);
         assertEquals(CATEGORIA, resultado.getCategoria());
@@ -192,7 +173,7 @@ class GrupoServicioTest {
         when(grupoGateway.actualizarGrupo(eq(CATEGORIA), eq(CURSO), eq(ANIO), eq(ITERABLE), any()))
                 .thenReturn(grupoModelo());
 
-        GrupoDto resultado = grupoServicio.actualizarGrupo(CATEGORIA, CURSO, ANIO, ITERABLE, grupoDto());
+        Grupo resultado = grupoServicio.actualizarGrupo(CATEGORIA, CURSO, ANIO, ITERABLE, grupoModelo());
 
         assertNotNull(resultado);
         assertEquals(CATEGORIA, resultado.getCategoria());
@@ -204,18 +185,7 @@ class GrupoServicioTest {
         when(grupoGateway.existeGrupo(CATEGORIA, CURSO, ANIO, ITERABLE)).thenReturn(false);
 
         assertThrows(NoExisteExcepcion.class,
-                () -> grupoServicio.actualizarGrupo(CATEGORIA, CURSO, ANIO, ITERABLE, grupoDto()));
-
-        verify(grupoGateway, never()).actualizarGrupo(any(), any(), any(), any(), any());
-    }
-
-    @Test
-    void actualizarGrupo_conversionFalla_lanzaNoProcesableEntidadException() {
-        // Grupo.fabricarDeDto(null) retorna null → el servicio lanza NoProcesableEntidadException.
-        when(grupoGateway.existeGrupo(CATEGORIA, CURSO, ANIO, ITERABLE)).thenReturn(true);
-
-        assertThrows(NoProcesableEntidadException.class,
-                () -> grupoServicio.actualizarGrupo(CATEGORIA, CURSO, ANIO, ITERABLE, null));
+                () -> grupoServicio.actualizarGrupo(CATEGORIA, CURSO, ANIO, ITERABLE, grupoModelo()));
 
         verify(grupoGateway, never()).actualizarGrupo(any(), any(), any(), any(), any());
     }
@@ -229,7 +199,7 @@ class GrupoServicioTest {
         when(grupoGateway.existeGrupo(CATEGORIA, CURSO, ANIO, ITERABLE)).thenReturn(true);
         when(grupoGateway.eliminarGrupo(CATEGORIA, CURSO, ANIO, ITERABLE)).thenReturn(grupoModelo());
 
-        GrupoDto resultado = grupoServicio.eliminarGrupo(CATEGORIA, CURSO, ANIO, ITERABLE);
+        Grupo resultado = grupoServicio.eliminarGrupo(CATEGORIA, CURSO, ANIO, ITERABLE);
 
         assertNotNull(resultado);
         verify(grupoGateway).eliminarGrupo(CATEGORIA, CURSO, ANIO, ITERABLE);
@@ -250,27 +220,23 @@ class GrupoServicioTest {
     // ──────────────────────────────────────────────────────────────────────────
 
     @Test
-    void obtenerGrupo_exitoso_retornaDtoMapeado() {
+    void obtenerGrupo_exitoso_retornaGrupo() {
         when(grupoGateway.obtenerGrupo(CATEGORIA, CURSO, ANIO, ITERABLE))
                 .thenReturn(grupoModelo());
 
-        GrupoDto resultado = grupoServicio.obtenerGrupo(CATEGORIA, CURSO, ANIO, ITERABLE);
+        Grupo resultado = grupoServicio.obtenerGrupo(CATEGORIA, CURSO, ANIO, ITERABLE);
 
         assertNotNull(resultado);
         assertEquals(CATEGORIA, resultado.getCategoria());
     }
 
     @Test
-    void obtenerGrupo_retornaNullSiGatewayDevuelveNull_comportamientoActual() {
-        // COMPORTAMIENTO CUESTIONABLE: obtenerGrupo no protege contra resultado null
-        // del gateway (a diferencia de obtenerGrupoPorId que lanza NoExisteExcepcion).
-        // GrupoDto.fabricarDeModelo(null) captura la NPE y retorna null silenciosamente.
+    void obtenerGrupo_retornaNullSiGatewayDevuelveNull() {
         when(grupoGateway.obtenerGrupo(CATEGORIA, CURSO, ANIO, ITERABLE))
                 .thenReturn(null);
 
-        GrupoDto resultado = grupoServicio.obtenerGrupo(CATEGORIA, CURSO, ANIO, ITERABLE);
+        Grupo resultado = grupoServicio.obtenerGrupo(CATEGORIA, CURSO, ANIO, ITERABLE);
 
-        assertNull(resultado,
-                "obtenerGrupo retorna null cuando el gateway devuelve null (inconsistente con obtenerGrupoPorId)");
+        assertNull(resultado);
     }
 }

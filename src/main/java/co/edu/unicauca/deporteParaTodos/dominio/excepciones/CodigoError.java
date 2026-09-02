@@ -1,4 +1,4 @@
-package co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.formatoError;
+package co.edu.unicauca.deporteParaTodos.dominio.excepciones;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

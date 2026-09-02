@@ -2,10 +2,9 @@ package co.edu.unicauca.deporteParaTodos.dominio.servicios;
 
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IHorarioGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Horario;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.HorarioDto;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ListadoVacioExcepcion;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.YaExisteElementoExcepcion;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.ListadoVacioExcepcion;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.NoExisteExcepcion;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.YaExisteElementoExcepcion;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -55,27 +54,14 @@ class HorarioServicioTest {
         return h;
     }
 
-    private HorarioDto dtoBase() {
-        HorarioDto dto = new HorarioDto();
-        dto.setCategoria(CAT);
-        dto.setCurso(CUR);
-        dto.setAnio(ANIO);
-        dto.setIterable(ITERABLE);
-        dto.setDia("Lunes");
-        dto.setHoraInicio("08:00");
-        dto.setHoraFin("10:00");
-        dto.setEscenario("Piscina");
-        return dto;
-    }
-
     // --- listarHorariosPorGrupo ---
 
     @Test
-    void listarHorariosPorGrupo_exitoso_retornaListaDtos() {
+    void listarHorariosPorGrupo_exitoso_retornaListaHorarios() {
         when(horarioGateway.listarHorariosPorGrupo(CAT, CUR, ANIO, ITERABLE))
                 .thenReturn(List.of(horarioActivo()));
 
-        List<HorarioDto> resultado = horarioServicio.listarHorariosPorGrupo(CAT, CUR, ANIO, ITERABLE);
+        List<Horario> resultado = horarioServicio.listarHorariosPorGrupo(CAT, CUR, ANIO, ITERABLE);
 
         assertEquals(1, resultado.size());
         assertEquals("Lunes", resultado.get(0).getDia());
@@ -94,11 +80,11 @@ class HorarioServicioTest {
     // --- obtenerHorario ---
 
     @Test
-    void obtenerHorario_exitoso_retornaDto() {
+    void obtenerHorario_exitoso_retornaHorario() {
         when(horarioGateway.existeHorario(ID)).thenReturn(true);
         when(horarioGateway.obtenerHorario(ID)).thenReturn(horarioActivo());
 
-        HorarioDto resultado = horarioServicio.obtenerHorario(ID);
+        Horario resultado = horarioServicio.obtenerHorario(ID);
 
         assertNotNull(resultado);
         assertEquals(ID, resultado.getId());
@@ -117,10 +103,10 @@ class HorarioServicioTest {
     // --- insertarHorario ---
 
     @Test
-    void insertarHorario_exitoso_retornaDto() {
+    void insertarHorario_exitoso_retornaHorario() {
         when(horarioGateway.insertarHorario(any())).thenReturn(horarioActivo());
 
-        HorarioDto resultado = horarioServicio.insertarHorario(dtoBase());
+        Horario resultado = horarioServicio.insertarHorario(horarioActivo());
 
         assertNotNull(resultado);
         assertEquals("Lunes", resultado.getDia());
@@ -130,11 +116,11 @@ class HorarioServicioTest {
     // --- actualizarHorario ---
 
     @Test
-    void actualizarHorario_exitoso_retornaDto() {
+    void actualizarHorario_exitoso_retornaHorario() {
         when(horarioGateway.existeHorario(ID)).thenReturn(true);
         when(horarioGateway.actualizarHorario(eq(ID), any())).thenReturn(horarioActivo());
 
-        HorarioDto resultado = horarioServicio.actualizarHorario(ID, dtoBase());
+        Horario resultado = horarioServicio.actualizarHorario(ID, horarioActivo());
 
         assertNotNull(resultado);
         assertEquals(ID, resultado.getId());
@@ -145,7 +131,7 @@ class HorarioServicioTest {
     void actualizarHorario_noExiste_lanzaNoExisteExcepcion() {
         when(horarioGateway.existeHorario(ID)).thenReturn(false);
 
-        assertThrows(NoExisteExcepcion.class, () -> horarioServicio.actualizarHorario(ID, dtoBase()));
+        assertThrows(NoExisteExcepcion.class, () -> horarioServicio.actualizarHorario(ID, horarioActivo()));
 
         verify(horarioGateway, never()).actualizarHorario(any(), any());
     }
@@ -153,14 +139,15 @@ class HorarioServicioTest {
     // --- eliminarHorario ---
 
     @Test
-    void eliminarHorario_exitoso_retornaDto() {
+    void eliminarHorario_exitoso_retornaHorarioEliminado() {
         when(horarioGateway.existeHorario(ID)).thenReturn(true);
         when(horarioGateway.obtenerHorario(ID)).thenReturn(horarioActivo());
         when(horarioGateway.eliminarHorario(ID)).thenReturn(horarioEliminado());
 
-        HorarioDto resultado = horarioServicio.eliminarHorario(ID);
+        Horario resultado = horarioServicio.eliminarHorario(ID);
 
         assertNotNull(resultado);
+        assertEquals(1, resultado.getEliminado());
         verify(horarioGateway).eliminarHorario(ID);
     }
 

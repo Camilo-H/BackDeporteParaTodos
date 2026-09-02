@@ -11,7 +11,7 @@ import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IFacult
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Facultad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.FacultadEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IFacultadRepositorio;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.NoExisteExcepcion;
 
 @Service
 public class FacultadGateway implements IFacultadGateway {

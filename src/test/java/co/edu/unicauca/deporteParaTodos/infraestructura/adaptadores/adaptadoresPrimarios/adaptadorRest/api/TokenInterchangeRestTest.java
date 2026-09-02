@@ -4,7 +4,7 @@ import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IAuten
 import co.edu.unicauca.deporteParaTodos.dominio.servicios.TokenServicio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.PerfilDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.RestExceptionHandler;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoExisteExcepcion;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.NoExisteExcepcion;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

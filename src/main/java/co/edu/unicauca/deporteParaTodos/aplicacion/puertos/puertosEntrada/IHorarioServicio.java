@@ -1,17 +1,17 @@
 package co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada;
 
 import java.util.List;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.HorarioDto;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Horario;
 
 public interface IHorarioServicio {
 
-    List<HorarioDto> listarHorariosPorGrupo(String categoria, String curso, int anio, int iterable);
+    List<Horario> listarHorariosPorGrupo(String categoria, String curso, int anio, int iterable);
 
-    HorarioDto obtenerHorario(Integer id);
+    Horario obtenerHorario(Integer id);
 
-    HorarioDto insertarHorario(HorarioDto datosHorario);
+    Horario insertarHorario(Horario datosHorario);
 
-    HorarioDto actualizarHorario(Integer id, HorarioDto datosHorario);
+    Horario actualizarHorario(Integer id, Horario datosHorario);
 
-    HorarioDto eliminarHorario(Integer id);
+    Horario eliminarHorario(Integer id);
 }
