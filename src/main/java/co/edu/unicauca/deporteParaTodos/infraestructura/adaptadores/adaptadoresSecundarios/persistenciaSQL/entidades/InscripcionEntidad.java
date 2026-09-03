@@ -2,8 +2,6 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadores
 
 import java.sql.Timestamp;
 
-import co.edu.unicauca.deporteParaTodos.dominio.modelo.Inscripcion;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ids.GrupoId;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ids.InscripcionId;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -57,21 +55,4 @@ public class InscripcionEntidad {
 
     @Column(name = "META_ELIMINADO")
     private int eliminado;
-
-    public static InscripcionEntidad fabricarDeModelo(Inscripcion inscripcion) {
-        try {
-            InscripcionEntidad entidad = new InscripcionEntidad();
-            entidad.setAlumnoId(inscripcion.getAlumnoId());
-            entidad.setCategoria(inscripcion.getCategoria());
-            entidad.setCurso(inscripcion.getCurso());
-            entidad.setAnio(inscripcion.getAnio());
-            entidad.setIterable(inscripcion.getIterable());
-            entidad.setFechaInscripcion(inscripcion.getFechaInscripcion());
-            entidad.setFechaDesvinculacion(inscripcion.getFechaDesvinculacion());
-            entidad.setEliminado(0);
-            return entidad;
-        } catch (Exception e) {
-            return null;
-        }
-    }
 }

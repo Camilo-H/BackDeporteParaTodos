@@ -13,6 +13,7 @@ import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IInscr
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Inscripcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.InscripcionDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.logs.PeticionLogger;
+import co.edu.unicauca.deporteParaTodos.infraestructura.mappers.InscripcionMapper;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,9 +34,9 @@ public class InscripcionRest {
     @PostMapping("/inscripcion")
     public ResponseEntity<InscripcionDto> inscribir(@RequestBody InscripcionDto dto) {
         PeticionLogger.log(LOGGER, "POST", "/api/v2/inscripcion", dto);
-        Inscripcion inscripcion = Inscripcion.fabricarDeDto(dto);
+        Inscripcion inscripcion = InscripcionMapper.fromDto(dto);
         Inscripcion resultado = servicio.inscribir(inscripcion);
-        return new ResponseEntity<>(InscripcionDto.fabricarDeModelo(resultado), HttpStatus.CREATED);
+        return new ResponseEntity<>(InscripcionMapper.toDto(resultado), HttpStatus.CREATED);
     }
 
     @GetMapping("/validarInscripcion")
@@ -55,6 +56,6 @@ public class InscripcionRest {
         PeticionLogger.log(LOGGER, "PUT", "/api/v2/desvincularInscripcion", dto);
         Inscripcion resultado = servicio.desvincularInscripcion(
                 dto.getAlumnoId(), dto.getCategoria(), dto.getCurso(), dto.getAnio(), dto.getIterable());
-        return new ResponseEntity<>(InscripcionDto.fabricarDeModelo(resultado), HttpStatus.OK);
+        return new ResponseEntity<>(InscripcionMapper.toDto(resultado), HttpStatus.OK);
     }
 }
