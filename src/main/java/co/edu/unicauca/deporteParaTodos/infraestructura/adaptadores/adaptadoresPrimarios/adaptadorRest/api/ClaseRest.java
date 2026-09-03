@@ -1,6 +1,7 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.api;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IClaseServicio;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Clase;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.ClaseDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.logs.PeticionLogger;
+import co.edu.unicauca.deporteParaTodos.infraestructura.mappers.ClaseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,7 +28,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-
 
 
 @RestController
@@ -55,7 +57,9 @@ public class ClaseRest {
             @RequestParam Integer iterable) {
         PeticionLogger.log(LOGGER, "GET", "/api/v2/clasesGrupo",
                 "categoria=" + categoria + ", curso=" + curso + ", anio=" + anio + ", iterable=" + iterable);
-        List<ClaseDto> respuesta = servicioClase.obtenerClasesGrupo(categoria, curso, anio, iterable);
+        List<ClaseDto> respuesta = servicioClase.obtenerClasesGrupo(categoria, curso, anio, iterable).stream()
+                .map(ClaseMapper::toDto)
+                .collect(Collectors.toList());
         return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
 
@@ -66,16 +70,11 @@ public class ClaseRest {
     @PostMapping("/claseGrupo")
     public ResponseEntity<ClaseDto> postClase(@RequestBody @Valid ClaseDto entidad) {
         PeticionLogger.log(LOGGER, "POST", "/api/v2/claseGrupo", entidad);
-        ClaseDto respuesta = servicioClase.insertarClase(entidad);
-        return new ResponseEntity<>(respuesta,HttpStatus.CREATED);
-        
+        Clase modelo = ClaseMapper.fromDto(entidad);
+        Clase claseInsertada = servicioClase.insertarClase(modelo);
+        return new ResponseEntity<>(ClaseMapper.toDto(claseInsertada), HttpStatus.CREATED);
     }
 
-    /***
-     * Cambia el estado eliminado de la clase a 1, para marcar como eliminada
-     * @param id
-     * @return
-     */
     @Operation(summary = "Marca una clase como eliminada")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Clase eliminada logicamente"),
@@ -84,11 +83,9 @@ public class ClaseRest {
     @DeleteMapping("/clase")
     public ResponseEntity<ClaseDto> deleteClase(
             @Parameter(description = "Codigo de la clase a eliminar")
-            @RequestParam @NotNull Integer id){
+            @RequestParam @NotNull Integer id) {
         PeticionLogger.log(LOGGER, "DELETE", "/api/v2/clase", "id=" + id);
-        ClaseDto respuesta = servicioClase.eliminarClase(id);
-        return new ResponseEntity<>(respuesta, HttpStatus.OK);
+        Clase claseEliminada = servicioClase.eliminarClase(id);
+        return new ResponseEntity<>(ClaseMapper.toDto(claseEliminada), HttpStatus.OK);
     }
-    
-    
 }

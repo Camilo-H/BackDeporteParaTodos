@@ -1,12 +1,12 @@
 package co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada;
 
 import java.util.List;
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.ClaseDto;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Clase;
 
 public interface IClaseServicio {
-    public List<ClaseDto> obtenerClasesGrupo(String categoria, String curso, Integer anio, Integer iterable);
+    public List<Clase> obtenerClasesGrupo(String categoria, String curso, Integer anio, Integer iterable);
 
-    public ClaseDto insertarClase(ClaseDto datoClase);
+    public Clase insertarClase(Clase datoClase);
 
-    public ClaseDto eliminarClase(int id);
+    public Clase eliminarClase(int id);
 }
