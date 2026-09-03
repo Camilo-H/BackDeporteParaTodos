@@ -1,7 +1,7 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.gateway;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,6 +10,7 @@ import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IClaseG
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Clase;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ClaseEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IClaseRepositorio;
+import co.edu.unicauca.deporteParaTodos.infraestructura.mappers.ClaseMapper;
 import co.edu.unicauca.deporteParaTodos.dominio.excepciones.NoExisteExcepcion;
 
 @Service
@@ -28,32 +29,18 @@ public class ClaseGateway implements IClaseGateway {
         List<ClaseEntidad> entidades = repoClase
                 .findByIdGrupoCategoriaAndIdGrupoCursoAndIdGrupoAnioAndIdGrupoIterableAndEliminado(
                         categoria, curso, anio, iterable, 0);
-        List<Clase> listado = new ArrayList<>();
-        entidades.forEach(entidad -> {
-            Clase modelo = Clase.fabricarDeEntidad(entidad);
-            if (modelo != null) {
-                listado.add(modelo);
-            }
-        });
-        return listado;
+        return entidades.stream()
+                .map(ClaseMapper::toDominio)
+                .collect(Collectors.toList());
     }
 
     @Override
     public Clase insertarClase(Clase datoClase) {
-        ClaseEntidad entidad = new ClaseEntidad();
+        ClaseEntidad entidad = ClaseMapper.toEntidad(datoClase);
         entidad.setCodigo(null);
-        entidad.setIdGrupoCategoria(datoClase.getCategoria());
-        entidad.setIdGrupoCurso(datoClase.getCurso());
-        entidad.setIdGrupoAnio(datoClase.getAnio());
-        entidad.setIdGrupoIterable(datoClase.getIterable());
-        entidad.setIdInstructor(datoClase.getIdInstructor());
-        entidad.setFecha(datoClase.getFecha());
-        entidad.setHoras(datoClase.getHoras());
-        entidad.setMinutos(datoClase.getMinutos());
-        entidad.setObservacion(datoClase.getObservacion());
         entidad.setEliminado(0);
         ClaseEntidad claseInsertada = repoClase.save(entidad);
-        return Clase.fabricarDeEntidad(claseInsertada);
+        return ClaseMapper.toDominio(claseInsertada);
     }
 
     @Override
@@ -61,8 +48,6 @@ public class ClaseGateway implements IClaseGateway {
         ClaseEntidad entidad = repoClase.findById(id).orElseThrow(NoExisteExcepcion::new);
         repoClase.marcarComoEliminado(id);
         entidad.setEliminado(1);
-        return Clase.fabricarDeEntidad(entidad);
-
+        return ClaseMapper.toDominio(entidad);
     }
-
 }

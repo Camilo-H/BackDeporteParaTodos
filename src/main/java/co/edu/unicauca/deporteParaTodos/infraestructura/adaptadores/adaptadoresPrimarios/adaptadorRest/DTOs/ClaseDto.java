@@ -2,7 +2,6 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadores
 
 import java.sql.Date;
 
-import co.edu.unicauca.deporteParaTodos.dominio.modelo.Clase;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
@@ -55,24 +54,4 @@ public class ClaseDto {
     private String observacion;
 
     private Integer eliminado;
-
-    public static ClaseDto fabricarDeModelo(Clase modelo) {
-        try {
-            ClaseDto dto = new ClaseDto();
-            dto.setCodigo(modelo.getCodigo());
-            dto.setCategoria(modelo.getCategoria());
-            dto.setCurso(modelo.getCurso());
-            dto.setAnio(modelo.getAnio());
-            dto.setIterable(modelo.getIterable());
-            dto.setIdInstructor(modelo.getIdInstructor());
-            dto.setFecha(modelo.getFecha());
-            dto.setHoras(modelo.getHoras());
-            dto.setMinutos(modelo.getMinutos());
-            dto.setObservacion(modelo.getObservacion());
-            dto.setEliminado(modelo.getEliminado());
-            return dto;
-        } catch (Exception e) {
-            return null;
-        }
-    }
 }
