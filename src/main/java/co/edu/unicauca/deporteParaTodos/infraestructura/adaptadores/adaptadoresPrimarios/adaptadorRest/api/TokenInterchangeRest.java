@@ -7,8 +7,6 @@ import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresP
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("api/v2/auth")
 public class TokenInterchangeRest {
-
-    // [DIAG-TEMP] eliminar tras validacion
-    private static final Logger LOGGER = LoggerFactory.getLogger(TokenInterchangeRest.class);
 
     private final JwtDecoder googleDecoder;
     private final IAutenticacionServicio autenticacionServicio;
@@ -69,12 +64,6 @@ public class TokenInterchangeRest {
         // autenticacionServicio.login lanza NoExisteExcepcion (→ 404 via handler global)
         // si el correo no esta registrado en el sistema
         PerfilDto perfil = autenticacionServicio.login(email);
-        // [DIAG-TEMP] PerfilDto final justo antes de serializar a JSON
-        LOGGER.info("[DIAG] intercambiarToken email={} → dto.id={} dto.correo={} dto.role={}",
-                email,
-                perfil != null ? perfil.getId() : "NULL",
-                perfil != null ? perfil.getCorreo() : "NULL",
-                perfil != null ? perfil.getRole() : "NULL");
         String token = tokenServicio.emitirToken(perfil);
         return ResponseEntity.ok(new TokenResponseDto(token, perfil));
     }

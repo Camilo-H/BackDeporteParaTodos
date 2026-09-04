@@ -1,7 +1,5 @@
 package co.edu.unicauca.deporteParaTodos.dominio.servicios;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,21 +14,12 @@ import co.edu.unicauca.deporteParaTodos.infraestructura.mappers.PerfilMapper;
 @Service
 public class AutenticacionServicio implements IAutenticacionServicio{
 
-    // [DIAG-TEMP] eliminar tras validacion
-    private static final Logger LOGGER = LoggerFactory.getLogger(AutenticacionServicio.class);
-
     @Autowired
     private IPerfilGateway gatePerfil;
 
     @Override
     public PerfilDto login(String email) {
         Perfil perfil = gatePerfil.obtenerUsuario(email);
-        // [DIAG-TEMP] Perfil crudo de BD antes de conversion a DTO
-        LOGGER.info("[DIAG] obtenerUsuario({}) → id={} correo={} rol={}",
-                email,
-                perfil != null ? perfil.getId() : "NULL",
-                perfil != null ? perfil.getCorreo() : "NULL",
-                perfil != null ? perfil.getRol() : "NULL");
         if(perfil==null){
             throw new NoExisteExcepcion();
         }
