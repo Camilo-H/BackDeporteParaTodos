@@ -1,6 +1,5 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs;
 
-import co.edu.unicauca.deporteParaTodos.dominio.modelo.Perfil;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -39,20 +38,4 @@ public class PerfilDto {
 
     private String alumnoCodigo;
 
-    public static PerfilDto fabricarDeModelo(Perfil perfil){
-        try{
-            PerfilDto dto = new PerfilDto();
-            dto.setNombre(perfil.getNombre());
-            dto.setId(perfil.getId());
-            dto.setCorreo(perfil.getCorreo());
-            dto.setRole(perfil.getRol());
-            dto.setSexo(perfil.getSexo());
-            dto.setTipoId(perfil.getTipoId());
-            dto.setFacultad(perfil.getFacultad());
-            dto.setTipoAlumno(perfil.getTipoAlumno());
-            return dto;
-        }catch(Exception e){
-            return null;
-        }
-    }
 }

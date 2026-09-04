@@ -3,6 +3,7 @@ package co.edu.unicauca.deporteParaTodos.configurations;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.cors.CorsConfiguration;
@@ -56,5 +57,11 @@ class SecurityConfigTest {
     void jwtEncoder_seConstruyeConSecretoBase64Valido() {
         JwtEncoder encoder = securityConfig.jwtEncoder();
         assertNotNull(encoder, "jwtEncoder debe construirse sin excepcion con un secreto Base64 valido");
+    }
+
+    @Test
+    void systemJwtDecoder_seConstruyeConSecretoHS256Valido() {
+        JwtDecoder decoder = securityConfig.systemJwtDecoder();
+        assertNotNull(decoder, "systemJwtDecoder debe construirse sin excepcion con el mismo secreto Base64 que usa el encoder");
     }
 }

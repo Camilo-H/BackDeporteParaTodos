@@ -1,5 +1,7 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.gateway;
 
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.DependenciaFallida;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.YaExisteElementoExcepcion;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Perfil;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.AlumnoEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.PerfilEntidad;
@@ -16,8 +18,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
+import java.util.List;
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,21 +50,170 @@ class PerfilGatewayTest {
     @InjectMocks
     private PerfilGateway perfilGateway;
 
+    private static final String  ID       = "12345678";
+    private static final String  NOMBRE   = "Juan Test";
+    private static final String  CORREO   = "juan@unicauca.edu.co";
+    private static final Integer IMAGEN   = 1;
+    private static final String  TIPO_ID  = "CC";
+    private static final String  SEXO     = "M";
+    private static final String  TIPO_ALM = "Regular";
+    private static final String  ALM_COD  = "2025-CIEN-001";
+
+    private Perfil perfilBase() {
+        Perfil p = new Perfil();
+        p.setId(ID);
+        p.setNombre(NOMBRE);
+        p.setCorreo(CORREO);
+        p.setImagen(IMAGEN);
+        p.setTipoId(TIPO_ID);
+        p.setSexo(SEXO);
+        p.setTipoAlumno(TIPO_ALM);
+        p.setAlumnoCodigo(ALM_COD);
+        return p;
+    }
+
+    private PerfilEntidad entidadBase() {
+        PerfilEntidad e = new PerfilEntidad();
+        e.setPerf_id(ID);
+        e.setPerf_nombre(NOMBRE);
+        e.setPerfcorreo(CORREO);
+        e.setPerf_imagen(IMAGEN);
+        e.setPerf_tipo(TIPO_ID);
+        e.setPerf_Sexo(SEXO);
+        e.setEliminado(0);
+        return e;
+    }
+
+    // ── insertarPerfil ──────────────────────────────────────────────────────
+
+    @Test
+    void insertarPerfil_perfilNoExistente_retornaPerfil() {
+        when(repoPerfil.existsById(ID)).thenReturn(false);
+        when(repoImagen.existsById(IMAGEN)).thenReturn(true);
+        when(repoPerfil.save(any(PerfilEntidad.class))).thenReturn(entidadBase());
+
+        Perfil resultado = perfilGateway.insertarPerfil(perfilBase());
+
+        assertNotNull(resultado);
+        assertEquals(ID,     resultado.getId());
+        assertEquals(CORREO, resultado.getCorreo());
+        verify(repoPerfil).save(any(PerfilEntidad.class));
+    }
+
+    @Test
+    void insertarPerfil_perfilYaExistente_lanzaYaExisteElementoExcepcion() {
+        when(repoPerfil.existsById(ID)).thenReturn(true);
+
+        assertThrows(YaExisteElementoExcepcion.class,
+                () -> perfilGateway.insertarPerfil(perfilBase()));
+
+        verify(repoPerfil, never()).save(any());
+    }
+
+    @Test
+    void insertarPerfil_imagenNoExistente_lanzaDependenciaFallida() {
+        when(repoPerfil.existsById(ID)).thenReturn(false);
+        when(repoImagen.existsById(IMAGEN)).thenReturn(false);
+
+        assertThrows(DependenciaFallida.class,
+                () -> perfilGateway.insertarPerfil(perfilBase()));
+
+        verify(repoPerfil, never()).save(any());
+    }
+
+    // ── obtenerUsuario ──────────────────────────────────────────────────────
+
+    @Test
+    void obtenerUsuario_emailNoExistente_retornaNull() {
+        when(repoPerfil.findByPerfcorreo(anyString())).thenReturn(List.of());
+
+        Perfil resultado = perfilGateway.obtenerUsuario("desconocido@externo.com");
+
+        assertNull(resultado);
+    }
+
+    @Test
+    void obtenerUsuario_emailExistente_esCoordinador_retornaPerfilConRolAdministrador() {
+        when(repoPerfil.findByPerfcorreo(CORREO)).thenReturn(List.of(entidadBase()));
+        when(repoCoordinador.existsById(ID)).thenReturn(true);
+
+        Perfil resultado = perfilGateway.obtenerUsuario(CORREO);
+
+        assertNotNull(resultado);
+        assertEquals(ID,              resultado.getId());
+        assertEquals(CORREO,          resultado.getCorreo());
+        assertEquals("Coordinador", resultado.getRol());
+    }
+
+    @Test
+    void obtenerUsuario_emailExistente_esInstructor_retornaPerfilConRolInstructor() {
+        when(repoPerfil.findByPerfcorreo(CORREO)).thenReturn(List.of(entidadBase()));
+        when(repoCoordinador.existsById(ID)).thenReturn(false);
+        when(repoInstructor.existsById(ID)).thenReturn(true);
+
+        Perfil resultado = perfilGateway.obtenerUsuario(CORREO);
+
+        assertNotNull(resultado);
+        assertEquals("Instructor", resultado.getRol());
+    }
+
+    @Test
+    void obtenerUsuario_emailExistente_esAlumno_retornaPerfilConRolAlumno() {
+        AlumnoEntidad alumno = new AlumnoEntidad();
+        alumno.setIdPerfil(ID);
+        alumno.setTipoAlumno(TIPO_ALM);
+
+        when(repoPerfil.findByPerfcorreo(CORREO)).thenReturn(List.of(entidadBase()));
+        when(repoCoordinador.existsById(ID)).thenReturn(false);
+        when(repoInstructor.existsById(ID)).thenReturn(false);
+        when(repoAlumno.existsById(ID)).thenReturn(true);
+        when(repoAlumno.findById(ID)).thenReturn(Optional.of(alumno));
+        when(repoAlumno.obtenerFacultadPorPerfilId(ID)).thenReturn("Ingeniería");
+
+        Perfil resultado = perfilGateway.obtenerUsuario(CORREO);
+
+        assertNotNull(resultado);
+        assertEquals("Alumno",     resultado.getRol());
+        assertEquals(TIPO_ALM,     resultado.getTipoAlumno());
+        assertEquals("Ingeniería", resultado.getFacultad());
+    }
+
+    @Test
+    void obtenerUsuario_emailExistente_sinRol_retornaNull() {
+        when(repoPerfil.findByPerfcorreo(CORREO)).thenReturn(List.of(entidadBase()));
+        when(repoCoordinador.existsById(ID)).thenReturn(false);
+        when(repoInstructor.existsById(ID)).thenReturn(false);
+        when(repoAlumno.existsById(ID)).thenReturn(false);
+
+        Perfil resultado = perfilGateway.obtenerUsuario(CORREO);
+
+        assertNull(resultado);
+    }
+
+    // ── registrarAlumno ─────────────────────────────────────────────────────
+
+    @Test
+    void registrarAlumno_perfilYaExistente_lanzaYaExisteElementoExcepcion() {
+        when(repoPerfil.existsById(ID)).thenReturn(true);
+
+        assertThrows(YaExisteElementoExcepcion.class,
+                () -> perfilGateway.registrarAlumno(perfilBase()));
+
+        verify(repoPerfil, never()).save(any());
+    }
+
     @Test
     void registrarAlumno_conAlumnoCodigo_persisteEnAlmCodigo() {
-        String id = "12345678";
-        String codigoEstudiantil = "2025-CIEN-001";
-
         Perfil perfil = new Perfil();
-        perfil.setId(id);
-        perfil.setNombre("Juan Test");
-        perfil.setCorreo("juan@unicauca.edu.co");
-        perfil.setTipoId("CC");
-        perfil.setSexo("M");
-        perfil.setTipoAlumno("Regular");
-        perfil.setAlumnoCodigo(codigoEstudiantil);
+        perfil.setId(ID);
+        perfil.setNombre(NOMBRE);
+        perfil.setCorreo(CORREO);
+        perfil.setTipoId(TIPO_ID);
+        perfil.setSexo(SEXO);
+        perfil.setTipoAlumno(TIPO_ALM);
+        perfil.setAlumnoCodigo(ALM_COD);
 
-        when(repoPerfil.existsById(id)).thenReturn(false);
+        when(repoPerfil.existsById(ID)).thenReturn(false);
         when(repoPerfil.save(any(PerfilEntidad.class))).thenReturn(new PerfilEntidad());
         when(repoAlumno.save(any(AlumnoEntidad.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -66,6 +221,6 @@ class PerfilGatewayTest {
 
         ArgumentCaptor<AlumnoEntidad> captor = ArgumentCaptor.forClass(AlumnoEntidad.class);
         verify(repoAlumno).save(captor.capture());
-        assertEquals(codigoEstudiantil, captor.getValue().getAlm_codigo());
+        assertEquals(ALM_COD, captor.getValue().getAlm_codigo());
     }
 }

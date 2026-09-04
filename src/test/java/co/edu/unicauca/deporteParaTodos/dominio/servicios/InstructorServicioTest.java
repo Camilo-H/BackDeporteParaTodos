@@ -1,6 +1,9 @@
 package co.edu.unicauca.deporteParaTodos.dominio.servicios;
 
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IInstructorGateway;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.ListadoVacioExcepcion;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.NoExisteExcepcion;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.YaExisteElementoExcepcion;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Instructor;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Perfil;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.InstructorDto;
@@ -10,6 +13,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -24,14 +30,88 @@ class InstructorServicioTest {
     @InjectMocks
     private InstructorServicio instructorServicio;
 
+    private static final String ID      = "98765432";
+    private static final String NOMBRE  = "Prof. García";
+    private static final String CORREO  = "garcia@unicauca.edu.co";
+    private static final String TIPO_ID = "CC";
+    private static final String SEXO    = "M";
+
+    private Instructor instructorConPerfil() {
+        Perfil perfil = new Perfil();
+        perfil.setId(ID);
+        perfil.setNombre(NOMBRE);
+        perfil.setCorreo(CORREO);
+        perfil.setSexo(SEXO);
+        Instructor inst = new Instructor();
+        inst.setInst_codigo(ID);
+        inst.setPerfil(perfil);
+        return inst;
+    }
+
+    private PerfilDto dtoBase() {
+        PerfilDto dto = new PerfilDto();
+        dto.setId(ID);
+        dto.setNombre(NOMBRE);
+        dto.setCorreo(CORREO);
+        dto.setTipoId(TIPO_ID);
+        dto.setSexo(SEXO);
+        dto.setTipoAlumno("Instructor");
+        return dto;
+    }
+
+    // ── obtenerInstructores ─────────────────────────────────────────────────
+
+    @Test
+    void obtenerInstructores_conDatos_retornaListaDtos() {
+        when(instructorsGateway.obtenerInstructores()).thenReturn(List.of(instructorConPerfil()));
+
+        List<InstructorDto> resultado = instructorServicio.obtenerInstructores();
+
+        assertNotNull(resultado);
+        assertEquals(1, resultado.size());
+        assertEquals(ID,     resultado.get(0).getId());
+        assertEquals(CORREO, resultado.get(0).getCorreo());
+    }
+
+    @Test
+    void obtenerInstructores_sinDatos_lanzaListadoVacioExcepcion() {
+        when(instructorsGateway.obtenerInstructores()).thenReturn(List.of());
+
+        assertThrows(ListadoVacioExcepcion.class,
+                () -> instructorServicio.obtenerInstructores());
+    }
+
+    // ── obtenerInstructor ───────────────────────────────────────────────────
+
+    @Test
+    void obtenerInstructor_existente_retornaInstructorDto() {
+        when(instructorsGateway.obtenerInstructor(ID)).thenReturn(Optional.of(instructorConPerfil()));
+
+        InstructorDto resultado = instructorServicio.obtenerInstructor(ID);
+
+        assertNotNull(resultado);
+        assertEquals(ID,     resultado.getId());
+        assertEquals(NOMBRE, resultado.getNombre());
+    }
+
+    @Test
+    void obtenerInstructor_noExistente_lanzaNoExisteExcepcion() {
+        when(instructorsGateway.obtenerInstructor(anyString())).thenReturn(Optional.empty());
+
+        assertThrows(NoExisteExcepcion.class,
+                () -> instructorServicio.obtenerInstructor("desconocido"));
+    }
+
+    // ── registrarInstructor ─────────────────────────────────────────────────
+
     @Test
     void registrarInstructor_sinAlumnoCodigo_seRegistraCorrectamente() {
         PerfilDto dto = new PerfilDto();
-        dto.setId("98765432");
-        dto.setNombre("Prof. García");
-        dto.setCorreo("garcia@unicauca.edu.co");
-        dto.setTipoId("CC");
-        dto.setSexo("M");
+        dto.setId(ID);
+        dto.setNombre(NOMBRE);
+        dto.setCorreo(CORREO);
+        dto.setTipoId(TIPO_ID);
+        dto.setSexo(SEXO);
         dto.setTipoAlumno("Instructor");
         // alumnoCodigo NOT set — remains null (regression: SCRUM-137)
 
@@ -43,5 +123,15 @@ class InstructorServicioTest {
 
         assertNotNull(resultado);
         verify(instructorsGateway).registrarInstructor(any(Perfil.class), eq("Instructor"));
+    }
+
+    @Test
+    void registrarInstructor_yaExistente_lanzaYaExisteElementoExcepcion() {
+        when(instructorsGateway.existeInstructor(ID)).thenReturn(true);
+
+        assertThrows(YaExisteElementoExcepcion.class,
+                () -> instructorServicio.registrarInstructor(dtoBase()));
+
+        verify(instructorsGateway, never()).registrarInstructor(any(), any());
     }
 }

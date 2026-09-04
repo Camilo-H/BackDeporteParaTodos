@@ -13,6 +13,7 @@ import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresP
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.PerfilDto;
 import co.edu.unicauca.deporteParaTodos.dominio.excepciones.ErrorInternoException;
 import co.edu.unicauca.deporteParaTodos.dominio.excepciones.ListadoVacioExcepcion;
+import co.edu.unicauca.deporteParaTodos.infraestructura.mappers.PerfilMapper;
 import co.edu.unicauca.deporteParaTodos.dominio.excepciones.NoExisteExcepcion;
 import co.edu.unicauca.deporteParaTodos.dominio.excepciones.YaExisteElementoExcepcion;
 
@@ -74,10 +75,7 @@ public class InstructorServicio implements IInstructorServicio {
         }
 
         // Convertir DTO a modelo de dominio
-        Perfil perfil = Perfil.fabricarDeDto(perfilDto);
-        if (perfil == null) {
-            throw new ErrorInternoException("Error al procesar los datos del instructor");
-        }
+        Perfil perfil = PerfilMapper.fromDto(perfilDto);
 
         // Llamar al gateway para registrar el instructor atomicamente
         // (crea perfil + alumno + instructor en una transacción)
