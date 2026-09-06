@@ -7,12 +7,13 @@ import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IAuten
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IPerfilGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Perfil;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.PerfilDto;
-import co.edu.unicauca.deporteParaTodos.dominio.excepciones.ErrorInternoException;
 import co.edu.unicauca.deporteParaTodos.dominio.excepciones.NoExisteExcepcion;
 import co.edu.unicauca.deporteParaTodos.dominio.excepciones.YaExisteElementoExcepcion;
+import co.edu.unicauca.deporteParaTodos.infraestructura.mappers.PerfilMapper;
 
 @Service
 public class AutenticacionServicio implements IAutenticacionServicio{
+
     @Autowired
     private IPerfilGateway gatePerfil;
 
@@ -22,8 +23,7 @@ public class AutenticacionServicio implements IAutenticacionServicio{
         if(perfil==null){
             throw new NoExisteExcepcion();
         }
-        PerfilDto dto = PerfilDto.fabricarDeModelo(perfil);
-        return dto;
+        return PerfilMapper.toDto(perfil);
     }
 
     @Override
@@ -31,16 +31,9 @@ public class AutenticacionServicio implements IAutenticacionServicio{
         if (gatePerfil.existePerfil(datosPerfil.getId())) {
             throw new YaExisteElementoExcepcion("El perfil con la identificacion ya se encuentra registrado");
         }
-        Perfil perfil = Perfil.fabricarDeDto(datosPerfil);
-        if (perfil == null) {
-            throw new ErrorInternoException();
-        }
+        Perfil perfil = PerfilMapper.fromDto(datosPerfil);
         Perfil perfilRegistrado = gatePerfil.registrarAlumno(perfil);
-        PerfilDto respuesta = PerfilDto.fabricarDeModelo(perfilRegistrado);
-        if (respuesta == null) {
-            throw new ErrorInternoException();
-        }
-        return respuesta;
+        return PerfilMapper.toDto(perfilRegistrado);
     }
 
     

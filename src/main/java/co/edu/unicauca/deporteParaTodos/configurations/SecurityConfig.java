@@ -8,11 +8,13 @@ import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
@@ -37,10 +39,29 @@ public class SecurityConfig {
     @Value("${app.jwt.secret}")
     private String jwtSecret;
 
+    // Chain 1 (Orden 1): solo /auth/token — recibe Google ID Token y lo decodifica manualmente
+    // en el controller. BearerTokenAuthenticationFilter NO debe interceptar esta ruta porque
+    // el token de Google no puede validarse con el decoder HS256 del sistema.
+    @Bean
+    @Order(1)
+    public SecurityFilterChain tokenExchangeChain(HttpSecurity http) throws Exception {
+        http
+            .securityMatcher("/api/v2/auth/token")
+            .cors(Customizer.withDefaults())
+            .csrf(AbstractHttpConfigurer::disable) // NOSONAR: jwt-stateless-no-csrf-risk
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+            // Sin oauth2ResourceServer: el controller decodifica el Google token manualmente
+        return http.build();
+    }
+
+    // Chain 2 (Orden 2): todos los demas endpoints — valida dpt_token (HS256/JWT_SECRET).
     // Fase 1a: permitAll() — no rompe endpoints existentes.
     // Fase 1b (siguiente commit): restringir endpoints con .authenticated()
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    @Order(2)
+    public SecurityFilterChain mainChain(HttpSecurity http) throws Exception {
         http
             .cors(Customizer.withDefaults())
             // CSRF deshabilitado intencionalmente: API stateless con JWT en Authorization header.
@@ -51,14 +72,24 @@ public class SecurityConfig {
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-            .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+            .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.decoder(systemJwtDecoder())));
         return http.build();
     }
 
-    // Decodifica tokens Google ID (valida firma via JWKS publico de Google)
-    @Bean
-    public JwtDecoder jwtDecoder() {
+    // Decodifica tokens Google ID (RS256, valida firma via JWKS publico de Google).
+    // Usado exclusivamente por TokenInterchangeRest para validar el token entrante de Google.
+    @Bean("googleJwtDecoder")
+    public JwtDecoder googleJwtDecoder() {
         return NimbusJwtDecoder.withJwkSetUri(googleJwksUri).build();
+    }
+
+    // Decodifica los JWT propios del sistema (HS256, firmados con JWT_SECRET).
+    // Usado por mainChain para validar el dpt_token que emite TokenServicio.
+    @Bean("systemJwtDecoder")
+    public JwtDecoder systemJwtDecoder() {
+        byte[] keyBytes = Base64.getDecoder().decode(jwtSecret);
+        SecretKey key = new SecretKeySpec(keyBytes, "HmacSHA256");
+        return NimbusJwtDecoder.withSecretKey(key).macAlgorithm(MacAlgorithm.HS256).build();
     }
 
     // Firma los JWT propios del sistema con HMAC-SHA256

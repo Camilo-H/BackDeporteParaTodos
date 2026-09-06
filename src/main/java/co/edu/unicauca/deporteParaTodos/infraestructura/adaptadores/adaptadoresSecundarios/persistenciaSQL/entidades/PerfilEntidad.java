@@ -1,6 +1,5 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades;
 
-import co.edu.unicauca.deporteParaTodos.dominio.modelo.Perfil;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -39,19 +38,4 @@ public class PerfilEntidad {
     @Column(name ="META_ELIMINADO")
     private Integer eliminado;
 
-    public static PerfilEntidad fabricarDeModelo(Perfil perfil, int eliminado){
-        try{
-            PerfilEntidad entidad = new PerfilEntidad();
-            entidad.setEliminado(eliminado);
-            entidad.setPerf_id(perfil.getId());
-            entidad.setPerf_nombre(perfil.getNombre());
-            entidad.setPerf_Sexo(perfil.getSexo());
-            entidad.setPerf_tipo(perfil.getTipoId());
-            entidad.setPerfcorreo(perfil.getCorreo());
-            entidad.setPerf_imagen(perfil.getImagen());
-            return entidad;
-        }catch(Exception e){
-            return null;
-        }
-    }
 }

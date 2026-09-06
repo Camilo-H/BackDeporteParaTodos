@@ -19,9 +19,9 @@ import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresS
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IInstructorRepositorio;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IPerfilRepositorio;
 import co.edu.unicauca.deporteParaTodos.dominio.excepciones.DependenciaFallida;
-import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoConvertibleException;
 import co.edu.unicauca.deporteParaTodos.dominio.excepciones.NoExisteExcepcion;
 import co.edu.unicauca.deporteParaTodos.dominio.excepciones.YaExisteElementoExcepcion;
+import co.edu.unicauca.deporteParaTodos.infraestructura.mappers.PerfilMapper;
 
 @Service
 public class PerfilGateway implements IPerfilGateway {
@@ -61,32 +61,15 @@ public class PerfilGateway implements IPerfilGateway {
 
     @Override
     public Perfil insertarPerfil(Perfil perfil) {
-        //verificar insercion
         if(existePerfil(perfil.getId())){
             throw new YaExisteElementoExcepcion("El perfil con la identificacion ya se encuentra registrado");
         }
-
-        //verificar imagen
         if(!repoImagen.existsById(perfil.getImagen())){
             throw new DependenciaFallida("la imgen no se encuentra registrada");
         }
-
-        //conversion de datos
-        PerfilEntidad entidadInsertar = PerfilEntidad.fabricarDeModelo(perfil, 0);
-        if(entidadInsertar==null){
-            throw new NoConvertibleException();
-        }
-
-        //insercion
+        PerfilEntidad entidadInsertar = PerfilMapper.toEntidad(perfil);
         PerfilEntidad guardado = repoPerfil.save(entidadInsertar);
-
-        //conversion
-        Perfil perfilCreado = Perfil.fabricarDeEntidad(guardado);
-        if(perfilCreado == null){
-            throw new InternalError("No se ha logrado retornar la respuesta desde gateway");
-        }
-        
-        return perfilCreado;
+        return PerfilMapper.toDominio(guardado);
     }
 
     @Override
@@ -95,15 +78,13 @@ public class PerfilGateway implements IPerfilGateway {
             throw new YaExisteElementoExcepcion("El perfil con la identificacion ya se encuentra registrado");
         }
 
-        PerfilEntidad entidadPerfil = PerfilEntidad.fabricarDeModelo(perfil, 0);
-        if (entidadPerfil == null) {
-            throw new NoConvertibleException();
-        }
+        PerfilEntidad entidadPerfil = PerfilMapper.toEntidad(perfil);
 
-        AlumnoEntidad entidadAlumno = AlumnoEntidad.fabricarDePerfil(perfil, 0);
-        if (entidadAlumno == null) {
-            throw new NoConvertibleException();
-        }
+        AlumnoEntidad entidadAlumno = new AlumnoEntidad();
+        entidadAlumno.setIdPerfil(perfil.getId());
+        entidadAlumno.setAlm_codigo(perfil.getAlumnoCodigo());
+        entidadAlumno.setTipoAlumno(perfil.getTipoAlumno());
+        entidadAlumno.setEliminado(0);
 
         PerfilEntidad perfilGuardado = repoPerfil.save(entidadPerfil);
         AlumnoEntidad alumnoGuardado = repoAlumno.save(entidadAlumno);
@@ -112,10 +93,7 @@ public class PerfilGateway implements IPerfilGateway {
             throw new InternalError("No se ha logrado registrar el alumno");
         }
 
-        Perfil perfilRegistrado = Perfil.fabricarDeEntidad(perfilGuardado);
-        if (perfilRegistrado == null) {
-            throw new NoConvertibleException();
-        }
+        Perfil perfilRegistrado = PerfilMapper.toDominio(perfilGuardado);
         perfilRegistrado.setRol(Roles.ALUMNO.getValor());
         perfilRegistrado.setTipoAlumno(alumnoGuardado.getTipoAlumno());
         perfilRegistrado.setFacultad(null);
@@ -177,7 +155,7 @@ public class PerfilGateway implements IPerfilGateway {
         List<PerfilEntidad> perfiles = repoPerfil.findByPerfcorreo(email);
         if(perfiles.size()>0){
             PerfilEntidad entidad = perfiles.get(0);
-            Perfil perfil = Perfil.fabricarDeEntidad(entidad);
+            Perfil perfil = PerfilMapper.toDominio(entidad);
             String id = perfil.getId();
             if(repoCoordinador.existsById(id)){
                 perfil.setRol(Roles.ADMINISTRADOR.getValor());

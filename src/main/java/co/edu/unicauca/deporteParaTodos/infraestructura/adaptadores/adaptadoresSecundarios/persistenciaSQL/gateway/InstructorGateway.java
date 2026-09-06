@@ -19,6 +19,7 @@ import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresS
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IPerfilRepositorio;
 import co.edu.unicauca.deporteParaTodos.dominio.excepciones.NoExisteExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoImplementadoException;
+import co.edu.unicauca.deporteParaTodos.infraestructura.mappers.PerfilMapper;
 
 @Service
 public class InstructorGateway implements IInstructorGateway {
@@ -42,7 +43,7 @@ public class InstructorGateway implements IInstructorGateway {
         instructor.setInst_codigo(entidad.getIdPerfil());
 
         if (entidad.getPerfil() != null) {
-            instructor.setPerfil(Perfil.fabricarDeEntidad(entidad.getPerfil()));
+            instructor.setPerfil(PerfilMapper.toDominio(entidad.getPerfil()));
         }
 
         return instructor;
@@ -95,7 +96,7 @@ public class InstructorGateway implements IInstructorGateway {
     @Override
     public Instructor registrarInstructor(Perfil perfil, String tipoAlumno) {
         // [1] Crear perfil
-        PerfilEntidad entidadPerfil = PerfilEntidad.fabricarDeModelo(perfil, 0);
+        PerfilEntidad entidadPerfil = PerfilMapper.toEntidad(perfil);
         PerfilEntidad perfilGuardado = repoPerfil.save(entidadPerfil);
         String perfilId = perfilGuardado.getPerf_id();
 
@@ -115,7 +116,7 @@ public class InstructorGateway implements IInstructorGateway {
         // Construir objeto de dominio para retornar
         Instructor instructorRegistrado = new Instructor();
         instructorRegistrado.setInst_codigo(instructorGuardado.getIdPerfil());
-        instructorRegistrado.setPerfil(Perfil.fabricarDeEntidad(perfilGuardado));
+        instructorRegistrado.setPerfil(PerfilMapper.toDominio(perfilGuardado));
         instructorRegistrado.getPerfil().setTipoAlumno(tipoAlumno);
 
         return instructorRegistrado;
