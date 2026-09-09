@@ -161,8 +161,15 @@
 						<configuration>
 							<excludes>
 								<!-- DesarrollopruebaApplicationTests requiere conexion a base de datos activa.
-								     MySQL no esta configurado en el pipeline de GitHub Actions (pendiente SCRUM-163).
-								     Los tests Mockito restantes se ejecutan normalmente. -->
+								     MySQL esta disponible en CI desde SCRUM-163 (service container en GitHub Actions).
+								     Este perfil sigue siendo util para desarrollo local sin Docker activo:
+								       mvn verify -P skip-integration-tests -->
+								<!-- LIMITACION DOCUMENTADA (SCRUM-163): GitHub Actions services: no soporta
+								     pasar --lower-case-table-names=1 al daemon de MySQL (solo acepta options:
+								     de docker run, no argumentos del proceso mysqld). Para tests de integracion
+								     reales con queries a tablas, la solucion definitiva es migrar los CREATE TABLE
+								     del DDL a nombres en minusculas (convencion estandar MySQL/Linux), eliminando
+								     la necesidad del flag tanto en CI como en docker-compose local. -->
 								<exclude>**/DesarrollopruebaApplicationTests.java</exclude>
 							</excludes>
 						</configuration>
