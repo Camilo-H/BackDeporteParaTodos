@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -57,8 +58,8 @@ public class SecurityConfig {
     }
 
     // Chain 2 (Orden 2): todos los demas endpoints — valida dpt_token (HS256/JWT_SECRET).
-    // Fase 1a: permitAll() — no rompe endpoints existentes.
-    // Fase 1b (siguiente commit): restringir endpoints con .authenticated()
+    // SCRUM-156 Fase 1c: solo POST /api/v2/RegistroPerfilAlumno es publico (SCRUM-160).
+    // Todo lo demas exige autenticacion con dpt_token valido.
     @Bean
     @Order(2)
     public SecurityFilterChain mainChain(HttpSecurity http) throws Exception {
@@ -71,7 +72,9 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable) // NOSONAR: jwt-stateless-no-csrf-risk
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(HttpMethod.POST, "/api/v2/RegistroPerfilAlumno").permitAll()
+                .anyRequest().authenticated())
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.decoder(systemJwtDecoder())));
         return http.build();
     }
