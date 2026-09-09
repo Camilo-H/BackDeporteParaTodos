@@ -18,7 +18,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -125,7 +124,7 @@ class PerfilGatewayTest {
 
     @Test
     void obtenerUsuario_emailNoExistente_retornaNull() {
-        when(repoPerfil.findByPerfcorreo(anyString())).thenReturn(List.of());
+        when(repoPerfil.findByPerfcorreo(anyString())).thenReturn(Optional.empty());
 
         Perfil resultado = perfilGateway.obtenerUsuario("desconocido@externo.com");
 
@@ -134,7 +133,7 @@ class PerfilGatewayTest {
 
     @Test
     void obtenerUsuario_emailExistente_esCoordinador_retornaPerfilConRolAdministrador() {
-        when(repoPerfil.findByPerfcorreo(CORREO)).thenReturn(List.of(entidadBase()));
+        when(repoPerfil.findByPerfcorreo(CORREO)).thenReturn(Optional.of(entidadBase()));
         when(repoCoordinador.existsById(ID)).thenReturn(true);
 
         Perfil resultado = perfilGateway.obtenerUsuario(CORREO);
@@ -147,7 +146,7 @@ class PerfilGatewayTest {
 
     @Test
     void obtenerUsuario_emailExistente_esInstructor_retornaPerfilConRolInstructor() {
-        when(repoPerfil.findByPerfcorreo(CORREO)).thenReturn(List.of(entidadBase()));
+        when(repoPerfil.findByPerfcorreo(CORREO)).thenReturn(Optional.of(entidadBase()));
         when(repoCoordinador.existsById(ID)).thenReturn(false);
         when(repoInstructor.existsById(ID)).thenReturn(true);
 
@@ -163,7 +162,7 @@ class PerfilGatewayTest {
         alumno.setIdPerfil(ID);
         alumno.setTipoAlumno(TIPO_ALM);
 
-        when(repoPerfil.findByPerfcorreo(CORREO)).thenReturn(List.of(entidadBase()));
+        when(repoPerfil.findByPerfcorreo(CORREO)).thenReturn(Optional.of(entidadBase()));
         when(repoCoordinador.existsById(ID)).thenReturn(false);
         when(repoInstructor.existsById(ID)).thenReturn(false);
         when(repoAlumno.existsById(ID)).thenReturn(true);
@@ -180,7 +179,7 @@ class PerfilGatewayTest {
 
     @Test
     void obtenerUsuario_emailExistente_sinRol_retornaNull() {
-        when(repoPerfil.findByPerfcorreo(CORREO)).thenReturn(List.of(entidadBase()));
+        when(repoPerfil.findByPerfcorreo(CORREO)).thenReturn(Optional.of(entidadBase()));
         when(repoCoordinador.existsById(ID)).thenReturn(false);
         when(repoInstructor.existsById(ID)).thenReturn(false);
         when(repoAlumno.existsById(ID)).thenReturn(false);

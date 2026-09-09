@@ -152,9 +152,9 @@ public class PerfilGateway implements IPerfilGateway {
 
     @Override
     public Perfil obtenerUsuario(String email) {
-        List<PerfilEntidad> perfiles = repoPerfil.findByPerfcorreo(email);
-        if(perfiles.size()>0){
-            PerfilEntidad entidad = perfiles.get(0);
+        Optional<PerfilEntidad> perfOpt = repoPerfil.findByPerfcorreo(email);
+        if(perfOpt.isPresent()){
+            PerfilEntidad entidad = perfOpt.get();
             Perfil perfil = PerfilMapper.toDominio(entidad);
             String id = perfil.getId();
             if(repoCoordinador.existsById(id)){
