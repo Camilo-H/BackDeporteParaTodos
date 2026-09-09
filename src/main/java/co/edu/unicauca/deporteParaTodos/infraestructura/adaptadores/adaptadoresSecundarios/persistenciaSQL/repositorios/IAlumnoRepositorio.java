@@ -4,22 +4,13 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.AlumnoDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.AlumnoEntidad;
 
 public interface IAlumnoRepositorio extends CrudRepository<AlumnoEntidad,String>{
-    @Procedure(procedureName = "pro_obtener_alumnos_grupo")
-    List<AlumnoDto> obtenerAlumnosGrupo(
-        @Param("categoria") String categoria, 
-        @Param("curso") String curso, 
-        @Param("anio") double anio, 
-        @Param("iterable") double iterable, 
-        @Param("eliminado") double eliminado);
 
      @Query(value = """
         SELECT 
@@ -70,19 +61,16 @@ public interface IAlumnoRepositorio extends CrudRepository<AlumnoEntidad,String>
     Object[] buscarAlumnoPorIdRaw(@Param("alumnoId") String alumnoId);
 
     @Query(value = """
-        SELECT fac_nombre
-        FROM (
-            SELECT fac.fac_nombre
-            FROM tbl_alumno alm
-            INNER JOIN tbl_intermedia_alumno_programa intermedia
-                ON intermedia.perf_id = alm.perf_id
-            INNER JOIN tbl_programa programa
-                ON programa.prg_nombre = intermedia.prg_nombre
-            INNER JOIN tbl_facultad fac
-                ON fac.fac_nombre = programa.fac_nombre
-            WHERE alm.perf_id = :perfilId
-        )
-        WHERE ROWNUM = 1
+        SELECT fac.fac_nombre
+        FROM tbl_alumno alm
+        INNER JOIN tbl_intermedia_alumno_programa intermedia
+            ON intermedia.perf_id = alm.perf_id
+        INNER JOIN tbl_programa programa
+            ON programa.prg_nombre = intermedia.prg_nombre
+        INNER JOIN tbl_facultad fac
+            ON fac.fac_nombre = programa.fac_nombre
+        WHERE alm.perf_id = :perfilId
+        LIMIT 1
         """, nativeQuery = true)
     String obtenerFacultadPorPerfilId(@Param("perfilId") String perfilId);
 

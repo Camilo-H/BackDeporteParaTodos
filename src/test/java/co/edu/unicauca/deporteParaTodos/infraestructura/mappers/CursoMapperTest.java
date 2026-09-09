@@ -29,7 +29,6 @@ class CursoMapperTest {
         c.setDescripcion("Descripcion");
         c.setDeporte("Natacion");
         c.setImagenId(1);
-        c.setHorario("Lunes 8am");
         c.setEstadoInscripciones(EstadoInscripciones.ABIERTO);
         return c;
     }
@@ -41,7 +40,6 @@ class CursoMapperTest {
         dto.setDescripcion("Descripcion");
         dto.setDeporte("Natacion");
         dto.setIdImagen(1);
-        dto.setHorario("Lunes 8am");
         dto.setEstadoInscripciones(EstadoInscripciones.ABIERTO);
         return dto;
     }
@@ -79,28 +77,6 @@ class CursoMapperTest {
     }
 
     @Test
-    void toDominio_horarioPresenteEnEntidad_debeMapearseAlModelo() {
-        CursoEntidad entidad = entidadBase();
-        entidad.setEliminado(0);
-        entidad.setHorario("Lunes y Miércoles 7:00-9:00");
-
-        Curso curso = CursoMapper.toDominio(entidad);
-
-        assertEquals("Lunes y Miércoles 7:00-9:00", curso.getHorario());
-    }
-
-    @Test
-    void toDominio_horarioNuloEnEntidad_debeMapearseComoNuloEnModelo() {
-        CursoEntidad entidad = entidadBase();
-        entidad.setEliminado(0);
-        entidad.setHorario(null);
-
-        Curso curso = CursoMapper.toDominio(entidad);
-
-        assertNull(curso.getHorario());
-    }
-
-    @Test
     void toDominio_estadoInscripcionesNulo_defaultAbierto() {
         CursoEntidad entidad = entidadBase();
         entidad.setEliminado(0);
@@ -125,7 +101,6 @@ class CursoMapperTest {
         assertEquals("Descripcion", entidad.getDescripcion());
         assertEquals("Natacion", entidad.getDeporte());
         assertEquals(Integer.valueOf(1), entidad.getObjImagen());
-        assertEquals("Lunes 8am", entidad.getHorario());
         assertEquals("ABIERTO", entidad.getEstadoInscripciones());
     }
 
@@ -154,7 +129,6 @@ class CursoMapperTest {
         assertEquals("Descripcion", dto.getDescripcion());
         assertEquals("Natacion", dto.getDeporte());
         assertEquals(Integer.valueOf(1), dto.getIdImagen());
-        assertEquals("Lunes 8am", dto.getHorario());
         assertEquals(EstadoCurso.ACTIVO, dto.getEstadoCurso());
         assertEquals(EstadoInscripciones.ABIERTO, dto.getEstadoInscripciones());
     }
@@ -173,7 +147,6 @@ class CursoMapperTest {
         assertEquals("Descripcion", curso.getDescripcion());
         assertEquals("Natacion", curso.getDeporte());
         assertEquals(Integer.valueOf(1), curso.getImagenId());
-        assertEquals("Lunes 8am", curso.getHorario());
         assertEquals(EstadoInscripciones.ABIERTO, curso.getEstadoInscripciones());
     }
 

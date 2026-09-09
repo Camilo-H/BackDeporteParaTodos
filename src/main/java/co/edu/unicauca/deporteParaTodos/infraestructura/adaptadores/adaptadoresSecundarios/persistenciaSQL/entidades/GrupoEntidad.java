@@ -45,7 +45,7 @@ public class GrupoEntidad {
     private Integer imagenGrupo;
 
     @Column(name = "GRP_CUPOS")
-    private int cupos;
+    private Integer cupos;
 
     @Column(name="PERF_ID")
     private String idInstructor;

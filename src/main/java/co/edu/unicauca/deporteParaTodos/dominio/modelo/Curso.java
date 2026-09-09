@@ -23,7 +23,5 @@ public class Curso {
 
     private EstadoCurso estadoCurso;
 
-    private String horario;
-
     private EstadoInscripciones estadoInscripciones;
 }
