@@ -165,7 +165,7 @@
 								     Este perfil sigue siendo util para desarrollo local sin Docker activo:
 								       mvn verify -P skip-integration-tests -->
 								<!-- LIMITACION DOCUMENTADA (SCRUM-163): GitHub Actions services: no soporta
-								     pasar --lower-case-table-names=1 al daemon de MySQL (solo acepta options:
+								     pasar el flag lower_case_table_names=1 al daemon de MySQL (solo acepta options:
 								     de docker run, no argumentos del proceso mysqld). Para tests de integracion
 								     reales con queries a tablas, la solucion definitiva es migrar los CREATE TABLE
 								     del DDL a nombres en minusculas (convencion estandar MySQL/Linux), eliminando
