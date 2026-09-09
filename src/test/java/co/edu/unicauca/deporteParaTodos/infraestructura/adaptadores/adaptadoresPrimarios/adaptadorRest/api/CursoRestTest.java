@@ -50,7 +50,6 @@ class CursoRestTest {
         c.setDescripcion("Descripcion");
         c.setDeporte("Natacion");
         c.setImagenId(1);
-        c.setHorario("Lunes 8am");
         c.setEstadoCurso(EstadoCurso.ACTIVO);
         c.setEstadoInscripciones(EstadoInscripciones.ABIERTO);
         return c;

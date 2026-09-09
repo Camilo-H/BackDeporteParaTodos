@@ -19,7 +19,7 @@ public class Categoria {
 
     private String rutaImagen;
 
-    private int imagen;
+    private Integer imagen;
 
     private List<Curso> cursos;
 

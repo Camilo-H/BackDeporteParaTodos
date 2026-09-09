@@ -6,7 +6,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
-import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,8 +22,7 @@ import lombok.Setter;
 public class ImagenEntidad {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_entidad_imagen")
-    @SequenceGenerator(name = "seq_entidad_imagen", sequenceName = "SEQ_ID_IMAGEN", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IMG_ID")
     private Integer id;
 

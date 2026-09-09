@@ -49,7 +49,6 @@ class CursoGatewayTest {
         e.setDescripcion("Descripcion de prueba");
         e.setObjImagen(1);
         e.setEliminado(0);
-        e.setHorario("Lunes 8am");
         e.setEstadoInscripciones("ABIERTO");
         return e;
     }
@@ -67,7 +66,6 @@ class CursoGatewayTest {
         c.setDeporte("Natacion");
         c.setDescripcion("Descripcion de prueba");
         c.setImagenId(1);
-        c.setHorario("Lunes 8am");
         c.setEstadoInscripciones(EstadoInscripciones.ABIERTO);
         return c;
     }

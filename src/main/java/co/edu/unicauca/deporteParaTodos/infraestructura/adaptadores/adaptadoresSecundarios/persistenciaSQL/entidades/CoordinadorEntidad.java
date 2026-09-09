@@ -25,9 +25,6 @@ public class CoordinadorEntidad {
     @Column(name = "perf_id")
     private String idPerfil;
 
-    @Column(name = "COR_CODIGO", unique = true, length = 20, nullable = false)
-    private String coor_codigo;
-
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "perf_id", referencedColumnName = "perf_id")
     private PerfilEntidad perfil;

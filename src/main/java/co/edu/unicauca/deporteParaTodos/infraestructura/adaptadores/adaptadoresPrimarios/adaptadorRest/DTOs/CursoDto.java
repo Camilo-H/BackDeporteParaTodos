@@ -31,8 +31,6 @@ public class CursoDto {
 
     private EstadoCurso estadoCurso;
 
-    private String horario;
-
     private EstadoInscripciones estadoInscripciones;
 
 }

@@ -20,7 +20,6 @@ public class CursoMapper {
             fabricado.setEstadoCurso(
                 Integer.valueOf(1).equals(entidad.getEliminado()) ? EstadoCurso.INACTIVO : EstadoCurso.ACTIVO
             );
-            fabricado.setHorario(entidad.getHorario());
             fabricado.setEstadoInscripciones(
                 entidad.getEstadoInscripciones() != null
                     ? EstadoInscripciones.valueOf(entidad.getEstadoInscripciones())
@@ -40,7 +39,6 @@ public class CursoMapper {
             entidad.setDescripcion(curso.getDescripcion());
             entidad.setDeporte(curso.getDeporte());
             entidad.setObjImagen(curso.getImagenId());
-            entidad.setHorario(curso.getHorario());
             entidad.setEstadoInscripciones(
                 curso.getEstadoInscripciones() != null
                     ? curso.getEstadoInscripciones().name()
@@ -61,7 +59,6 @@ public class CursoMapper {
             dto.setIdImagen(curso.getImagenId());
             dto.setDeporte(curso.getDeporte());
             dto.setEstadoCurso(curso.getEstadoCurso());
-            dto.setHorario(curso.getHorario());
             dto.setEstadoInscripciones(curso.getEstadoInscripciones());
             return dto;
         } catch (Exception e) {
@@ -77,7 +74,6 @@ public class CursoMapper {
             fabricado.setDescripcion(dto.getDescripcion());
             fabricado.setDeporte(dto.getDeporte());
             fabricado.setImagenId(dto.getIdImagen());
-            fabricado.setHorario(dto.getHorario());
             fabricado.setEstadoInscripciones(dto.getEstadoInscripciones());
             return fabricado;
         } catch (Exception e) {

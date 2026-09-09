@@ -41,9 +41,6 @@ public class CursoEntidad {
     @Column(name = "meta_eliminado")
     private Integer eliminado;
 
-    @Column(name = "CUR_HORARIO")
-    private String horario;
-
     @Column(name = "CUR_ESTADO_INSCRIPCIONES")
     private String estadoInscripciones;
 
