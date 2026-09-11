@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("api/v2")
@@ -66,6 +67,7 @@ public class InstructoresRest {
             @ApiResponse(responseCode = "400", description = "Datos inválidos"),
             @ApiResponse(responseCode = "409", description = "El instructor ya existe")
     })
+    @PreAuthorize("hasAuthority('Coordinador')")
     @PostMapping("/RegistroPerfilInstructor")
     public ResponseEntity<InstructorDto> registrarInstructor(@RequestBody @Valid PerfilDto perfilDto) {
         PeticionLogger.log(LOGGER, "POST", "/api/v2/RegistroPerfilInstructor",

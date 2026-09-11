@@ -19,6 +19,7 @@ import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresP
 import co.edu.unicauca.deporteParaTodos.infraestructura.logs.PeticionLogger;
 import co.edu.unicauca.deporteParaTodos.infraestructura.mappers.ClaseMapper;
 import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -45,6 +46,7 @@ public class ClaseRest {
         @ApiResponse(responseCode = "200", description = "Listado de clases del grupo"),
         @ApiResponse(responseCode = "404", description = "No existen clases para el grupo consultado")
     })
+    @PreAuthorize("hasAnyAuthority('Instructor','Coordinador')")
     @GetMapping("/clasesGrupo")
     public ResponseEntity<List<ClaseDto>> getClasesGrupo(
             @Parameter(description = "Categoria del grupo")
@@ -67,6 +69,7 @@ public class ClaseRest {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Clase registrada correctamente")
     })
+    @PreAuthorize("hasAnyAuthority('Instructor','Coordinador')")
     @PostMapping("/claseGrupo")
     public ResponseEntity<ClaseDto> postClase(@RequestBody @Valid ClaseDto entidad) {
         PeticionLogger.log(LOGGER, "POST", "/api/v2/claseGrupo", entidad);
@@ -80,6 +83,7 @@ public class ClaseRest {
         @ApiResponse(responseCode = "200", description = "Clase eliminada logicamente"),
         @ApiResponse(responseCode = "404", description = "La clase no existe")
     })
+    @PreAuthorize("hasAnyAuthority('Instructor','Coordinador')")
     @DeleteMapping("/clase")
     public ResponseEntity<ClaseDto> deleteClase(
             @Parameter(description = "Codigo de la clase a eliminar")

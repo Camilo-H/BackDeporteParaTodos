@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +67,7 @@ public class EscenarioRest {
         @ApiResponse(responseCode = "201", description = "Escenario registrado"),
         @ApiResponse(responseCode = "409", description = "Ya existe un escenario con ese nombre"),
     })
+    @PreAuthorize("hasAuthority('Coordinador')")
     @PostMapping("/escenario")
     public ResponseEntity<EscenarioDto> insertarEscenario(@RequestBody @Valid EscenarioDto dto) {
         PeticionLogger.log(LOGGER, "POST", "/api/v2/escenario", dto);
@@ -79,6 +81,7 @@ public class EscenarioRest {
         @ApiResponse(responseCode = "404", description = "Escenario no encontrado"),
         @ApiResponse(responseCode = "409", description = "El nombre ya pertenece a otro escenario"),
     })
+    @PreAuthorize("hasAuthority('Coordinador')")
     @PutMapping("/escenario")
     public ResponseEntity<EscenarioDto> actualizarEscenario(
             @RequestParam Integer prmId,
@@ -94,6 +97,7 @@ public class EscenarioRest {
         @ApiResponse(responseCode = "404", description = "Escenario no encontrado"),
         @ApiResponse(responseCode = "409", description = "El escenario ya estaba eliminado"),
     })
+    @PreAuthorize("hasAuthority('Coordinador')")
     @DeleteMapping("/escenario")
     public ResponseEntity<EscenarioDto> eliminarEscenario(@RequestParam Integer prmId) {
         PeticionLogger.log(LOGGER, "DELETE", "/api/v2/escenario", "prmId=" + prmId);

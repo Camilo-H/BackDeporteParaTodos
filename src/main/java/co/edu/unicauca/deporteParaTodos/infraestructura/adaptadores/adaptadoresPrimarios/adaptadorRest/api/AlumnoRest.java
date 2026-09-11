@@ -24,6 +24,7 @@ import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresP
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.AlumnoRequest;
 import co.edu.unicauca.deporteParaTodos.infraestructura.logs.PeticionLogger;
 import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -46,6 +47,7 @@ public class AlumnoRest {
         @ApiResponse(responseCode = "200", description = "Listado de alumnos del grupo"),
         @ApiResponse(responseCode = "404", description = "No existen alumnos para el grupo consultado")
     })
+    @PreAuthorize("hasAnyAuthority('Instructor','Coordinador')")
     @GetMapping("/alumnosGrupo")
     public ResponseEntity<List<AlumnoDto>> obtenerAlumnosGrupo(
             @Parameter(description = "Categoria del grupo")
@@ -68,6 +70,7 @@ public class AlumnoRest {
         @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
         @ApiResponse(responseCode = "404", description = "No existe el alumno con el identificador indicado")
     })
+    @PreAuthorize("hasAuthority('Coordinador')")
     @PutMapping("/alumnos/{id}")
     public ResponseEntity<AlumnoDto> actualizarAlumno(
             @Parameter(description = "Cédula del alumno")
@@ -94,6 +97,7 @@ public class AlumnoRest {
         @ApiResponse(responseCode = "200", description = "Alumno eliminado lógicamente"),
         @ApiResponse(responseCode = "404", description = "No existe el alumno con el identificador indicado")
     })
+    @PreAuthorize("hasAuthority('Coordinador')")
     @DeleteMapping("/alumnos/{id}")
     public ResponseEntity<AlumnoDto> eliminarAlumno(
             @Parameter(description = "Cédula del alumno")

@@ -26,6 +26,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -74,6 +75,7 @@ public class CategoriaRest {
     @ApiResponses(value ={
         @ApiResponse(responseCode = "201", description = "Operacion exitosa"),
     })
+    @PreAuthorize("hasAuthority('Coordinador')")
     @PostMapping("/categoria")
     public ResponseEntity<CategoriaDto> postCategoria(@RequestBody @Valid CategoriaDto dto) {
         PeticionLogger.log(LOGGER, "POST", "/api/v2/categoria", dto);
@@ -85,6 +87,7 @@ public class CategoriaRest {
     @ApiResponses(value ={
         @ApiResponse(responseCode = "200", description = "Operacion exitosa"),
     })
+    @PreAuthorize("hasAuthority('Coordinador')")
     @PutMapping("/categoria")
     public ResponseEntity<CategoriaDto> putCategoria(@RequestParam @NotBlank String titulo, @RequestBody @Valid CategoriaDto dto) {
         PeticionLogger.log(LOGGER, "PUT", "/api/v2/categoria", "titulo=" + titulo + ", body=" + dto);
@@ -98,6 +101,7 @@ public class CategoriaRest {
      * @return cantidad de filas afectadas en la peticion, 1 representa exito en la operacion.
      */
     @Operation(summary = "Elimina una categoria")
+    @PreAuthorize("hasAuthority('Coordinador')")
     @DeleteMapping("/categoria")
     public ResponseEntity<CategoriaDto> deleteCategoria(@RequestParam @NotBlank String titulo){
         PeticionLogger.log(LOGGER, "DELETE", "/api/v2/categoria", "titulo=" + titulo);

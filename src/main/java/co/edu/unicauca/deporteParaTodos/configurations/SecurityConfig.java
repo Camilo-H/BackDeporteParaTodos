@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -20,6 +21,10 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -32,7 +37,10 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
+
+    private static final Logger DIAG_LOG = LoggerFactory.getLogger(SecurityConfig.class);
 
     @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
     private String googleJwksUri;
@@ -74,8 +82,11 @@ public class SecurityConfig {
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.POST, "/api/v2/RegistroPerfilAlumno").permitAll()
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                 .anyRequest().authenticated())
-            .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.decoder(systemJwtDecoder())));
+            .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt
+                .decoder(systemJwtDecoder())
+                .jwtAuthenticationConverter(jwtAuthenticationConverter())));
         return http.build();
     }
 
@@ -93,6 +104,25 @@ public class SecurityConfig {
         byte[] keyBytes = Base64.getDecoder().decode(jwtSecret);
         SecretKey key = new SecretKeySpec(keyBytes, "HmacSHA256");
         return NimbusJwtDecoder.withSecretKey(key).macAlgorithm(MacAlgorithm.HS256).build();
+    }
+
+    // Mapea el claim "rol" del JWT propio del sistema a GrantedAuthority de Spring Security.
+    // Converter completamente custom: lee jwt.getClaimAsString("rol") directamente,
+    // evita cualquier split interno de JwtGrantedAuthoritiesConverter y registra [DIAG]
+    // para confirmar en vivo el valor del claim y la autoridad resultante.
+    @Bean
+    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+        JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+        converter.setJwtGrantedAuthoritiesConverter(jwt -> {
+            String rol = jwt.getClaimAsString("rol");
+            DIAG_LOG.info("[DIAG] JWT sub={} | claim 'rol'='{}' | authorities=[{}]",
+                    jwt.getSubject(), rol, rol != null ? rol : "<null>");
+            if (rol == null || rol.isBlank()) {
+                return java.util.List.of();
+            }
+            return java.util.List.of(new SimpleGrantedAuthority(rol));
+        });
+        return converter;
     }
 
     // Firma los JWT propios del sistema con HMAC-SHA256
