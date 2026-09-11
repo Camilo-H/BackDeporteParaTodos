@@ -25,6 +25,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("api/v2")
@@ -71,6 +72,7 @@ public class HorarioRest {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Horario registrado"),
     })
+    @PreAuthorize("hasAuthority('Coordinador')")
     @PostMapping("/horario")
     public ResponseEntity<HorarioDto> insertarHorario(@RequestBody @Valid HorarioDto dto) {
         PeticionLogger.log(LOGGER, "POST", "/api/v2/horario", dto);
@@ -83,6 +85,7 @@ public class HorarioRest {
         @ApiResponse(responseCode = "200", description = "Horario actualizado"),
         @ApiResponse(responseCode = "404", description = "Horario no encontrado"),
     })
+    @PreAuthorize("hasAuthority('Coordinador')")
     @PutMapping("/horario")
     public ResponseEntity<HorarioDto> actualizarHorario(
             @RequestParam Integer prmId,
@@ -98,6 +101,7 @@ public class HorarioRest {
         @ApiResponse(responseCode = "404", description = "Horario no encontrado"),
         @ApiResponse(responseCode = "409", description = "El horario ya estaba eliminado"),
     })
+    @PreAuthorize("hasAuthority('Coordinador')")
     @DeleteMapping("/horario")
     public ResponseEntity<HorarioDto> eliminarHorario(@RequestParam Integer prmId) {
         PeticionLogger.log(LOGGER, "DELETE", "/api/v2/horario", "prmId=" + prmId);

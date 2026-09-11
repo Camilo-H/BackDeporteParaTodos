@@ -17,6 +17,7 @@ import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IEstad
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.EstadisticaDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.logs.PeticionLogger;
 import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -40,6 +41,7 @@ public class EstadisticasRest {
         @ApiResponse(responseCode = "200", description = "Operacion exitosa"),
         @ApiResponse(responseCode = "404", description = "Identificador especificado no existe"),
     })
+    @PreAuthorize("hasAuthority('Coordinador')")
     @GetMapping("estadisticas/categorias")
     public ResponseEntity<List<EstadisticaDto>> getEstaditicasCategorias(
         @Parameter(description = "fecha inicial, use el formato YYYY-MM-DD ejemplo: 2025-01-01")
@@ -59,6 +61,7 @@ public class EstadisticasRest {
         @ApiResponse(responseCode = "200", description = "Operacion exitosa"),
         @ApiResponse(responseCode = "404", description = "Identificador especificado no existe"),
     })
+    @PreAuthorize("hasAuthority('Coordinador')")
     @GetMapping("estadisticas/cursos")
     public ResponseEntity<List<EstadisticaDto>> getEstadisticasCursos(
         @Parameter(description = "fecha inicial, use el formato YYYY-MM-DD ejemplo: 2025-01-01")
@@ -79,6 +82,7 @@ public class EstadisticasRest {
         @ApiResponse(responseCode = "200", description = "Operacion exitosa"),
         @ApiResponse(responseCode = "404", description = "Identificador especificado no existe"),
     })
+    @PreAuthorize("hasAuthority('Coordinador')")
     @GetMapping("estadisticas/grupos")
     public ResponseEntity<List<EstadisticaDto>> getEstadisticasGrupos(
         @Parameter(description = "fecha inicial, use el formato YYYY-MM-DD ejemplo: 2025-01-01")
@@ -106,6 +110,7 @@ public class EstadisticasRest {
         @ApiResponse(responseCode = "200", description = "Operacion exitosa"),
         @ApiResponse(responseCode = "404", description = "Identificador especificado no existe"),
     })
+    @PreAuthorize("hasAuthority('Coordinador')")
     @GetMapping("estadisticas/alumnos")
     public ResponseEntity<List<EstadisticaDto>> getEtadisticasAlumnos(
         @Parameter(description = "fecha inicial, use el formato YYYY-MM-DD ejemplo: 2025-01-01")
@@ -126,6 +131,7 @@ public class EstadisticasRest {
         @ApiResponse(responseCode = "200", description = "Operacion exitosa"),
         @ApiResponse(responseCode = "404", description = "Identificador especificado no existe"),
     })
+    @PreAuthorize("hasAuthority('Coordinador')")
     @GetMapping("estadisticas/instructores")
     public ResponseEntity<List<EstadisticaDto>> getEtadisticasInstructores(
         @Parameter(description = "fecha inicial, use el formato YYYY-MM-DD ejemplo: 2025-01-01")

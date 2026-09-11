@@ -23,6 +23,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -94,6 +95,7 @@ public class GrupoRest {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Grupos recuperados"),
     })
+    @PreAuthorize("hasAnyAuthority('Instructor','Coordinador')")
     @GetMapping("/gruposInstructor")
     public ResponseEntity<List<GrupoDto>> obtnerGruposInstructor(@RequestParam String idInstructor) {
         PeticionLogger.log(LOGGER, "GET", "/api/v2/gruposInstructor", "idInstructor=" + idInstructor);
@@ -107,6 +109,7 @@ public class GrupoRest {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Grupo insertado"),
     })
+    @PreAuthorize("hasAuthority('Coordinador')")
     @PostMapping("/grupo")
     public ResponseEntity<GrupoDto> postGrupo(@RequestBody @Valid GrupoDto dto) {
         PeticionLogger.log(LOGGER, "POST", "/api/v2/grupo", dto);

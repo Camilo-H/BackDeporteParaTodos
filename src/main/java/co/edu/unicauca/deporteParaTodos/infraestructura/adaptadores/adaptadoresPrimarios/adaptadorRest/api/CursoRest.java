@@ -28,6 +28,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -79,6 +80,7 @@ public class CursoRest {
     @ApiResponses(value ={
         @ApiResponse(responseCode = "200", description = "listado completo de cursos sin filtro de estado"),
     })
+    @PreAuthorize("hasAuthority('Coordinador')")
     @GetMapping("/cursosbycategoria/todos")
     public ResponseEntity<List<CursoDto>> obtenerTodosCursosPorCategoria(
         @Parameter(description = "Identificador de una categoria del sistema")
@@ -110,6 +112,7 @@ public class CursoRest {
     @ApiResponses(value ={
         @ApiResponse(responseCode = "200", description = "curso registrado"),
     })
+    @PreAuthorize("hasAuthority('Coordinador')")
     @PostMapping("/curso")
     public ResponseEntity<CursoDto> postAgregarCurso(@RequestBody @Valid CursoDto dto) {
         PeticionLogger.log(LOGGER, "POST", "/api/v2/curso", dto);
@@ -121,6 +124,7 @@ public class CursoRest {
     @ApiResponses(value ={
         @ApiResponse(responseCode = "200", description = "curso actualizado, no manipula los id"),
     })
+    @PreAuthorize("hasAuthority('Coordinador')")
     @PutMapping("curso")
     public ResponseEntity<CursoDto> actualizarCurso(
         @Parameter(description = "Identificador de una categoria del sistema")
@@ -139,6 +143,7 @@ public class CursoRest {
         @ApiResponse(responseCode = "404", description = "curso no encontrado"),
         @ApiResponse(responseCode = "409", description = "el curso ya estaba eliminado"),
     })
+    @PreAuthorize("hasAuthority('Coordinador')")
     @DeleteMapping("curso")
     public ResponseEntity<CursoDto> eliminarCurso(
         @Parameter(description = "Identificador de una categoria del sistema")
@@ -154,6 +159,7 @@ public class CursoRest {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "estado del curso actualizado"),
     })
+    @PreAuthorize("hasAuthority('Coordinador')")
     @PatchMapping("/curso/estado")
     public ResponseEntity<CursoDto> cambiarEstadoCurso(
         @Parameter(description = "Identificador de la categoria del curso")
@@ -173,6 +179,7 @@ public class CursoRest {
         @ApiResponse(responseCode = "200", description = "estado de inscripciones actualizado"),
         @ApiResponse(responseCode = "404", description = "curso no encontrado"),
     })
+    @PreAuthorize("hasAuthority('Coordinador')")
     @PatchMapping("/curso/inscripciones")
     public ResponseEntity<CursoDto> cambiarEstadoInscripciones(
         @Parameter(description = "Identificador de la categoria del curso")

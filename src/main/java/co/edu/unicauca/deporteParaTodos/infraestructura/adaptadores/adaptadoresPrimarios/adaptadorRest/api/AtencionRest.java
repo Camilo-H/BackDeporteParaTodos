@@ -21,6 +21,7 @@ import co.edu.unicauca.deporteParaTodos.dominio.modelo.Asistencia;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.AtencionDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.logs.PeticionLogger;
 import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -42,6 +43,7 @@ public class AtencionRest {
         @ApiResponse(responseCode = "200", description = "Listado de atenciones por clase"),
         @ApiResponse(responseCode = "404", description = "No existen atenciones para la clase consultada")
     })
+    @PreAuthorize("hasAnyAuthority('Instructor','Coordinador')")
     @GetMapping("/atencionesporclase")
     public ResponseEntity<List<AtencionDto>> obtenerAtencionesPorClase(
             @Parameter(description = "Codigo de la clase a consultar")
@@ -57,6 +59,7 @@ public class AtencionRest {
         @ApiResponse(responseCode = "400", description = "Solicitud inválida"),
         @ApiResponse(responseCode = "404", description = "Clase o alumno no encontrado")
     })
+    @PreAuthorize("hasAnyAuthority('Instructor','Coordinador')")
     @PostMapping("/atenciones")
     public ResponseEntity<Void> registrarAtencionesPorClase(
             @Parameter(description = "Codigo de la clase para las atenciones")
@@ -73,6 +76,7 @@ public class AtencionRest {
         @ApiResponse(responseCode = "404", description = "La asistencia no existe"),
         @ApiResponse(responseCode = "409", description = "La asistencia ya estaba eliminada")
     })
+    @PreAuthorize("hasAnyAuthority('Instructor','Coordinador')")
     @DeleteMapping("/asistencia")
     public ResponseEntity<AtencionDto> eliminarAsistencia(
             @Parameter(description = "Identificador del perfil del alumno")

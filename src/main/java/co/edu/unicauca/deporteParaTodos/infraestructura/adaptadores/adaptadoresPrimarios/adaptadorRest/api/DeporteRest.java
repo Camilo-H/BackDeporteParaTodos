@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,8 +47,8 @@ public class DeporteRest {
         return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('Coordinador')")
     @PostMapping("/deportes")
-
     public ResponseEntity<DeporteDto> insertarDeporte(@RequestBody @Valid DeporteDto dto) {
        PeticionLogger.log(LOGGER, "POST", "/api/v2/deportes", dto);
        DeporteDto dtoGuardado = servicioDeporte.insertarDeporte(dto);
