@@ -286,9 +286,12 @@ public class RestExceptionHandler {
         public ResponseEntity<Error> GenericException(final HttpServletRequest req, final InscripcionesCerradasExcepcion ex) {
                 logExcepcion("InscripcionesCerradasExcepcion", req, ex);
                 HttpStatusCode codigoHttp = HttpStatus.UNPROCESSABLE_ENTITY;
-                String mensaje = String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage());
+                String llave = ex != null ? ex.getLlaveMensaje() : "";
+                String detalle = ex != null ? ex.getMessage() : "";
+                String mensaje = String.format("%s, %s", llave, detalle);
                 final Error error = ErrorUtils.crearError(ex.getCodigo(), mensaje, codigoHttp.value());
-                error.setUrl(req.getRequestURL().toString());
+                StringBuffer reqUrl = req.getRequestURL();
+                error.setUrl(reqUrl != null ? reqUrl.toString() : "");
                 error.setMetodo(req.getMethod());
                 return new ResponseEntity<>(error, codigoHttp);
         }
@@ -297,9 +300,12 @@ public class RestExceptionHandler {
         public ResponseEntity<Error> GenericException(final HttpServletRequest req, final CuposAgotadosExcepcion ex) {
                 logExcepcion("CuposAgotadosExcepcion", req, ex);
                 HttpStatusCode codigoHttp = HttpStatus.CONFLICT;
-                String mensaje = String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage());
+                String llave = ex != null ? ex.getLlaveMensaje() : "";
+                String detalle = ex != null ? ex.getMessage() : "";
+                String mensaje = String.format("%s, %s", llave, detalle);
                 final Error error = ErrorUtils.crearError(ex.getCodigo(), mensaje, codigoHttp.value());
-                error.setUrl(req.getRequestURL().toString());
+                StringBuffer reqUrl = req.getRequestURL();
+                error.setUrl(reqUrl != null ? reqUrl.toString() : "");
                 error.setMetodo(req.getMethod());
                 return new ResponseEntity<>(error, codigoHttp);
         }
@@ -308,9 +314,12 @@ public class RestExceptionHandler {
         public ResponseEntity<Error> GenericException(final HttpServletRequest req, final LimiteCursosExcepcion ex) {
                 logExcepcion("LimiteCursosExcepcion", req, ex);
                 HttpStatusCode codigoHttp = HttpStatus.UNPROCESSABLE_ENTITY;
-                String mensaje = String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage());
+                String llave = ex != null ? ex.getLlaveMensaje() : "";
+                String detalle = ex != null ? ex.getMessage() : "";
+                String mensaje = String.format("%s, %s", llave, detalle);
                 final Error error = ErrorUtils.crearError(ex.getCodigo(), mensaje, codigoHttp.value());
-                error.setUrl(req.getRequestURL().toString());
+                StringBuffer reqUrl = req.getRequestURL();
+                error.setUrl(reqUrl != null ? reqUrl.toString() : "");
                 error.setMetodo(req.getMethod());
                 return new ResponseEntity<>(error, codigoHttp);
         }

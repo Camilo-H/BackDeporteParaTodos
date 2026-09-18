@@ -3,7 +3,6 @@ package co.edu.unicauca.deporteParaTodos.dominio.servicios;
 import java.sql.Timestamp;
 import java.time.Instant;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,17 +23,18 @@ import co.edu.unicauca.deporteParaTodos.dominio.modelo.Inscripcion;
 @Service
 public class InscripcionServicio implements IInscripcionServicio {
 
-    @Autowired
-    private IInscripcionGateway gateway;
-
-    @Autowired
-    private ICursoGateway cursoGateway;
-
-    @Autowired
-    private IGrupoGateway grupoGateway;
+    private final IInscripcionGateway gateway;
+    private final ICursoGateway cursoGateway;
+    private final IGrupoGateway grupoGateway;
 
     @Value("${inscripciones.limite-cursos-alumno:3}")
     private int limiteCursosAlumno;
+
+    public InscripcionServicio(IInscripcionGateway gateway, ICursoGateway cursoGateway, IGrupoGateway grupoGateway) {
+        this.gateway = gateway;
+        this.cursoGateway = cursoGateway;
+        this.grupoGateway = grupoGateway;
+    }
 
     @Override
     @Transactional
