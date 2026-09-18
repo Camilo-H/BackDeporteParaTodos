@@ -6,6 +6,8 @@ import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresP
 
 public interface IDeporteServicio {
     //public Iterable<DeporteEntidad> obtenerDeportes();
+    // TODO: listaDeportes e insertarDeporte exponen DeporteDto intencionalmente en esta interfaz;
+    // refactorizarlas requiere cambiar también los callers en DeporteRest (fuera del alcance de este PR).
     public List<DeporteDto> listaDeportes();
     public DeporteDto insertarDeporte(DeporteDto datosDeporte);
     public Deporte obtenerDeportePorId(String nombreDeporte);
