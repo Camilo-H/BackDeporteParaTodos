@@ -285,42 +285,45 @@ public class RestExceptionHandler {
         @ExceptionHandler(InscripcionesCerradasExcepcion.class)
         public ResponseEntity<Error> GenericException(final HttpServletRequest req, final InscripcionesCerradasExcepcion ex) {
                 logExcepcion("InscripcionesCerradasExcepcion", req, ex);
-                HttpStatusCode codigoHttp = HttpStatus.UNPROCESSABLE_ENTITY;
-                String llave = ex != null ? ex.getLlaveMensaje() : "";
-                String detalle = ex != null ? ex.getMessage() : "";
-                String mensaje = String.format("%s, %s", llave, detalle);
-                final Error error = ErrorUtils.crearError(ex.getCodigo(), mensaje, codigoHttp.value());
-                StringBuffer reqUrl = req.getRequestURL();
-                error.setUrl(reqUrl != null ? reqUrl.toString() : "");
-                error.setMetodo(req.getMethod());
-                return new ResponseEntity<>(error, codigoHttp);
+                return buildDomainErrorResponse(req,
+                                ex != null ? ex.getCodigo()       : "",
+                                ex != null ? ex.getLlaveMensaje() : "",
+                                ex != null ? ex.getMessage()      : "",
+                                HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
         @ExceptionHandler(CuposAgotadosExcepcion.class)
         public ResponseEntity<Error> GenericException(final HttpServletRequest req, final CuposAgotadosExcepcion ex) {
                 logExcepcion("CuposAgotadosExcepcion", req, ex);
-                HttpStatusCode codigoHttp = HttpStatus.CONFLICT;
-                String llave = ex != null ? ex.getLlaveMensaje() : "";
-                String detalle = ex != null ? ex.getMessage() : "";
-                String mensaje = String.format("%s, %s", llave, detalle);
-                final Error error = ErrorUtils.crearError(ex.getCodigo(), mensaje, codigoHttp.value());
-                StringBuffer reqUrl = req.getRequestURL();
-                error.setUrl(reqUrl != null ? reqUrl.toString() : "");
-                error.setMetodo(req.getMethod());
-                return new ResponseEntity<>(error, codigoHttp);
+                return buildDomainErrorResponse(req,
+                                ex != null ? ex.getCodigo()       : "",
+                                ex != null ? ex.getLlaveMensaje() : "",
+                                ex != null ? ex.getMessage()      : "",
+                                HttpStatus.CONFLICT);
         }
 
         @ExceptionHandler(LimiteCursosExcepcion.class)
         public ResponseEntity<Error> GenericException(final HttpServletRequest req, final LimiteCursosExcepcion ex) {
                 logExcepcion("LimiteCursosExcepcion", req, ex);
-                HttpStatusCode codigoHttp = HttpStatus.UNPROCESSABLE_ENTITY;
-                String llave = ex != null ? ex.getLlaveMensaje() : "";
-                String detalle = ex != null ? ex.getMessage() : "";
+                return buildDomainErrorResponse(req,
+                                ex != null ? ex.getCodigo()       : "",
+                                ex != null ? ex.getLlaveMensaje() : "",
+                                ex != null ? ex.getMessage()      : "",
+                                HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+        private ResponseEntity<Error> buildDomainErrorResponse(
+                        HttpServletRequest req,
+                        String codigo,
+                        String llave,
+                        String detalle,
+                        HttpStatusCode codigoHttp) {
                 String mensaje = String.format("%s, %s", llave, detalle);
-                final Error error = ErrorUtils.crearError(ex.getCodigo(), mensaje, codigoHttp.value());
-                StringBuffer reqUrl = req.getRequestURL();
-                error.setUrl(reqUrl != null ? reqUrl.toString() : "");
-                error.setMetodo(req.getMethod());
+                final Error error = ErrorUtils.crearError(codigo, mensaje, codigoHttp.value());
+                String url = (req != null && req.getRequestURL() != null)
+                                ? req.getRequestURL().toString() : "";
+                error.setUrl(url);
+                error.setMetodo(req != null ? req.getMethod() : "");
                 return new ResponseEntity<>(error, codigoHttp);
         }
 }
