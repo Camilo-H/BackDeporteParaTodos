@@ -18,9 +18,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ArchivoNoConvertibleExcepcion;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.CuposAgotadosExcepcion;
 import co.edu.unicauca.deporteParaTodos.dominio.excepciones.DependenciaFallida;
 import co.edu.unicauca.deporteParaTodos.dominio.excepciones.ErrorInternoException;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.InscripcionesCerradasExcepcion;
 import co.edu.unicauca.deporteParaTodos.dominio.excepciones.InsercionFallidaExepcion;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.LimiteCursosExcepcion;
 import co.edu.unicauca.deporteParaTodos.dominio.excepciones.ListadoVacioExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoConvertibleException;
 import co.edu.unicauca.deporteParaTodos.dominio.excepciones.NoExisteExcepcion;
@@ -275,7 +278,40 @@ public class RestExceptionHandler {
 
                 error.setUrl(req.getRequestURL().toString());
                 error.setMetodo(req.getMethod());
-                
+
                 return new ResponseEntity<Error>(error, codigoHttp);
+        }
+
+        @ExceptionHandler(InscripcionesCerradasExcepcion.class)
+        public ResponseEntity<Error> GenericException(final HttpServletRequest req, final InscripcionesCerradasExcepcion ex) {
+                logExcepcion("InscripcionesCerradasExcepcion", req, ex);
+                final Error error = ErrorUtils
+                                .crearError(ex.getCodigo(),
+                                                String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage()),
+                                                HttpStatus.UNPROCESSABLE_ENTITY.value())
+                                .setUrl(req.getRequestURL().toString()).setMetodo(req.getMethod());
+                return new ResponseEntity<>(error, HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+        @ExceptionHandler(CuposAgotadosExcepcion.class)
+        public ResponseEntity<Error> GenericException(final HttpServletRequest req, final CuposAgotadosExcepcion ex) {
+                logExcepcion("CuposAgotadosExcepcion", req, ex);
+                final Error error = ErrorUtils
+                                .crearError(ex.getCodigo(),
+                                                String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage()),
+                                                HttpStatus.CONFLICT.value())
+                                .setUrl(req.getRequestURL().toString()).setMetodo(req.getMethod());
+                return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+        }
+
+        @ExceptionHandler(LimiteCursosExcepcion.class)
+        public ResponseEntity<Error> GenericException(final HttpServletRequest req, final LimiteCursosExcepcion ex) {
+                logExcepcion("LimiteCursosExcepcion", req, ex);
+                final Error error = ErrorUtils
+                                .crearError(ex.getCodigo(),
+                                                String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage()),
+                                                HttpStatus.UNPROCESSABLE_ENTITY.value())
+                                .setUrl(req.getRequestURL().toString()).setMetodo(req.getMethod());
+                return new ResponseEntity<>(error, HttpStatus.UNPROCESSABLE_ENTITY);
         }
 }

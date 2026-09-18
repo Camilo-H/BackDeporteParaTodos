@@ -15,6 +15,7 @@ import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresP
 import co.edu.unicauca.deporteParaTodos.infraestructura.logs.PeticionLogger;
 import co.edu.unicauca.deporteParaTodos.infraestructura.mappers.InscripcionMapper;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -31,6 +32,7 @@ public class InscripcionRest {
     @Autowired
     private IInscripcionServicio servicio;
 
+    @PreAuthorize("hasAnyAuthority('Alumno', 'Coordinador')")
     @PostMapping("/inscripcion")
     public ResponseEntity<InscripcionDto> inscribir(@RequestBody InscripcionDto dto) {
         PeticionLogger.log(LOGGER, "POST", "/api/v2/inscripcion", dto);
@@ -39,6 +41,7 @@ public class InscripcionRest {
         return new ResponseEntity<>(InscripcionMapper.toDto(resultado), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAnyAuthority('Alumno', 'Coordinador')")
     @GetMapping("/validarInscripcion")
     public ResponseEntity<Boolean> validarInscripcion(
             @RequestParam String alumnoId,
@@ -51,6 +54,7 @@ public class InscripcionRest {
         return new ResponseEntity<>(resultado, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('Alumno', 'Coordinador')")
     @PutMapping("/desvincularInscripcion")
     public ResponseEntity<InscripcionDto> desvincularInscripcion(@RequestBody InscripcionDto dto) {
         PeticionLogger.log(LOGGER, "PUT", "/api/v2/desvincularInscripcion", dto);

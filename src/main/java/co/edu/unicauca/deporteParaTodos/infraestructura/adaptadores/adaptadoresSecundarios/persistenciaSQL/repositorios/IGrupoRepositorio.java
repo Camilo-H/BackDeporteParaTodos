@@ -1,7 +1,10 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios;
 
 import java.util.List;
+import java.util.Optional;
 
+import jakarta.persistence.LockModeType;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -41,4 +44,13 @@ public interface IGrupoRepositorio extends CrudRepository<GrupoEntidad, GrupoId>
      * @return cantidad de coincidencias
      */
     int countByCategoriaAndCursoAndAnio(String Categoria, String Curso, Integer anio);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT g FROM GrupoEntidad g WHERE g.categoria = :cat AND g.curso = :cur AND g.anio = :anio AND g.iterable = :iter")
+    Optional<GrupoEntidad> findByIdWithLock(
+        @Param("cat") String categoria,
+        @Param("cur") String curso,
+        @Param("anio") int anio,
+        @Param("iter") int iterable
+    );
 }
