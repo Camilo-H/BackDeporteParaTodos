@@ -78,6 +78,15 @@ class RestExceptionHandlerTest {
         @GetMapping("/test/archivonc")
         void archivoNoConvertible() { throw new ArchivoNoConvertibleExcepcion("prueba"); }
 
+        @GetMapping("/test/inscripcionescerradas")
+        void inscripcionesCerradas() { throw new InscripcionesCerradasExcepcion("curso cerrado"); }
+
+        @GetMapping("/test/cuposagotados")
+        void cuposAgotados() { throw new CuposAgotadosExcepcion("sin cupos"); }
+
+        @GetMapping("/test/limitecursos")
+        void limiteCursos() { throw new LimiteCursosExcepcion("limite alcanzado"); }
+
         // ConstraintViolationException es de capa de servicio (AOP); se lanza
         // manualmente para ejercer el handler directamente en standaloneSetup.
         @GetMapping("/test/constraintviolation")
@@ -235,6 +244,30 @@ class RestExceptionHandlerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.codigoError").value("GC-0004"))
                 .andExpect(jsonPath("$.codigoHttp").value(400));
+    }
+
+    @Test
+    void inscripcionesCerradas_retorna422() throws Exception {
+        mockMvc.perform(get("/test/inscripcionescerradas"))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.codigoError").value("GC-0012"))
+                .andExpect(jsonPath("$.codigoHttp").value(422));
+    }
+
+    @Test
+    void cuposAgotados_retorna409() throws Exception {
+        mockMvc.perform(get("/test/cuposagotados"))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.codigoError").value("GC-0013"))
+                .andExpect(jsonPath("$.codigoHttp").value(409));
+    }
+
+    @Test
+    void limiteCursos_retorna422() throws Exception {
+        mockMvc.perform(get("/test/limitecursos"))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.codigoError").value("GC-0014"))
+                .andExpect(jsonPath("$.codigoHttp").value(422));
     }
 
     // ====== Grupo A: body = Map<String,String> ======

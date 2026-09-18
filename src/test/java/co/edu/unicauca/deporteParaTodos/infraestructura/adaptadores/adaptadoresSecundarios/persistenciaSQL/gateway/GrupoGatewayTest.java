@@ -1,5 +1,6 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.gateway;
 
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.NoExisteExcepcion;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Grupo;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.GrupoEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ids.CursoId;
@@ -110,5 +111,34 @@ class GrupoGatewayTest {
         ArgumentCaptor<GrupoEntidad> captor = ArgumentCaptor.forClass(GrupoEntidad.class);
         verify(repoGrupo).save(captor.capture());
         assertEquals(2, captor.getValue().getPeriodo());
+    }
+
+    // ── obtenerGrupoConLock ─────────────────────────────────────────────────
+
+    @Test
+    void obtenerGrupoConLock_grupoExistente_retornaGrupo() {
+        GrupoEntidad entidad = new GrupoEntidad();
+        entidad.setCategoria(CATEGORIA);
+        entidad.setCurso(CURSO);
+        entidad.setAnio(2026);
+        entidad.setIterable(1);
+        entidad.setCupos(10);
+        when(repoGrupo.findByIdWithLock(CATEGORIA, CURSO, 2026, 1))
+                .thenReturn(java.util.Optional.of(entidad));
+
+        Grupo resultado = grupoGateway.obtenerGrupoConLock(CATEGORIA, CURSO, 2026, 1);
+
+        assertNotNull(resultado);
+        assertEquals(CATEGORIA, resultado.getCategoria());
+        assertEquals(CURSO, resultado.getCurso());
+    }
+
+    @Test
+    void obtenerGrupoConLock_grupoNoExistente_lanzaNoExisteExcepcion() {
+        when(repoGrupo.findByIdWithLock(CATEGORIA, CURSO, 2026, 1))
+                .thenReturn(java.util.Optional.empty());
+
+        assertThrows(NoExisteExcepcion.class,
+                () -> grupoGateway.obtenerGrupoConLock(CATEGORIA, CURSO, 2026, 1));
     }
 }

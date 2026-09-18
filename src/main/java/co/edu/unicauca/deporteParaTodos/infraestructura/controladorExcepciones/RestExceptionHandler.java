@@ -285,33 +285,33 @@ public class RestExceptionHandler {
         @ExceptionHandler(InscripcionesCerradasExcepcion.class)
         public ResponseEntity<Error> GenericException(final HttpServletRequest req, final InscripcionesCerradasExcepcion ex) {
                 logExcepcion("InscripcionesCerradasExcepcion", req, ex);
-                final Error error = ErrorUtils
-                                .crearError(ex.getCodigo(),
-                                                String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage()),
-                                                HttpStatus.UNPROCESSABLE_ENTITY.value())
-                                .setUrl(req.getRequestURL().toString()).setMetodo(req.getMethod());
-                return new ResponseEntity<>(error, HttpStatus.UNPROCESSABLE_ENTITY);
+                HttpStatusCode codigoHttp = HttpStatus.UNPROCESSABLE_ENTITY;
+                String mensaje = String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage());
+                final Error error = ErrorUtils.crearError(ex.getCodigo(), mensaje, codigoHttp.value());
+                error.setUrl(req.getRequestURL().toString());
+                error.setMetodo(req.getMethod());
+                return new ResponseEntity<>(error, codigoHttp);
         }
 
         @ExceptionHandler(CuposAgotadosExcepcion.class)
         public ResponseEntity<Error> GenericException(final HttpServletRequest req, final CuposAgotadosExcepcion ex) {
                 logExcepcion("CuposAgotadosExcepcion", req, ex);
-                final Error error = ErrorUtils
-                                .crearError(ex.getCodigo(),
-                                                String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage()),
-                                                HttpStatus.CONFLICT.value())
-                                .setUrl(req.getRequestURL().toString()).setMetodo(req.getMethod());
-                return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+                HttpStatusCode codigoHttp = HttpStatus.CONFLICT;
+                String mensaje = String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage());
+                final Error error = ErrorUtils.crearError(ex.getCodigo(), mensaje, codigoHttp.value());
+                error.setUrl(req.getRequestURL().toString());
+                error.setMetodo(req.getMethod());
+                return new ResponseEntity<>(error, codigoHttp);
         }
 
         @ExceptionHandler(LimiteCursosExcepcion.class)
         public ResponseEntity<Error> GenericException(final HttpServletRequest req, final LimiteCursosExcepcion ex) {
                 logExcepcion("LimiteCursosExcepcion", req, ex);
-                final Error error = ErrorUtils
-                                .crearError(ex.getCodigo(),
-                                                String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage()),
-                                                HttpStatus.UNPROCESSABLE_ENTITY.value())
-                                .setUrl(req.getRequestURL().toString()).setMetodo(req.getMethod());
-                return new ResponseEntity<>(error, HttpStatus.UNPROCESSABLE_ENTITY);
+                HttpStatusCode codigoHttp = HttpStatus.UNPROCESSABLE_ENTITY;
+                String mensaje = String.format("%s, %s", ex.getLlaveMensaje(), ex.getMessage());
+                final Error error = ErrorUtils.crearError(ex.getCodigo(), mensaje, codigoHttp.value());
+                error.setUrl(req.getRequestURL().toString());
+                error.setMetodo(req.getMethod());
+                return new ResponseEntity<>(error, codigoHttp);
         }
 }
