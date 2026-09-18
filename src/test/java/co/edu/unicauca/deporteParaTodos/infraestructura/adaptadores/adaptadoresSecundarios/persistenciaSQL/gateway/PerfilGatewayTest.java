@@ -2,6 +2,7 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadores
 
 import co.edu.unicauca.deporteParaTodos.dominio.excepciones.DependenciaFallida;
 import co.edu.unicauca.deporteParaTodos.dominio.excepciones.YaExisteElementoExcepcion;
+import org.springframework.dao.DataIntegrityViolationException;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Perfil;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.AlumnoEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.PerfilEntidad;
@@ -199,6 +200,20 @@ class PerfilGatewayTest {
                 () -> perfilGateway.registrarAlumno(perfilBase()));
 
         verify(repoPerfil, never()).save(any());
+    }
+
+    @Test
+    void registrarAlumno_correoDuplicado_lanzaYaExisteElementoExcepcion() {
+        // Simula: PERF_ID nuevo (pasa la guarda de app), pero PERF_CORREO ya existe
+        // → repoPerfil.save() lanza DataIntegrityViolationException por UQ_PERFIL_CORREO
+        when(repoPerfil.existsById(ID)).thenReturn(false);
+        when(repoPerfil.save(any(PerfilEntidad.class)))
+                .thenThrow(new DataIntegrityViolationException("Duplicate entry for key UQ_PERFIL_CORREO"));
+
+        assertThrows(YaExisteElementoExcepcion.class,
+                () -> perfilGateway.registrarAlumno(perfilBase()));
+
+        verify(repoAlumno, never()).save(any());
     }
 
     @Test

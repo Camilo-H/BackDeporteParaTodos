@@ -1,13 +1,9 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios;
 
-import java.sql.Timestamp;
-import java.util.List;
-
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.HorarioEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.InscripcionEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ids.InscripcionId;
 
@@ -41,4 +37,28 @@ boolean existeInscripcionActiva(
     @Param("anio") int anio,
     @Param("iterable") int iterable
 );
+
+    @Query("""
+SELECT COUNT(i) FROM InscripcionEntidad i
+WHERE i.categoria = :categoria
+  AND i.curso = :curso
+  AND i.anio = :anio
+  AND i.iterable = :iterable
+  AND i.eliminado = 0
+  AND (i.fechaDesvinculacion IS NULL OR i.fechaDesvinculacion > CURRENT_TIMESTAMP)
+""")
+    long contarInscripcionesActivasGrupo(
+        @Param("categoria") String categoria,
+        @Param("curso") String curso,
+        @Param("anio") int anio,
+        @Param("iterable") int iterable
+    );
+
+    @Query("""
+SELECT COUNT(i) FROM InscripcionEntidad i
+WHERE i.alumnoId = :alumnoId
+  AND i.eliminado = 0
+  AND (i.fechaDesvinculacion IS NULL OR i.fechaDesvinculacion > CURRENT_TIMESTAMP)
+""")
+    long contarCursosActivosAlumno(@Param("alumnoId") String alumnoId);
 }

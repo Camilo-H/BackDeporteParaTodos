@@ -163,4 +163,11 @@ public class GrupoGateway implements IGrupoGateway {
                 .orElseThrow(() -> new NoExisteExcepcion("el grupo buscado no existe en el sistema"));
         return GrupoMapper.toDominio(entidad);
     }
+
+    @Override
+    public Grupo obtenerGrupoConLock(String categoria, String curso, Integer anio, Integer iterable) {
+        GrupoEntidad entidad = repoGrupo.findByIdWithLock(categoria, curso, anio, iterable)
+                .orElseThrow(() -> new NoExisteExcepcion("el grupo buscado no existe en el sistema"));
+        return GrupoMapper.toDominio(entidad);
+    }
 }

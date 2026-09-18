@@ -7,7 +7,9 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IPerfilGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Perfil;
 import co.edu.unicauca.deporteParaTodos.dominio.servicios.valores.Roles;
@@ -73,6 +75,7 @@ public class PerfilGateway implements IPerfilGateway {
     }
 
     @Override
+    @Transactional
     public Perfil registrarAlumno(Perfil perfil) {
         if (existePerfil(perfil.getId())) {
             throw new YaExisteElementoExcepcion("El perfil con la identificacion ya se encuentra registrado");
@@ -86,18 +89,22 @@ public class PerfilGateway implements IPerfilGateway {
         entidadAlumno.setTipoAlumno(perfil.getTipoAlumno());
         entidadAlumno.setEliminado(0);
 
-        PerfilEntidad perfilGuardado = repoPerfil.save(entidadPerfil);
-        AlumnoEntidad alumnoGuardado = repoAlumno.save(entidadAlumno);
+        try {
+            PerfilEntidad perfilGuardado = repoPerfil.save(entidadPerfil);
+            AlumnoEntidad alumnoGuardado = repoAlumno.save(entidadAlumno);
 
-        if (perfilGuardado == null || alumnoGuardado == null) {
-            throw new InternalError("No se ha logrado registrar el alumno");
+            if (perfilGuardado == null || alumnoGuardado == null) {
+                throw new InternalError("No se ha logrado registrar el alumno");
+            }
+
+            Perfil perfilRegistrado = PerfilMapper.toDominio(perfilGuardado);
+            perfilRegistrado.setRol(Roles.ALUMNO.getValor());
+            perfilRegistrado.setTipoAlumno(alumnoGuardado.getTipoAlumno());
+            perfilRegistrado.setFacultad(null);
+            return perfilRegistrado;
+        } catch (DataIntegrityViolationException e) {
+            throw new YaExisteElementoExcepcion("El correo o identificacion ya se encuentra registrado en el sistema");
         }
-
-        Perfil perfilRegistrado = PerfilMapper.toDominio(perfilGuardado);
-        perfilRegistrado.setRol(Roles.ALUMNO.getValor());
-        perfilRegistrado.setTipoAlumno(alumnoGuardado.getTipoAlumno());
-        perfilRegistrado.setFacultad(null);
-        return perfilRegistrado;
     }
 
     @Override

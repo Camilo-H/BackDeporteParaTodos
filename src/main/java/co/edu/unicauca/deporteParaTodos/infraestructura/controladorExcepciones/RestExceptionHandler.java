@@ -18,9 +18,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.ArchivoNoConvertibleExcepcion;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.CuposAgotadosExcepcion;
 import co.edu.unicauca.deporteParaTodos.dominio.excepciones.DependenciaFallida;
 import co.edu.unicauca.deporteParaTodos.dominio.excepciones.ErrorInternoException;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.InscripcionesCerradasExcepcion;
 import co.edu.unicauca.deporteParaTodos.dominio.excepciones.InsercionFallidaExepcion;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.LimiteCursosExcepcion;
 import co.edu.unicauca.deporteParaTodos.dominio.excepciones.ListadoVacioExcepcion;
 import co.edu.unicauca.deporteParaTodos.infraestructura.controladorExcepciones.excepciones.NoConvertibleException;
 import co.edu.unicauca.deporteParaTodos.dominio.excepciones.NoExisteExcepcion;
@@ -275,7 +278,52 @@ public class RestExceptionHandler {
 
                 error.setUrl(req.getRequestURL().toString());
                 error.setMetodo(req.getMethod());
-                
+
                 return new ResponseEntity<Error>(error, codigoHttp);
+        }
+
+        @ExceptionHandler(InscripcionesCerradasExcepcion.class)
+        public ResponseEntity<Error> GenericException(final HttpServletRequest req, final InscripcionesCerradasExcepcion ex) {
+                logExcepcion("InscripcionesCerradasExcepcion", req, ex);
+                return buildDomainErrorResponse(req,
+                                ex != null ? ex.getCodigo()       : "",
+                                ex != null ? ex.getLlaveMensaje() : "",
+                                ex != null ? ex.getMessage()      : "",
+                                HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+        @ExceptionHandler(CuposAgotadosExcepcion.class)
+        public ResponseEntity<Error> GenericException(final HttpServletRequest req, final CuposAgotadosExcepcion ex) {
+                logExcepcion("CuposAgotadosExcepcion", req, ex);
+                return buildDomainErrorResponse(req,
+                                ex != null ? ex.getCodigo()       : "",
+                                ex != null ? ex.getLlaveMensaje() : "",
+                                ex != null ? ex.getMessage()      : "",
+                                HttpStatus.CONFLICT);
+        }
+
+        @ExceptionHandler(LimiteCursosExcepcion.class)
+        public ResponseEntity<Error> GenericException(final HttpServletRequest req, final LimiteCursosExcepcion ex) {
+                logExcepcion("LimiteCursosExcepcion", req, ex);
+                return buildDomainErrorResponse(req,
+                                ex != null ? ex.getCodigo()       : "",
+                                ex != null ? ex.getLlaveMensaje() : "",
+                                ex != null ? ex.getMessage()      : "",
+                                HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+        private ResponseEntity<Error> buildDomainErrorResponse(
+                        HttpServletRequest req,
+                        String codigo,
+                        String llave,
+                        String detalle,
+                        HttpStatusCode codigoHttp) {
+                String mensaje = String.format("%s, %s", llave, detalle);
+                final Error error = ErrorUtils.crearError(codigo, mensaje, codigoHttp.value());
+                String url = (req != null && req.getRequestURL() != null)
+                                ? req.getRequestURL().toString() : "";
+                error.setUrl(url);
+                error.setMetodo(req != null ? req.getMethod() : "");
+                return new ResponseEntity<>(error, codigoHttp);
         }
 }

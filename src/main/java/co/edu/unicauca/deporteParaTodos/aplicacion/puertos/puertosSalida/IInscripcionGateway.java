@@ -13,4 +13,8 @@ public interface IInscripcionGateway {
     Inscripcion guardarInscripcion(Inscripcion inscripcion);
 
     Inscripcion desvincularInscripcion(String alumnoId, String categoria, String curso, int anio, int iterable);
+
+    long contarInscripcionesActivasGrupo(String categoria, String curso, int anio, int iterable);
+
+    long contarCursosActivosAlumno(String alumnoId);
 }

@@ -112,4 +112,24 @@ class InscripcionGatewayTest {
                 () -> gateway.desvincularInscripcion(ALUMNO_ID, CATEGORIA, CURSO, ANIO, ITERABLE));
         verify(repoInscrp, never()).save(any());
     }
+
+    @Test
+    void contarInscripcionesActivasGrupo_delegaAlRepositorio() {
+        when(repoInscrp.contarInscripcionesActivasGrupo(CATEGORIA, CURSO, ANIO, ITERABLE)).thenReturn(5L);
+
+        long resultado = gateway.contarInscripcionesActivasGrupo(CATEGORIA, CURSO, ANIO, ITERABLE);
+
+        assertEquals(5L, resultado);
+        verify(repoInscrp).contarInscripcionesActivasGrupo(CATEGORIA, CURSO, ANIO, ITERABLE);
+    }
+
+    @Test
+    void contarCursosActivosAlumno_delegaAlRepositorio() {
+        when(repoInscrp.contarCursosActivosAlumno(ALUMNO_ID)).thenReturn(2L);
+
+        long resultado = gateway.contarCursosActivosAlumno(ALUMNO_ID);
+
+        assertEquals(2L, resultado);
+        verify(repoInscrp).contarCursosActivosAlumno(ALUMNO_ID);
+    }
 }

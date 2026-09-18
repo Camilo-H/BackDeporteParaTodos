@@ -50,6 +50,16 @@ public class InscripcionGateway implements IInscripcionGateway {
     }
 
     @Override
+    public long contarInscripcionesActivasGrupo(String categoria, String curso, int anio, int iterable) {
+        return repoInscrp.contarInscripcionesActivasGrupo(categoria, curso, anio, iterable);
+    }
+
+    @Override
+    public long contarCursosActivosAlumno(String alumnoId) {
+        return repoInscrp.contarCursosActivosAlumno(alumnoId);
+    }
+
+    @Override
     public Inscripcion desvincularInscripcion(String alumnoId, String categoria, String curso, int anio, int iterable) {
         InscripcionId id = new InscripcionId(categoria, curso, anio, iterable, alumnoId);
         Optional<InscripcionEntidad> op = repoInscrp.findById(id);

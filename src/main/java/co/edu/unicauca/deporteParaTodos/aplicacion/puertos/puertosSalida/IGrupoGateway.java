@@ -91,4 +91,9 @@ public interface IGrupoGateway {
      * @return curso encontrado
      */
     public Grupo obtenerGrupo(String categoria, String curso, Integer anio, Integer iterable);
+
+    /***
+     * Obtiene un grupo con bloqueo pesimista (SELECT FOR UPDATE) para control de concurrencia en inscripciones
+     */
+    public Grupo obtenerGrupoConLock(String categoria, String curso, Integer anio, Integer iterable);
 }
