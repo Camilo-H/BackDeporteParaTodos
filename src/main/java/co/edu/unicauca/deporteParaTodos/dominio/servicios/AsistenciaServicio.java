@@ -3,7 +3,6 @@ package co.edu.unicauca.deporteParaTodos.dominio.servicios;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +12,7 @@ import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IAsiste
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IClaseGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Asistencia;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.AtencionDto;
+import co.edu.unicauca.deporteParaTodos.infraestructura.mappers.AsistenciaMapper;
 import co.edu.unicauca.deporteParaTodos.dominio.excepciones.ErrorInternoException;
 import co.edu.unicauca.deporteParaTodos.dominio.excepciones.ListadoVacioExcepcion;
 import co.edu.unicauca.deporteParaTodos.dominio.excepciones.NoExisteExcepcion;
@@ -21,14 +21,15 @@ import co.edu.unicauca.deporteParaTodos.dominio.excepciones.YaExisteElementoExce
 @Service
 public class AsistenciaServicio implements IAsistenciaServicio {
 
-    @Autowired
-    private IAsistenciaGateway asistenciaGateway;
+    private final IAsistenciaGateway asistenciaGateway;
+    private final IAlumnoGateway alumnoGateway;
+    private final IClaseGateway claseGateway;
 
-    @Autowired
-    private IAlumnoGateway alumnoGateway;
-
-    @Autowired
-    private IClaseGateway claseGateway;
+    public AsistenciaServicio(IAsistenciaGateway asistenciaGateway, IAlumnoGateway alumnoGateway, IClaseGateway claseGateway) {
+        this.asistenciaGateway = asistenciaGateway;
+        this.alumnoGateway = alumnoGateway;
+        this.claseGateway = claseGateway;
+    }
 
     @Override
     public List<Asistencia> obtenerAsistencias() {
@@ -46,10 +47,7 @@ public class AsistenciaServicio implements IAsistenciaServicio {
             throw new ListadoVacioExcepcion("No hay atenciones registradas para la clase consultada");
         }
         List<AtencionDto> listaDtos = new ArrayList<>();
-        asistencias.forEach(modelo -> {
-            AtencionDto dto = AtencionDto.fabricarDeModelo(modelo);
-            listaDtos.add(dto);
-        });
+        asistencias.forEach(modelo -> listaDtos.add(AsistenciaMapper.toDto(modelo)));
         return listaDtos;
     }
 
@@ -92,7 +90,6 @@ public class AsistenciaServicio implements IAsistenciaServicio {
     @Override
     public Asistencia obtenerAsistencia(String perfId, int clsId) {
         return asistenciaGateway.obtenerAsistencia(perfId, clsId).orElseThrow(() -> new NoExisteExcepcion());
-
     }
 
     @Override
@@ -123,5 +120,4 @@ public class AsistenciaServicio implements IAsistenciaServicio {
         }
         return asistenciaGateway.eliminarAsistencia(perfId, clsCodigo);
     }
-
 }

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -14,8 +15,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IAsistenciaGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Asistencia;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.ListadoVacioExcepcion;
 import co.edu.unicauca.deporteParaTodos.dominio.excepciones.NoExisteExcepcion;
 import co.edu.unicauca.deporteParaTodos.dominio.excepciones.YaExisteElementoExcepcion;
+import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.AtencionDto;
 
 @ExtendWith(MockitoExtension.class)
 class AsistenciaServicioTest {
@@ -31,6 +34,26 @@ class AsistenciaServicioTest {
 
     @InjectMocks
     private AsistenciaServicio servicio;
+
+    @Test
+    void obtenerAtencionesPorClase_exitoso_retornaListaDtos() {
+        Asistencia asistencia = new Asistencia("perf1", 10, 0);
+        when(asistenciaGateway.obtenerAtencionesPorClase(10)).thenReturn(List.of(asistencia));
+
+        List<AtencionDto> resultado = servicio.obtenerAtencionesPorClase(10);
+
+        assertNotNull(resultado);
+        assertEquals(1, resultado.size());
+        assertEquals("perf1", resultado.get(0).getIdPerfil());
+    }
+
+    @Test
+    void obtenerAtencionesPorClase_listaVacia_lanzaListadoVacioExcepcion() {
+        when(asistenciaGateway.obtenerAtencionesPorClase(10)).thenReturn(List.of());
+
+        assertThrows(ListadoVacioExcepcion.class,
+                () -> servicio.obtenerAtencionesPorClase(10));
+    }
 
     @Test
     void eliminarAsistencia_exitoso_devuelve_asistencia_eliminada() {

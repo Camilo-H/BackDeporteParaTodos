@@ -8,6 +8,8 @@ public interface IAsistenciaServicio {
 
     public List<Asistencia> obtenerAsistencias();
 
+    // TODO: obtenerAtencionesPorClase y registrarAtencionesPorClase exponen AtencionDto intencionalmente
+    // en esta interfaz; refactorizarlas requiere cambiar también los callers en AtencionRest (fuera de alcance).
     public List<AtencionDto> obtenerAtencionesPorClase(Integer claseId);
 
     public void registrarAtencionesPorClase(List<AtencionDto> atenciones, Integer claseId);

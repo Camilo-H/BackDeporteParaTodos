@@ -3,26 +3,23 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadores
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IAsistenciaGateway;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Asistencia;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.AsistenciaEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ids.AsistenciaId;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IAsistenciaRepositorio;
+import co.edu.unicauca.deporteParaTodos.infraestructura.mappers.AsistenciaMapper;
 import co.edu.unicauca.deporteParaTodos.dominio.excepciones.NoExisteExcepcion;
 
 @Service
 public class AsistenciaGateway implements IAsistenciaGateway {
 
-    @Autowired
-    private IAsistenciaRepositorio repoAsistencia;
+    private final IAsistenciaRepositorio repoAsistencia;
 
-    @Qualifier("modelMapperGenerico")
-    @Autowired
-    private ModelMapper mapper;
+    public AsistenciaGateway(IAsistenciaRepositorio repoAsistencia) {
+        this.repoAsistencia = repoAsistencia;
+    }
 
     @Override
     public boolean existeAsistencia(String perfId, int clsId) {
@@ -41,12 +38,7 @@ public class AsistenciaGateway implements IAsistenciaGateway {
     public List<Asistencia> obtenerAtencionesPorClase(Integer claseId) {
         List<AsistenciaEntidad> entidades = repoAsistencia.findByClaseCodigo(claseId);
         List<Asistencia> lista = new ArrayList<>();
-        entidades.forEach(entidad -> {
-            Asistencia modelo = Asistencia.fabricarDeEntidad(entidad);
-            if (modelo != null) {
-                lista.add(modelo);
-            }
-        });
+        entidades.forEach(entidad -> lista.add(AsistenciaMapper.toDominio(entidad)));
         return lista;
     }
 
@@ -56,7 +48,7 @@ public class AsistenciaGateway implements IAsistenciaGateway {
         idAsistencia.setPerfilId(perfId);
         idAsistencia.setClaseCodigo(clsId);
         Optional<AsistenciaEntidad> existente = repoAsistencia.findById(idAsistencia);
-        return existente.map(Asistencia::fabricarDeEntidad);
+        return existente.map(AsistenciaMapper::toDominio);
     }
 
     @Override
@@ -66,7 +58,7 @@ public class AsistenciaGateway implements IAsistenciaGateway {
         asisEntidad.setClaseCodigo(datosAsistencia.getClsCodigo());
         asisEntidad.setEliminado(0);
         AsistenciaEntidad insertada = repoAsistencia.save(asisEntidad);
-        return Asistencia.fabricarDeEntidad(insertada);
+        return AsistenciaMapper.toDominio(insertada);
     }
 
     @Override
@@ -78,7 +70,7 @@ public class AsistenciaGateway implements IAsistenciaGateway {
         if (asisExistente.isPresent()) {
             AsistenciaEntidad entidad = asisExistente.get();
             repoAsistencia.delete(entidad);
-            return Asistencia.fabricarDeEntidad(entidad);
+            return AsistenciaMapper.toDominio(entidad);
         }
         throw new NoExisteExcepcion();
     }
@@ -95,7 +87,6 @@ public class AsistenciaGateway implements IAsistenciaGateway {
         AsistenciaEntidad entidad = op.get();
         entidad.setEliminado(1);
         AsistenciaEntidad guardada = repoAsistencia.save(entidad);
-        return Asistencia.fabricarDeEntidad(guardada);
+        return AsistenciaMapper.toDominio(guardada);
     }
-
 }
