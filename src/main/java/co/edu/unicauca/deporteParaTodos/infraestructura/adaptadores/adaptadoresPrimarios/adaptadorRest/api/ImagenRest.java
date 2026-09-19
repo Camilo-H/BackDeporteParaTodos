@@ -18,6 +18,7 @@ import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IImage
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.ImagenDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.logs.PeticionLogger;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -43,6 +44,7 @@ public class ImagenRest {
      * @return
      * @throws IOException 
      */
+    @PreAuthorize("hasAuthority('Coordinador')")
     @PostMapping("/imagenMultipart")
     public ResponseEntity<ImagenDto> postInsertImagen(@ModelAttribute ImagenDto entidad) throws IOException {
         PeticionLogger.log(LOGGER, "POST", "/api/v2/imagenMultipart", entidad);
