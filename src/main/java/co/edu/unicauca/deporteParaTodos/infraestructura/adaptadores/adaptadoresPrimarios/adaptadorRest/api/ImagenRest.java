@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,8 +31,11 @@ public class ImagenRest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ImagenRest.class);
 
-    @Autowired
-    private IImagenServicio servicio;
+    private final IImagenServicio servicio;
+
+    public ImagenRest(IImagenServicio servicio) {
+        this.servicio = servicio;
+    }
 
     /***
      * en este endpoint es necesario usar @ModelAtribute para que se puedan recibir los datos por formdata y se mapee el file como Multipartfile

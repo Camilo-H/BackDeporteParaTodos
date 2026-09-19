@@ -9,6 +9,5 @@ public interface IImagenGateway {
     public boolean existeImagen(Integer id);
     public Imagen insertarImagen(Imagen imagen);
     public Imagen obtenerImagen(Integer id);
-    public Imagen actualizarImagen(Integer id, Imagen imagen);
     public Imagen eliminarImagen(Integer id);
 }
