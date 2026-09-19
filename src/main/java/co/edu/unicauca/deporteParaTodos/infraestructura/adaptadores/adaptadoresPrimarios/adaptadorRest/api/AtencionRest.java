@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IAsistenciaServicio;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Asistencia;
+import co.edu.unicauca.deporteParaTodos.infraestructura.mappers.AsistenciaMapper;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.AtencionDto;
 import co.edu.unicauca.deporteParaTodos.infraestructura.logs.PeticionLogger;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,8 +35,11 @@ public class AtencionRest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AtencionRest.class);
 
-    @Autowired
-    private IAsistenciaServicio servicioAsistencia;
+    private final IAsistenciaServicio servicioAsistencia;
+
+    public AtencionRest(IAsistenciaServicio servicioAsistencia) {
+        this.servicioAsistencia = servicioAsistencia;
+    }
 
     @Operation(summary = "Obtiene las atenciones registradas para una clase especifica, retonan encapsulado en un Dto con el id de la clase, el id perfil del estudiante, todos son true pues solo retorna las asistencias no las no asistencias, en front para una clase comparan con la lista de alumnos del grupo, los que estan en esta lista son los que asistieron de ese grupo")
     @ApiResponses(value = {
@@ -86,6 +89,6 @@ public class AtencionRest {
         PeticionLogger.log(LOGGER, "DELETE", "/api/v2/asistencia",
                 "prmPerfId=" + prmPerfId + ", prmClsCodigo=" + prmClsCodigo);
         Asistencia resultado = servicioAsistencia.eliminarAsistencia(prmPerfId, prmClsCodigo);
-        return new ResponseEntity<>(AtencionDto.fabricarDeModelo(resultado), HttpStatus.OK);
+        return new ResponseEntity<>(AsistenciaMapper.toDto(resultado), HttpStatus.OK);
     }
 }
