@@ -4,27 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IProgramaGateway;
+import co.edu.unicauca.deporteParaTodos.dominio.excepciones.NoExisteExcepcion;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Programa;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.entidades.ProgramaEntidad;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresSecundarios.persistenciaSQL.repositorios.IProgramaRepositorio;
-import co.edu.unicauca.deporteParaTodos.dominio.excepciones.NoExisteExcepcion;
+import co.edu.unicauca.deporteParaTodos.infraestructura.mappers.ProgramaMapper;
 
 @Service
 public class ProgramaGateway implements IProgramaGateway {
 
-    @Autowired
-    private IProgramaRepositorio repoPrograma;
+    private final IProgramaRepositorio repoPrograma;
 
-    @Qualifier("modelMapperGenerico")
-    @Autowired
-    private ModelMapper mapper;
+    public ProgramaGateway(IProgramaRepositorio repoPrograma) {
+        this.repoPrograma = repoPrograma;
+    }
 
     @Override
     public boolean existePrograma(String nombrePrograma) {
@@ -33,24 +29,21 @@ public class ProgramaGateway implements IProgramaGateway {
 
     @Override
     public List<Programa> obtenerProgramas() {
-        Iterable<ProgramaEntidad> entidades = repoPrograma.findAll();
         List<Programa> programas = new ArrayList<>();
-        programas = mapper.map(entidades, new TypeToken<List<Programa>>() {
-        }.getType());
+        repoPrograma.findAll().forEach(e -> programas.add(ProgramaMapper.toDominio(e)));
         return programas;
     }
 
     @Override
     public Optional<Programa> obtenerPrograma(String nombrePrograma) {
-        Optional<ProgramaEntidad> programaExistente = repoPrograma.findById(nombrePrograma);
-        return programaExistente.map(programaEntidad -> mapper.map(programaEntidad, Programa.class));
+        return repoPrograma.findById(nombrePrograma).map(ProgramaMapper::toDominio);
     }
 
     @Override
     public Programa insertarPrograma(Programa datosPrograma) {
-        ProgramaEntidad entidad = mapper.map(datosPrograma, ProgramaEntidad.class);
+        ProgramaEntidad entidad = ProgramaMapper.toEntidad(datosPrograma);
         ProgramaEntidad insertado = repoPrograma.save(entidad);
-        return mapper.map(insertado, Programa.class);
+        return ProgramaMapper.toDominio(insertado);
     }
 
     @Override
@@ -61,13 +54,10 @@ public class ProgramaGateway implements IProgramaGateway {
 
     @Override
     public Programa eliminarPrograma(String nombrePrograma) {
-        Optional<ProgramaEntidad> entidadExistente = repoPrograma.findById(nombrePrograma);
-        if (entidadExistente != null) {
-            ProgramaEntidad entidad = entidadExistente.get();
-            repoPrograma.delete(entidad);
-            return mapper.map(entidad, Programa.class);
-        }
-        throw new NoExisteExcepcion();
+        ProgramaEntidad entidad = repoPrograma.findById(nombrePrograma)
+                .orElseThrow(NoExisteExcepcion::new);
+        repoPrograma.delete(entidad);
+        return ProgramaMapper.toDominio(entidad);
     }
 
 }

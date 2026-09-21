@@ -1,7 +1,6 @@
 package co.edu.unicauca.deporteParaTodos.dominio.servicios;
 
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IProgramaServicio;
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosSalida.IProgramaGateway;
@@ -13,8 +12,11 @@ import co.edu.unicauca.deporteParaTodos.dominio.excepciones.YaExisteElementoExce
 @Service
 public class ProgramaServicio implements IProgramaServicio {
 
-    @Autowired
-    private IProgramaGateway programaGateway;
+    private final IProgramaGateway programaGateway;
+
+    public ProgramaServicio(IProgramaGateway programaGateway) {
+        this.programaGateway = programaGateway;
+    }
 
     @Override
     public List<Programa> obtenerProgramas() {
@@ -28,13 +30,13 @@ public class ProgramaServicio implements IProgramaServicio {
     @Override
     public Programa obtenerPrograma(String nombrePrograma) {
         return programaGateway.obtenerPrograma(nombrePrograma)
-                .orElseThrow(() -> new NoExisteExcepcion("No existe el progrma con el nombre " + nombrePrograma));
+                .orElseThrow(() -> new NoExisteExcepcion("No existe el programa con el nombre " + nombrePrograma));
     }
 
     @Override
     public Programa insertarPrograma(Programa datosPrograma) {
         if (programaGateway.existePrograma(datosPrograma.getPrg_nombre())) {
-            throw new YaExisteElementoExcepcion("El programa ta está registrado");
+            throw new YaExisteElementoExcepcion("El programa ya está registrado");
         }
         return programaGateway.insertarPrograma(datosPrograma);
     }
@@ -48,7 +50,7 @@ public class ProgramaServicio implements IProgramaServicio {
     @Override
     public Programa eliminarPrograma(String nombrePrograma) {
         if (!programaGateway.existePrograma(nombrePrograma)) {
-            throw new NoExisteExcepcion("No existe el progrma con el nombre " + nombrePrograma);
+            throw new NoExisteExcepcion("No existe el programa con el nombre " + nombrePrograma);
         }
         return programaGateway.eliminarPrograma(nombrePrograma);
     }
