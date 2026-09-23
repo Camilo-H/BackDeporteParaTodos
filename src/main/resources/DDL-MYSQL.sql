@@ -26,10 +26,14 @@
 --                   #9/#10 ASISTENCIA, #12/#13 INSCRIPCION, #14 NOTIFICACION
 --     Quitar NOT NULL + SET NULL (1): #4 CLASE.PERF_ID (instructor opcional)
 -- ------------------------------------------------------------
--- HALLAZGO ADICIONAL SCRUM-166 (no corregido, documentado):
---   tbl_coordinador.PERF_ID es NOT NULL pero NO tiene FK hacia tbl_perfil.
---   Inconsistencia preexistente en el DDL de Oracle -- no introducida
---   por esta migracion. Pendiente de decision de diseno.
+-- HALLAZGOS ADICIONALES SCRUM-166 (resueltos):
+--   1) tbl_coordinador.PERF_ID no tenia FK hacia tbl_perfil (inconsistencia
+--      preexistente del DDL de Oracle). Resuelto: FK_COORDINADOR_PERFIL con
+--      ON DELETE CASCADE, igual que INSTRUCTOR (#1) y ALUMNO (#6).
+--   2) Registro huerfano tbl_instructor.PERF_ID='987445' (sin perfil padre):
+--      nunca existio en este esquema -- el INSERT original se omitio en la
+--      migracion, y se verifico que no esta en la BD MySQL ni en el backup
+--      previo a la migracion. Sin accion pendiente.
 -- ============================================================
 
 SET FOREIGN_KEY_CHECKS = 0;
@@ -332,14 +336,16 @@ CREATE TABLE tbl_inscripcion (
 
 -- --------------------------------------------------------
 -- tbl_coordinador
--- NOTA SCRUM-166: PERF_ID es NOT NULL pero NO tiene FK hacia tbl_perfil.
---   Inconsistencia preexistente en el DDL de Oracle -- no introducida
---   por esta migracion. Pendiente de decision de diseno.
+-- Hallazgo SCRUM-166 (resuelto): PERF_ID es PK -> CASCADE, igual que
+--   INSTRUCTOR (#1) y ALUMNO (#6). Un coordinador es una especializacion de
+--   perfil; si el perfil se borra fisicamente, el registro de coordinador
+--   no tiene existencia propia. No tiene tablas hijas ni valor historico propio.
 -- --------------------------------------------------------
 CREATE TABLE tbl_coordinador (
     META_ELIMINADO INT         NOT NULL,
     PERF_ID        VARCHAR(50) NOT NULL,
-    CONSTRAINT PK_TBL_COORDINADOR PRIMARY KEY (PERF_ID)
+    CONSTRAINT FK_COORDINADOR_PERFIL FOREIGN KEY (PERF_ID) REFERENCES tbl_perfil (PERF_ID) ON DELETE CASCADE,
+    CONSTRAINT PK_TBL_COORDINADOR    PRIMARY KEY (PERF_ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -466,8 +472,9 @@ INSERT INTO tbl_curso (META_ELIMINADO, CUR_NOMBRE, DEPT_NOMBRE, CAT_TITULO, CUR_
     (0, 'ping pong',            'Ping pong',  'Recreativo',    'El ping pong recreativo es una modalidad del deporte del ping pong que se enfoca en la diversion y el disfrute, mas que en la competencia. En este entorno, los jugadores pueden desarrollar habilidades tecnicas y tacticas, mientras que tambien se enfocan en la socializacion y la relacion con otros jugadores.', NULL);
 
 INSERT INTO tbl_instructor (META_ELIMINADO, PERF_ID) VALUES (0, '2'), (0, '1061813673');
--- NOTA: el INSERT original de PERF_ID '987445' se omite porque no tiene entrada en tbl_perfil;
--- agregar primero el perfil correspondiente antes de insertar el instructor.
+-- NOTA (resuelto, SCRUM-166): el instructor huerfano PERF_ID '987445' del DDL de Oracle
+-- nunca se inserta aqui -- no tiene perfil padre y no existe en la BD MySQL ni en el
+-- backup previo a la migracion. Para agregarlo, crear primero su tbl_perfil.
 
 INSERT INTO tbl_coordinador (META_ELIMINADO, PERF_ID) VALUES (0, '1');
 
