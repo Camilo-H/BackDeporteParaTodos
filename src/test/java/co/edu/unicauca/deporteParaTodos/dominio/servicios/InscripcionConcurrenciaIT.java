@@ -73,6 +73,13 @@ class InscripcionConcurrenciaIT {
     private static final String ALUMNO_OCUPA_CUPO = "alumno-it-ocupa-cupo";
     private static final String ALUMNO_EN_ESPERA = "alumno-it-espera";
 
+    // Grupo separado (mismo curso, otro iterable) para el escenario de
+    // promoverManualmente(), asi no interfiere con los otros dos tests.
+    private static final int ITERABLE_PROMOCION = 2;
+    private static final String ALUMNO_FILLER_PROMOCION = "alumno-it-filler-promocion";
+    private static final String ALUMNO_CANDIDATO_1 = "alumno-it-candidato-1";
+    private static final String ALUMNO_CANDIDATO_2 = "alumno-it-candidato-2";
+
     @Autowired
     private IInscripcionServicio servicio;
 
@@ -133,21 +140,8 @@ class InscripcionConcurrenciaIT {
             // Ya existe de una corrida anterior contra BD persistente; se reutiliza.
         }
 
-        try {
-            grupoServicio.obtenerGrupoPorId(CATEGORIA, CURSO, ANIO, ITERABLE);
-        } catch (NoExisteExcepcion e) {
-            Grupo grupo = new Grupo();
-            grupo.setCategoria(CATEGORIA);
-            grupo.setCurso(CURSO);
-            grupo.setAnio(ANIO);
-            grupo.setIterable(ITERABLE);
-            grupo.setImagenGrupo(imagenId);
-            grupo.setIdInstructor(INSTRUCTOR_SEED_ID);
-            grupo.setCupos(1);
-            grupo.setFechaCreacion(LocalDate.now());
-            grupo.setPeriodo(1);
-            grupoServicio.insertarGrupo(grupo);
-        }
+        crearGrupoSiNoExiste(ITERABLE, 1, imagenId);
+        crearGrupoSiNoExiste(ITERABLE_PROMOCION, 1, imagenId);
 
         // tbl_inscripcion.PERF_ID tiene FK hacia tbl_alumno -- cada alumno usado por
         // los tests debe existir antes de poder inscribirlo.
@@ -156,6 +150,27 @@ class InscripcionConcurrenciaIT {
         }
         crearAlumnoSiNoExiste(ALUMNO_OCUPA_CUPO);
         crearAlumnoSiNoExiste(ALUMNO_EN_ESPERA);
+        crearAlumnoSiNoExiste(ALUMNO_FILLER_PROMOCION);
+        crearAlumnoSiNoExiste(ALUMNO_CANDIDATO_1);
+        crearAlumnoSiNoExiste(ALUMNO_CANDIDATO_2);
+    }
+
+    private void crearGrupoSiNoExiste(int iterable, int cupos, Integer imagenId) {
+        try {
+            grupoServicio.obtenerGrupoPorId(CATEGORIA, CURSO, ANIO, iterable);
+        } catch (NoExisteExcepcion e) {
+            Grupo grupo = new Grupo();
+            grupo.setCategoria(CATEGORIA);
+            grupo.setCurso(CURSO);
+            grupo.setAnio(ANIO);
+            grupo.setIterable(iterable);
+            grupo.setImagenGrupo(imagenId);
+            grupo.setIdInstructor(INSTRUCTOR_SEED_ID);
+            grupo.setCupos(cupos);
+            grupo.setFechaCreacion(LocalDate.now());
+            grupo.setPeriodo(1);
+            grupoServicio.insertarGrupo(grupo);
+        }
     }
 
     private void crearAlumnoSiNoExiste(String alumnoId) {
@@ -264,5 +279,70 @@ class InscripcionConcurrenciaIT {
                 "Salir de la lista de espera no debe cambiar los cupos disponibles: nadie debio ser promovido");
         assertEquals(antes.getTamanoListaEspera() - 1, despues.getTamanoListaEspera(),
                 "La lista de espera debe reducirse en 1 (el alumno que salio), sin promociones");
+    }
+
+    /**
+     * Regresion del mismo bug de aislamiento REPEATABLE READ que afecta a
+     * inscribir(): promoverManualmente() tambien hace una lectura no bloqueante
+     * (existeEnEspera) antes de tomar el lock del grupo, asi que el conteo de
+     * cupos posterior podia leer un snapshot obsoleto bajo concurrencia real.
+     *
+     * Escenario: un grupo con 1 cupo ya ocupado y 2 candidatos en espera. Un
+     * Coordinador amplia los cupos de 1 a 2 (via actualizarGrupo, sin desvincular
+     * a nadie -- por eso no se dispara la auto-promocion de HALLAZGO 3-B), dejando
+     * 1 cupo genuinamente libre con 2 personas en cola. Dos Coordinadores
+     * promueven a los 2 candidatos al mismo tiempo: solo 1 debe tener exito.
+     */
+    @Test
+    void promoverManualmente_concurrente_soloUnaPermitida_cuandoHayUnCupoLiberado() throws Exception {
+        servicio.inscribir(new Inscripcion(
+                ALUMNO_FILLER_PROMOCION, CATEGORIA, CURSO, ANIO, ITERABLE_PROMOCION, null, null, null));
+        servicio.inscribir(new Inscripcion(
+                ALUMNO_CANDIDATO_1, CATEGORIA, CURSO, ANIO, ITERABLE_PROMOCION, null, null, null));
+        servicio.inscribir(new Inscripcion(
+                ALUMNO_CANDIDATO_2, CATEGORIA, CURSO, ANIO, ITERABLE_PROMOCION, null, null, null));
+
+        Grupo grupoActual = grupoServicio.obtenerGrupoPorId(CATEGORIA, CURSO, ANIO, ITERABLE_PROMOCION);
+        grupoActual.setCupos(2);
+        grupoServicio.actualizarGrupo(CATEGORIA, CURSO, ANIO, ITERABLE_PROMOCION, grupoActual);
+
+        List<String> candidatos = List.of(ALUMNO_CANDIDATO_1, ALUMNO_CANDIDATO_2);
+        int hilos = candidatos.size();
+
+        CountDownLatch listo = new CountDownLatch(hilos);
+        CountDownLatch inicio = new CountDownLatch(1);
+        AtomicInteger exitosos = new AtomicInteger(0);
+        AtomicInteger rechazados = new AtomicInteger(0);
+
+        ExecutorService executor = Executors.newFixedThreadPool(hilos);
+        List<Future<?>> futures = new ArrayList<>();
+
+        for (String candidato : candidatos) {
+            futures.add(executor.submit(() -> {
+                listo.countDown();
+                assertDoesNotThrow(() -> inicio.await());
+                try {
+                    // promoverManualmente() si lanza CuposAgotadosExcepcion cuando no
+                    // hay cupo -- a diferencia de inscribir(), no hace falta revisar
+                    // el estado del resultado.
+                    servicio.promoverManualmente(candidato, CATEGORIA, CURSO, ANIO, ITERABLE_PROMOCION);
+                    exitosos.incrementAndGet();
+                } catch (Exception e) {
+                    rechazados.incrementAndGet();
+                }
+            }));
+        }
+
+        listo.await();
+        inicio.countDown();
+        for (Future<?> f : futures) {
+            f.get();
+        }
+        executor.shutdown();
+
+        assertTrue(exitosos.get() <= 1,
+                "Con 1 cupo liberado, a lo sumo 1 promocion manual debe ser exitosa, pero fueron: " + exitosos.get());
+        assertTrue(rechazados.get() >= 1,
+                "Con 1 cupo liberado y 2 candidatos concurrentes, al menos 1 debe ser rechazado");
     }
 }

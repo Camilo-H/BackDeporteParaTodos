@@ -5,6 +5,7 @@ import java.time.Instant;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IInscripcionServicio;
@@ -42,7 +43,15 @@ public class InscripcionServicio implements IInscripcionServicio {
     }
 
     @Override
-    @Transactional
+    // READ_COMMITTED: bajo el default de MySQL (REPEATABLE READ), el snapshot de la
+    // transaccion se fija en la PRIMERA lectura no bloqueante (obtenerCurso, arriba),
+    // antes de tomar el lock del grupo. El SELECT ... FOR UPDATE si bloquea de verdad
+    // (serializa el acceso a la fila del grupo), pero el conteo de inscritos que viene
+    // despues seguia leyendo ese snapshot congelado, no los commits de otros hilos que
+    // ya esperaron y pasaron por el mismo lock -- permitiendo sobre-inscripcion real
+    // bajo concurrencia real (ver InscripcionConcurrenciaIT). READ_COMMITTED hace que
+    // cada SELECT tome su propio snapshot al ejecutarse.
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public Inscripcion inscribir(Inscripcion datos) {
         Curso curso = cursoGateway.obtenerCurso(datos.getCategoria(), datos.getCurso());
         if (curso == null || !EstadoInscripciones.ABIERTO.equals(curso.getEstadoInscripciones())) {
@@ -122,7 +131,10 @@ public class InscripcionServicio implements IInscripcionServicio {
     }
 
     @Override
-    @Transactional
+    // READ_COMMITTED: mismo problema que inscribir() -- existeEnEspera() (primera
+    // lectura, no bloqueante) fija el snapshot REPEATABLE READ antes del lock del
+    // grupo, y el conteo de cupos posterior seguia leyendo ese snapshot obsoleto.
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public Inscripcion promoverManualmente(String alumnoId, String categoria, String curso, int anio, int iterable) {
         if (!gateway.existeEnEspera(alumnoId, categoria, curso, anio, iterable)) {
             throw new NoExisteExcepcion("El alumno no está en la lista de espera para este grupo");
