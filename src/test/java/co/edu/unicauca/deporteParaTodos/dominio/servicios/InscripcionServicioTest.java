@@ -74,6 +74,14 @@ class InscripcionServicioTest {
     }
 
     @Test
+    void inscribir_cursoNoExiste_lanzaInscripcionesCerradasExcepcion() {
+        when(cursoGateway.obtenerCurso("cat1", "cur1")).thenReturn(null);
+
+        assertThrows(InscripcionesCerradasExcepcion.class, () -> servicio.inscribir(datos));
+        verify(grupoGateway, never()).obtenerGrupoConLock(any(), any(), anyInt(), anyInt());
+    }
+
+    @Test
     void inscribir_conCuposNulos_lanzaCuposAgotadosExcepcion() {
         Grupo grupoSinCupos = new Grupo();
         grupoSinCupos.setCupos(null);
@@ -159,6 +167,30 @@ class InscripcionServicioTest {
         Inscripcion resultado = servicio.inscribir(datos);
 
         assertNull(resultado.getFechaDesvinculacion());
+    }
+
+    @Test
+    void inscribir_sinCuposConInscripcionPreviaDesvinculada_reactivaComoEnEspera() {
+        // Mismo patron que inscribir_existente_reactiva_fecha_desvinculacion_nula,
+        // pero por el camino SIN CUPOS: el alumno ya tuvo una fila (desvinculada en
+        // el pasado) para este grupo y vuelve a intentar inscribirse cuando ya no
+        // hay cupo -- debe reactivarse como EN_ESPERA, no crear una fila nueva.
+        Timestamp ahora = Timestamp.from(Instant.now());
+        Inscripcion existente = new Inscripcion("alum1", "cat1", "cur1", 2026, 1, ahora, ahora, "INSCRITO");
+        Inscripcion reactivada = new Inscripcion("alum1", "cat1", "cur1", 2026, 1, ahora, null, "EN_ESPERA");
+        when(cursoGateway.obtenerCurso("cat1", "cur1")).thenReturn(cursoAbierto);
+        when(grupoGateway.obtenerGrupoConLock("cat1", "cur1", 2026, 1)).thenReturn(grupoCon5Cupos);
+        when(gateway.contarInscripcionesActivasGrupo("cat1", "cur1", 2026, 1)).thenReturn(5L);
+        when(gateway.existeEnEspera("alum1", "cat1", "cur1", 2026, 1)).thenReturn(false);
+        when(gateway.existeInscripcion("alum1", "cat1", "cur1", 2026, 1)).thenReturn(true);
+        when(gateway.obtenerInscripcion("alum1", "cat1", "cur1", 2026, 1)).thenReturn(existente);
+        when(gateway.guardarInscripcion(any())).thenReturn(reactivada);
+
+        Inscripcion resultado = servicio.inscribir(datos);
+
+        assertEquals("EN_ESPERA", resultado.getEstado());
+        assertNull(resultado.getFechaDesvinculacion());
+        verify(gateway, never()).guardarInscripcion(datos);
     }
 
     // ── validarInscripcion ────────────────────────────────────────────────────
@@ -257,6 +289,19 @@ class InscripcionServicioTest {
 
         assertNotNull(resultado);
         assertEquals("INSCRITO", resultado.getEstado());
+    }
+
+    @Test
+    void promoverManualmente_grupoSinCuposConfigurados_lanzaCuposAgotadosExcepcion() {
+        Grupo grupoSinCupos = new Grupo();
+        grupoSinCupos.setCupos(null);
+        when(gateway.existeEnEspera("alum1", "cat1", "cur1", 2026, 1)).thenReturn(true);
+        when(grupoGateway.obtenerGrupoConLock("cat1", "cur1", 2026, 1)).thenReturn(grupoSinCupos);
+
+        assertThrows(CuposAgotadosExcepcion.class,
+                () -> servicio.promoverManualmente("alum1", "cat1", "cur1", 2026, 1));
+        verify(gateway, never()).contarInscripcionesActivasGrupo(any(), any(), anyInt(), anyInt());
+        verify(gateway, never()).promoverInscripcion(any(), any(), any(), anyInt(), anyInt());
     }
 
     // HALLAZGO: promoverManualmente() no validaba cupos. Debe rechazar igual que

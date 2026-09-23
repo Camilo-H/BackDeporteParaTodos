@@ -1,6 +1,7 @@
 package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.api;
 
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IInscripcionServicio;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.Disponibilidad;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Inscripcion;
 import co.edu.unicauca.deporteParaTodos.deporteParaTodos;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -30,6 +31,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest(classes = deporteParaTodos.class, properties = {
         "app.jwt.secret=dGVzdFNlY3JldEtleUZvckNJMTIzNDU2Nzg5MDEyMzQ1Njc4OTA="
@@ -60,6 +62,83 @@ class InscripcionRestSecurityTest {
                 .claim("perf_id", perfId)
                 .build();
         return encoder.encode(JwtEncoderParameters.from(header, claims)).getTokenValue();
+    }
+
+    // ── POST /inscripcion — BOLA: Alumno solo puede inscribirse a si mismo ────
+
+    @Test
+    void inscribir_alumnoIntentaInscribirOtro_retorna403() throws Exception {
+        // Regresion del mismo tipo de BOLA que se encontro y corrigio hoy en
+        // desvincularInscripcion(): un Alumno autenticado como "alum1" no debe
+        // poder crear una inscripcion a nombre de "alum2".
+        mockMvc.perform(post("/api/v2/inscripcion")
+                .contentType("application/json")
+                .content("{\"alumnoId\":\"alum2\",\"categoria\":\"cat1\",\"curso\":\"cur1\",\"anio\":2026,\"iterable\":1}")
+                .header("Authorization", "Bearer " + buildJwt("Alumno", "alum1")))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void inscribir_alumnoInscribeAsiMismo_retorna201() throws Exception {
+        Inscripcion resultado = new Inscripcion("alum1", "cat1", "cur1", 2026, 1,
+                Timestamp.from(Instant.now()), null, "INSCRITO");
+        when(servicio.inscribir(any(Inscripcion.class))).thenReturn(resultado);
+
+        mockMvc.perform(post("/api/v2/inscripcion")
+                .contentType("application/json")
+                .content("{\"alumnoId\":\"alum1\",\"categoria\":\"cat1\",\"curso\":\"cur1\",\"anio\":2026,\"iterable\":1}")
+                .header("Authorization", "Bearer " + buildJwt("Alumno", "alum1")))
+                .andExpect(status().isCreated());
+    }
+
+    // ── GET /validarInscripcion — BOLA: Alumno solo consulta su propio estado ─
+
+    @Test
+    void validarInscripcion_alumnoConsultaOtro_retorna403() throws Exception {
+        // Mismo patron BOLA: "alum1" no debe poder consultar el estado de "alum2".
+        mockMvc.perform(get("/api/v2/validarInscripcion")
+                .param("alumnoId", "alum2")
+                .param("categoria", "cat1")
+                .param("curso", "cur1")
+                .param("anio", "2026")
+                .param("iterable", "1")
+                .header("Authorization", "Bearer " + buildJwt("Alumno", "alum1")))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void validarInscripcion_alumnoConsultaPropio_retorna200() throws Exception {
+        when(servicio.validarInscripcion(anyString(), anyString(), anyString(), anyInt(), anyInt()))
+                .thenReturn(true);
+
+        mockMvc.perform(get("/api/v2/validarInscripcion")
+                .param("alumnoId", "alum1")
+                .param("categoria", "cat1")
+                .param("curso", "cur1")
+                .param("anio", "2026")
+                .param("iterable", "1")
+                .header("Authorization", "Bearer " + buildJwt("Alumno", "alum1")))
+                .andExpect(status().isOk());
+    }
+
+    // ── GET /inscripcion/disponibilidad — sin BOLA, alcanzable por Alumno o Coordinador ─
+
+    @Test
+    void obtenerDisponibilidad_retorna200() throws Exception {
+        Disponibilidad disponibilidad = new Disponibilidad(10, 5, 2);
+        when(servicio.obtenerDisponibilidad(anyString(), anyString(), anyInt(), anyInt()))
+                .thenReturn(disponibilidad);
+
+        mockMvc.perform(get("/api/v2/inscripcion/disponibilidad")
+                .param("prmCategoria", "cat1")
+                .param("prmCurso", "cur1")
+                .param("prmAnio", "2026")
+                .param("prmIterable", "1")
+                .header("Authorization", "Bearer " + buildJwt("Alumno", "alum1")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.cuposTotales").value(10))
+                .andExpect(jsonPath("$.cuposDisponibles").value(5))
+                .andExpect(jsonPath("$.tamanoListaEspera").value(2));
     }
 
     // ── PATCH /inscripcion/promover — solo Coordinador ────────────────────────
