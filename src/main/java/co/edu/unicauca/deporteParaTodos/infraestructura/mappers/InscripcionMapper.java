@@ -17,6 +17,7 @@ public class InscripcionMapper {
             modelo.setIterable(entidad.getIterable());
             modelo.setFechaInscripcion(entidad.getFechaInscripcion());
             modelo.setFechaDesvinculacion(entidad.getFechaDesvinculacion());
+            modelo.setEstado(entidad.getEstado());
             return modelo;
         } catch (Exception e) {
             throw new NoProcesableEntidadException("No fue posible convertir InscripcionEntidad a dominio: " + e.getMessage());
@@ -34,6 +35,7 @@ public class InscripcionMapper {
             entidad.setFechaInscripcion(inscripcion.getFechaInscripcion());
             entidad.setFechaDesvinculacion(inscripcion.getFechaDesvinculacion());
             entidad.setEliminado(0);
+            entidad.setEstado(inscripcion.getEstado());
             return entidad;
         } catch (Exception e) {
             throw new NoProcesableEntidadException("No fue posible convertir Inscripcion a entidad: " + e.getMessage());
@@ -50,6 +52,7 @@ public class InscripcionMapper {
             dto.setIterable(inscripcion.getIterable());
             dto.setFechaInscripcion(inscripcion.getFechaInscripcion());
             dto.setFechaDesvinculacion(inscripcion.getFechaDesvinculacion());
+            dto.setEstado(inscripcion.getEstado());
             return dto;
         } catch (Exception e) {
             throw new NoProcesableEntidadException("No fue posible convertir Inscripcion a DTO: " + e.getMessage());
@@ -66,6 +69,7 @@ public class InscripcionMapper {
             modelo.setIterable(dto.getIterable());
             modelo.setFechaInscripcion(dto.getFechaInscripcion());
             modelo.setFechaDesvinculacion(dto.getFechaDesvinculacion());
+            modelo.setEstado(dto.getEstado());
             return modelo;
         } catch (Exception e) {
             throw new NoProcesableEntidadException("No fue posible convertir InscripcionDto a dominio: " + e.getMessage());

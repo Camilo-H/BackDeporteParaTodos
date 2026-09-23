@@ -27,7 +27,7 @@
 --     Quitar NOT NULL + SET NULL (1): #4 CLASE.PERF_ID (instructor opcional)
 -- ------------------------------------------------------------
 -- HALLAZGO ADICIONAL SCRUM-166 (no corregido, documentado):
---   TBL_COORDINADOR.PERF_ID es NOT NULL pero NO tiene FK hacia TBL_PERFIL.
+--   tbl_coordinador.PERF_ID es NOT NULL pero NO tiene FK hacia tbl_perfil.
 --   Inconsistencia preexistente en el DDL de Oracle -- no introducida
 --   por esta migracion. Pendiente de decision de diseno.
 -- ============================================================
@@ -37,46 +37,45 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- --------------------------------------------------------
 -- DROP (orden inverso a dependencias, FOREIGN_KEY_CHECKS=0)
 -- --------------------------------------------------------
-DROP TABLE IF EXISTS TBL_ALERTA;
-DROP TABLE IF EXISTS TBL_NOTIFICACION;
-DROP TABLE IF EXISTS TBL_BANDEJA_ENTRADA;
-DROP TABLE IF EXISTS TBL_BANDEJA_SALIDA;
-DROP TABLE IF EXISTS TBL_ASISTENCIA;
-DROP TABLE IF EXISTS TBL_INSCRIPCION;
-DROP TABLE IF EXISTS TBL_HORARIO;
-DROP TABLE IF EXISTS TBL_CLASE;
-DROP TABLE IF EXISTS TBL_INTERMEDIA_ALUMNO_PROGRAMA;
-DROP TABLE IF EXISTS TBL_ALUMNO;
-DROP TABLE IF EXISTS TBL_GRUPO;
-DROP TABLE IF EXISTS TBL_CURSO;
-DROP TABLE IF EXISTS TBL_COORDINADOR;
-DROP TABLE IF EXISTS TBL_INSTRUCTOR;
-DROP TABLE IF EXISTS TBL_PROGRAMA;
-DROP TABLE IF EXISTS TBL_FACULTAD;
-DROP TABLE IF EXISTS TBL_CATEGORIA_CURSO;
-DROP TABLE IF EXISTS TBL_PERFIL;
-DROP TABLE IF EXISTS TBL_IMAGEN;
-DROP TABLE IF EXISTS TBL_DEPORTE;
-DROP TABLE IF EXISTS TBL_ESCENARIO;
-DROP TABLE IF EXISTS NOTIFICACION_ENTRADA;
+DROP TABLE IF EXISTS tbl_alerta;
+DROP TABLE IF EXISTS tbl_notificacion;
+DROP TABLE IF EXISTS tbl_bandeja_entrada;
+DROP TABLE IF EXISTS tbl_bandeja_salida;
+DROP TABLE IF EXISTS tbl_asistencia;
+DROP TABLE IF EXISTS tbl_inscripcion;
+DROP TABLE IF EXISTS tbl_horario;
+DROP TABLE IF EXISTS tbl_clase;
+DROP TABLE IF EXISTS tbl_intermedia_alumno_programa;
+DROP TABLE IF EXISTS tbl_alumno;
+DROP TABLE IF EXISTS tbl_grupo;
+DROP TABLE IF EXISTS tbl_curso;
+DROP TABLE IF EXISTS tbl_coordinador;
+DROP TABLE IF EXISTS tbl_instructor;
+DROP TABLE IF EXISTS tbl_programa;
+DROP TABLE IF EXISTS tbl_facultad;
+DROP TABLE IF EXISTS tbl_categoria_curso;
+DROP TABLE IF EXISTS tbl_perfil;
+DROP TABLE IF EXISTS tbl_imagen;
+DROP TABLE IF EXISTS tbl_deporte;
+DROP TABLE IF EXISTS tbl_escenario;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- --------------------------------------------------------
--- TBL_DEPORTE
+-- tbl_deporte
 -- --------------------------------------------------------
-CREATE TABLE TBL_DEPORTE (
+CREATE TABLE tbl_deporte (
     META_ELIMINADO INT          NOT NULL,
     DEPT_NOMBRE    VARCHAR(100) NOT NULL,
     CONSTRAINT PK_TBL_DEPORTE PRIMARY KEY (DEPT_NOMBRE)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
--- TBL_IMAGEN
+-- tbl_imagen
 -- IMG_ID: era SEQ_ID_IMAGEN (START 201) -> AUTO_INCREMENT
 -- IMG_DATOS: BLOB -> LONGBLOB
 -- --------------------------------------------------------
-CREATE TABLE TBL_IMAGEN (
+CREATE TABLE tbl_imagen (
     META_ELIMINADO   INT          NOT NULL,
     IMG_ID           BIGINT       NOT NULL AUTO_INCREMENT,
     IMG_NOMBRE       VARCHAR(200) NOT NULL,
@@ -87,23 +86,23 @@ CREATE TABLE TBL_IMAGEN (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
--- TBL_CATEGORIA_CURSO
+-- tbl_categoria_curso
 -- FK_CATEGORIA_CURSO_IMAGEN: imagen es opcional -> SET NULL OK (columna nullable)
 -- --------------------------------------------------------
-CREATE TABLE TBL_CATEGORIA_CURSO (
+CREATE TABLE tbl_categoria_curso (
     META_ELIMINADO  INT           NOT NULL,
     CAT_TITULO      VARCHAR(100)  NOT NULL,
     CAT_DESCRIPCION VARCHAR(1000) NOT NULL,
     CAT_IMAGEN      BIGINT,
     CONSTRAINT PK_TBL_CATEGORIA_CURSO    PRIMARY KEY (CAT_TITULO),
-    CONSTRAINT FK_CATEGORIA_CURSO_IMAGEN FOREIGN KEY (CAT_IMAGEN) REFERENCES TBL_IMAGEN (IMG_ID) ON DELETE SET NULL
+    CONSTRAINT FK_CATEGORIA_CURSO_IMAGEN FOREIGN KEY (CAT_IMAGEN) REFERENCES tbl_imagen (IMG_ID) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
--- TBL_PERFIL
+-- tbl_perfil
 -- FK_PERFIL_IMAGEN: sin ON DELETE -> RESTRICT por defecto (imagen no deberia borrarse)
 -- --------------------------------------------------------
-CREATE TABLE TBL_PERFIL (
+CREATE TABLE tbl_perfil (
     META_ELIMINADO INT          NOT NULL,
     PERF_ID        VARCHAR(50)  NOT NULL,
     PERF_NOMBRE    VARCHAR(100) NOT NULL,
@@ -113,47 +112,47 @@ CREATE TABLE TBL_PERFIL (
     PERF_SEXO      VARCHAR(10)  NOT NULL,
     CONSTRAINT CKC_TBL_PERF_SEXO   CHECK (PERF_SEXO   IN ('M', 'F')),
     CONSTRAINT CKC_TBL_PERF_TIPOID CHECK (PERF_TIPOID IN ('CC', 'TI', 'CE', 'PP', 'PEP', 'DIE')),
-    CONSTRAINT FK_PERFIL_IMAGEN     FOREIGN KEY (PERF_IMAGEN) REFERENCES TBL_IMAGEN (IMG_ID),
+    CONSTRAINT FK_PERFIL_IMAGEN     FOREIGN KEY (PERF_IMAGEN) REFERENCES tbl_imagen (IMG_ID),
     CONSTRAINT PK_TBL_PERFIL        PRIMARY KEY (PERF_ID),
     CONSTRAINT UQ_PERFIL_CORREO     UNIQUE (PERF_CORREO)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
--- TBL_INSTRUCTOR
+-- tbl_instructor
 -- SCRUM-166 #1: PERF_ID es PK -> SET NULL imposible -> CASCADE
 --   Un instructor es una especializacion de perfil; si el perfil
 --   se borra fisicamente, el registro de instructor no tiene existencia propia.
 -- --------------------------------------------------------
-CREATE TABLE TBL_INSTRUCTOR (
+CREATE TABLE tbl_instructor (
     META_ELIMINADO INT         NOT NULL,
     PERF_ID        VARCHAR(50) NOT NULL,
-    CONSTRAINT FK_INSTRUCTOR_PERFIL FOREIGN KEY (PERF_ID) REFERENCES TBL_PERFIL (PERF_ID) ON DELETE CASCADE,
+    CONSTRAINT FK_INSTRUCTOR_PERFIL FOREIGN KEY (PERF_ID) REFERENCES tbl_perfil (PERF_ID) ON DELETE CASCADE,
     CONSTRAINT PF_TBL_INSTRUCTOR    PRIMARY KEY (PERF_ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
--- TBL_FACULTAD
+-- tbl_facultad
 -- --------------------------------------------------------
-CREATE TABLE TBL_FACULTAD (
+CREATE TABLE tbl_facultad (
     META_ELIMINADO INT          NOT NULL,
     FAC_NOMBRE     VARCHAR(200),
     CONSTRAINT PK_TBL_FACULTAD PRIMARY KEY (FAC_NOMBRE)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
--- TBL_PROGRAMA
+-- tbl_programa
 -- FK_PROGRAMA_FACULTAD: FAC_NOMBRE es nullable -> SET NULL OK
 -- --------------------------------------------------------
-CREATE TABLE TBL_PROGRAMA (
+CREATE TABLE tbl_programa (
     META_ELIMINADO INT          NOT NULL,
     PRG_NOMBRE     VARCHAR(200) NOT NULL,
     FAC_NOMBRE     VARCHAR(200),
     CONSTRAINT PK_TBL_PROGRAMA      PRIMARY KEY (PRG_NOMBRE),
-    CONSTRAINT FK_PROGRAMA_FACULTAD FOREIGN KEY (FAC_NOMBRE) REFERENCES TBL_FACULTAD (FAC_NOMBRE) ON DELETE SET NULL
+    CONSTRAINT FK_PROGRAMA_FACULTAD FOREIGN KEY (FAC_NOMBRE) REFERENCES tbl_facultad (FAC_NOMBRE) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
--- TBL_CURSO
+-- tbl_curso
 -- SCRUM-166 #2: CAT_TITULO NOT NULL y parte de PK -> SET NULL imposible -> RESTRICT
 --   La categoria es co-PK del curso; no puede quedar sin categoria.
 --   El sistema usa soft-delete: el borrado fisico de categorias no deberia ocurrir.
@@ -161,7 +160,7 @@ CREATE TABLE TBL_PROGRAMA (
 -- FK_TBL_CURSO_IMAGEN:  CUR_IMAGEN nullable -> SET NULL OK
 -- CUR_ESTADO_INSCRIPCIONES: integrado desde ALTER TABLE del DDL original
 -- --------------------------------------------------------
-CREATE TABLE TBL_CURSO (
+CREATE TABLE tbl_curso (
     META_ELIMINADO           INT           NOT NULL,
     CUR_NOMBRE               VARCHAR(100)  NOT NULL,
     DEPT_NOMBRE              VARCHAR(100),
@@ -169,14 +168,14 @@ CREATE TABLE TBL_CURSO (
     CUR_DESCRIPCION          VARCHAR(1000) NOT NULL,
     CUR_IMAGEN               BIGINT,
     CUR_ESTADO_INSCRIPCIONES VARCHAR(10)   DEFAULT 'ABIERTO',
-    CONSTRAINT FK_TBL_CURSO_DEPORTE   FOREIGN KEY (DEPT_NOMBRE) REFERENCES TBL_DEPORTE (DEPT_NOMBRE)        ON DELETE SET NULL,
-    CONSTRAINT FK_TBL_CURSO_IMAGEN    FOREIGN KEY (CUR_IMAGEN)  REFERENCES TBL_IMAGEN (IMG_ID)              ON DELETE SET NULL,
-    CONSTRAINT FK_TBL_CURSO_CATEGORIA FOREIGN KEY (CAT_TITULO)  REFERENCES TBL_CATEGORIA_CURSO (CAT_TITULO) ON DELETE RESTRICT,
+    CONSTRAINT FK_TBL_CURSO_DEPORTE   FOREIGN KEY (DEPT_NOMBRE) REFERENCES tbl_deporte (DEPT_NOMBRE)        ON DELETE SET NULL,
+    CONSTRAINT FK_TBL_CURSO_IMAGEN    FOREIGN KEY (CUR_IMAGEN)  REFERENCES tbl_imagen (IMG_ID)              ON DELETE SET NULL,
+    CONSTRAINT FK_TBL_CURSO_CATEGORIA FOREIGN KEY (CAT_TITULO)  REFERENCES tbl_categoria_curso (CAT_TITULO) ON DELETE RESTRICT,
     CONSTRAINT PK_TBL_CURSO           PRIMARY KEY (CUR_NOMBRE, CAT_TITULO)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
--- TBL_GRUPO
+-- tbl_grupo
 -- SCRUM-166 #3: CUR_NOMBRE, CAT_TITULO son parte de PK (implicitement NOT NULL)
 --   -> SET NULL imposible -> RESTRICT
 --   El grupo no existe sin curso. El curso no se borra fisicamente.
@@ -185,7 +184,7 @@ CREATE TABLE TBL_CURSO (
 -- GRP_PERIODO: integrado desde ALTER TABLE del DDL original; NUMBER(1) -> TINYINT
 -- GRP_FECHACREACION etc: Java usa LocalDate -> MySQL DATE
 -- --------------------------------------------------------
-CREATE TABLE TBL_GRUPO (
+CREATE TABLE tbl_grupo (
     META_ELIMINADO             BIGINT,
     GRP_ANIO                   BIGINT,
     GRP_ITERABLE               BIGINT,
@@ -199,24 +198,24 @@ CREATE TABLE TBL_GRUPO (
     GRP_FECHA_INSCRIP_CIERRE   DATE,
     PERF_ID                    VARCHAR(50),
     GRP_PERIODO                TINYINT      DEFAULT 1 NOT NULL,
-    CONSTRAINT FK_GRUPO_IMAGEN     FOREIGN KEY (GRP_IMAGEN)             REFERENCES TBL_IMAGEN (IMG_ID)                      ON DELETE SET NULL,
-    CONSTRAINT FK_GRUPO_CURSO      FOREIGN KEY (CUR_NOMBRE, CAT_TITULO) REFERENCES TBL_CURSO (CUR_NOMBRE, CAT_TITULO)       ON DELETE RESTRICT,
-    CONSTRAINT FK_GRUPO_INSTRUCTOR FOREIGN KEY (PERF_ID)                REFERENCES TBL_INSTRUCTOR (PERF_ID),
+    CONSTRAINT FK_GRUPO_IMAGEN     FOREIGN KEY (GRP_IMAGEN)             REFERENCES tbl_imagen (IMG_ID)                      ON DELETE SET NULL,
+    CONSTRAINT FK_GRUPO_CURSO      FOREIGN KEY (CUR_NOMBRE, CAT_TITULO) REFERENCES tbl_curso (CUR_NOMBRE, CAT_TITULO)       ON DELETE RESTRICT,
+    CONSTRAINT FK_GRUPO_INSTRUCTOR FOREIGN KEY (PERF_ID)                REFERENCES tbl_instructor (PERF_ID),
     CONSTRAINT PK_TBL_GRUPO        PRIMARY KEY (CAT_TITULO, CUR_NOMBRE, GRP_ANIO, GRP_ITERABLE)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
--- TBL_CLASE
+-- tbl_clase
 -- CLS_CODIGO: era SEQ_CLS_CODIGO (START 121) -> AUTO_INCREMENT
 -- CLS_FECHA: Java usa java.sql.Date -> MySQL DATE
---   (la hora se gestiona en TBL_HORARIO; comentario Oracle obsoleto)
+--   (la hora se gestiona en tbl_horario; comentario Oracle obsoleto)
 -- SCRUM-166 #4: PERF_ID -> se quita NOT NULL + se mantiene SET NULL
 --   Una clase puede quedar sin instructor asignado (instructor que se da de baja).
 --   NULL es semanticamente valido y la entidad Java no tiene nullable=false.
 -- SCRUM-166 #5: FK_CLASE_GRUPO con columnas NOT NULL -> RESTRICT
 --   Una clase sin grupo no tiene sentido; el grupo no se borra fisicamente.
 -- --------------------------------------------------------
-CREATE TABLE TBL_CLASE (
+CREATE TABLE tbl_clase (
     META_ELIMINADO       INT          NOT NULL,
     CLS_CODIGO           BIGINT       NOT NULL AUTO_INCREMENT,
     PERF_ID              VARCHAR(50),
@@ -228,70 +227,70 @@ CREATE TABLE TBL_CLASE (
     GRP_ITERABLE         BIGINT       NOT NULL,
     CUR_NOMBRE           VARCHAR(100) NOT NULL,
     CAT_TITULO           VARCHAR(100) NOT NULL,
-    CONSTRAINT FK_CLASE_INSTRUCTOR FOREIGN KEY (PERF_ID)                                        REFERENCES TBL_INSTRUCTOR (PERF_ID)                                    ON DELETE SET NULL,
-    CONSTRAINT FK_CLASE_GRUPO      FOREIGN KEY (CAT_TITULO, CUR_NOMBRE, GRP_ANIO, GRP_ITERABLE) REFERENCES TBL_GRUPO (CAT_TITULO, CUR_NOMBRE, GRP_ANIO, GRP_ITERABLE) ON DELETE RESTRICT,
+    CONSTRAINT FK_CLASE_INSTRUCTOR FOREIGN KEY (PERF_ID)                                        REFERENCES tbl_instructor (PERF_ID)                                    ON DELETE SET NULL,
+    CONSTRAINT FK_CLASE_GRUPO      FOREIGN KEY (CAT_TITULO, CUR_NOMBRE, GRP_ANIO, GRP_ITERABLE) REFERENCES tbl_grupo (CAT_TITULO, CUR_NOMBRE, GRP_ANIO, GRP_ITERABLE) ON DELETE RESTRICT,
     CONSTRAINT PK_TBL_CLASE        PRIMARY KEY (CLS_CODIGO)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
--- TBL_ALUMNO
+-- tbl_alumno
 -- SCRUM-166 #6: PERF_ID es PK -> SET NULL imposible -> CASCADE
 --   Un alumno es una especializacion de perfil; si el perfil
 --   se borra fisicamente, el registro de alumno no tiene existencia propia.
 -- --------------------------------------------------------
-CREATE TABLE TBL_ALUMNO (
+CREATE TABLE tbl_alumno (
     META_ELIMINADO INT         NOT NULL,
     PERF_ID        VARCHAR(50) NOT NULL,
     ALM_CODIGO     VARCHAR(20),
     ALM_TIPO       VARCHAR(20) NOT NULL,
     ALM_ESTADO     INT,
     CONSTRAINT CKC_ALM_TIPO_ALUM CHECK (ALM_TIPO IN ('Estudiante', 'Administrativo', 'Docente')),
-    CONSTRAINT FK_ALUMNO_PERFIL  FOREIGN KEY (PERF_ID) REFERENCES TBL_PERFIL (PERF_ID) ON DELETE CASCADE,
+    CONSTRAINT FK_ALUMNO_PERFIL  FOREIGN KEY (PERF_ID) REFERENCES tbl_perfil (PERF_ID) ON DELETE CASCADE,
     CONSTRAINT PERF_ID           PRIMARY KEY (PERF_ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
--- TBL_INTERMEDIA_ALUMNO_PROGRAMA
+-- tbl_intermedia_alumno_programa
 -- SCRUM-166 #7: PRG_NOMBRE parte de PK -> SET NULL imposible -> CASCADE
 --   Si el programa desaparece, la relacion alumno-programa pierde significado.
 -- SCRUM-166 #8: PERF_ID parte de PK -> SET NULL imposible -> CASCADE
 --   Si el alumno desaparece, sus relaciones con programas tambien.
 -- --------------------------------------------------------
-CREATE TABLE TBL_INTERMEDIA_ALUMNO_PROGRAMA (
+CREATE TABLE tbl_intermedia_alumno_programa (
     META_ELIMINADO INT          NOT NULL,
     PERF_ID        VARCHAR(50)  NOT NULL,
     PRG_NOMBRE     VARCHAR(200) NOT NULL,
     CONSTRAINT PK_INTERMEDIA_ALUMNO_PROGRAMA PRIMARY KEY (PERF_ID, PRG_NOMBRE),
-    CONSTRAINT FK_INTERMEDIA_PROGRAMA FOREIGN KEY (PRG_NOMBRE) REFERENCES TBL_PROGRAMA (PRG_NOMBRE) ON DELETE CASCADE,
-    CONSTRAINT FK_INTERMEDIA_ALUMNO   FOREIGN KEY (PERF_ID)    REFERENCES TBL_ALUMNO (PERF_ID)      ON DELETE CASCADE
+    CONSTRAINT FK_INTERMEDIA_PROGRAMA FOREIGN KEY (PRG_NOMBRE) REFERENCES tbl_programa (PRG_NOMBRE) ON DELETE CASCADE,
+    CONSTRAINT FK_INTERMEDIA_ALUMNO   FOREIGN KEY (PERF_ID)    REFERENCES tbl_alumno (PERF_ID)      ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
--- TBL_ASISTENCIA
+-- tbl_asistencia
 -- SCRUM-166 #9:  CLS_CODIGO parte de PK -> SET NULL imposible -> RESTRICT
 --   La asistencia es registro historico; no se debe borrar una clase
 --   que ya tiene asistencias registradas.
 -- SCRUM-166 #10: PERF_ID parte de PK -> SET NULL imposible -> RESTRICT
 --   El historial de asistencia de un alumno debe preservarse como evidencia.
 -- --------------------------------------------------------
-CREATE TABLE TBL_ASISTENCIA (
+CREATE TABLE tbl_asistencia (
     META_ELIMINADO INT         NOT NULL,
     PERF_ID        VARCHAR(50) NOT NULL,
     CLS_CODIGO     BIGINT      NOT NULL,
-    CONSTRAINT FK_ASISTENCIA_CLASE  FOREIGN KEY (CLS_CODIGO) REFERENCES TBL_CLASE (CLS_CODIGO)  ON DELETE RESTRICT,
-    CONSTRAINT FK_ASISTENCIA_ALUMNO FOREIGN KEY (PERF_ID)    REFERENCES TBL_ALUMNO (PERF_ID)    ON DELETE RESTRICT,
+    CONSTRAINT FK_ASISTENCIA_CLASE  FOREIGN KEY (CLS_CODIGO) REFERENCES tbl_clase (CLS_CODIGO)  ON DELETE RESTRICT,
+    CONSTRAINT FK_ASISTENCIA_ALUMNO FOREIGN KEY (PERF_ID)    REFERENCES tbl_alumno (PERF_ID)    ON DELETE RESTRICT,
     CONSTRAINT PK_TBL_ASISTENCIA    PRIMARY KEY (PERF_ID, CLS_CODIGO)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
--- TBL_HORARIO
+-- tbl_horario
 -- HR_ID: era SEQ_ID_HORARIO (START 1) -> AUTO_INCREMENT
--- HR_ESCENARIO: almacena nombre del escenario (VARCHAR), sin FK a TBL_ESCENARIO
+-- HR_ESCENARIO: almacena nombre del escenario (VARCHAR), sin FK a tbl_escenario
 -- SCRUM-166 #11: columnas de FK son NOT NULL -> SET NULL imposible -> CASCADE
 --   Un horario sin grupo no tiene razon de existir.
 --   Si el grupo se elimina fisicamente, sus horarios deben eliminarse.
 -- --------------------------------------------------------
-CREATE TABLE TBL_HORARIO (
+CREATE TABLE tbl_horario (
     META_ELIMINADO INT          NOT NULL,
     HR_ID          BIGINT       NOT NULL AUTO_INCREMENT,
     CAT_TITULO     VARCHAR(100) NOT NULL,
@@ -303,11 +302,11 @@ CREATE TABLE TBL_HORARIO (
     HR_HORAFIN     VARCHAR(8)   NOT NULL,
     HR_ESCENARIO   VARCHAR(100) NOT NULL,
     CONSTRAINT PK_TBL_HORARIO   PRIMARY KEY (HR_ID),
-    CONSTRAINT FK_HORARIO_GRUPO FOREIGN KEY (CAT_TITULO, CUR_NOMBRE, GRP_ANIO, GRP_ITERABLE) REFERENCES TBL_GRUPO (CAT_TITULO, CUR_NOMBRE, GRP_ANIO, GRP_ITERABLE) ON DELETE CASCADE
+    CONSTRAINT FK_HORARIO_GRUPO FOREIGN KEY (CAT_TITULO, CUR_NOMBRE, GRP_ANIO, GRP_ITERABLE) REFERENCES tbl_grupo (CAT_TITULO, CUR_NOMBRE, GRP_ANIO, GRP_ITERABLE) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
--- TBL_INSCRIPCION
+-- tbl_inscripcion
 -- INSCR_FECHAINSCRIPCION, INSCR_FECHADESVINCULACION:
 --   Java usa java.sql.Timestamp con @Temporal(TIMESTAMP) -> MySQL DATETIME
 -- SCRUM-166 #12: PERF_ID parte de PK -> SET NULL imposible -> RESTRICT
@@ -316,59 +315,60 @@ CREATE TABLE TBL_HORARIO (
 -- SCRUM-166 #13: CAT_TITULO/CUR_NOMBRE/GRP_ANIO/GRP_ITERABLE todos PK -> RESTRICT
 --   Un grupo con inscripciones no puede borrarse fisicamente.
 -- --------------------------------------------------------
-CREATE TABLE TBL_INSCRIPCION (
+CREATE TABLE tbl_inscripcion (
     META_ELIMINADO            INT          NOT NULL,
     INSCR_FECHAINSCRIPCION    DATETIME     NOT NULL,
     INSCR_FECHADESVINCULACION DATETIME,
+    INSCR_ESTADO              VARCHAR(10)  NOT NULL DEFAULT 'INSCRITO',
     GRP_ANIO                  BIGINT       NOT NULL,
     GRP_ITERABLE              BIGINT       NOT NULL,
     CUR_NOMBRE                VARCHAR(100) NOT NULL,
     CAT_TITULO                VARCHAR(100) NOT NULL,
     PERF_ID                   VARCHAR(50)  NOT NULL,
-    CONSTRAINT FK_INSCRIPCION_ALUMNO FOREIGN KEY (PERF_ID)                                        REFERENCES TBL_ALUMNO (PERF_ID)                                        ON DELETE RESTRICT,
-    CONSTRAINT FK_INSCRIPCION_GRUPO  FOREIGN KEY (CAT_TITULO, CUR_NOMBRE, GRP_ANIO, GRP_ITERABLE) REFERENCES TBL_GRUPO (CAT_TITULO, CUR_NOMBRE, GRP_ANIO, GRP_ITERABLE) ON DELETE RESTRICT,
+    CONSTRAINT FK_INSCRIPCION_ALUMNO FOREIGN KEY (PERF_ID)                                        REFERENCES tbl_alumno (PERF_ID)                                        ON DELETE RESTRICT,
+    CONSTRAINT FK_INSCRIPCION_GRUPO  FOREIGN KEY (CAT_TITULO, CUR_NOMBRE, GRP_ANIO, GRP_ITERABLE) REFERENCES tbl_grupo (CAT_TITULO, CUR_NOMBRE, GRP_ANIO, GRP_ITERABLE) ON DELETE RESTRICT,
     CONSTRAINT PK_TBL_INSCRIPCION    PRIMARY KEY (PERF_ID, CAT_TITULO, CUR_NOMBRE, GRP_ANIO, GRP_ITERABLE)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
--- TBL_COORDINADOR
--- NOTA SCRUM-166: PERF_ID es NOT NULL pero NO tiene FK hacia TBL_PERFIL.
+-- tbl_coordinador
+-- NOTA SCRUM-166: PERF_ID es NOT NULL pero NO tiene FK hacia tbl_perfil.
 --   Inconsistencia preexistente en el DDL de Oracle -- no introducida
 --   por esta migracion. Pendiente de decision de diseno.
 -- --------------------------------------------------------
-CREATE TABLE TBL_COORDINADOR (
+CREATE TABLE tbl_coordinador (
     META_ELIMINADO INT         NOT NULL,
     PERF_ID        VARCHAR(50) NOT NULL,
     CONSTRAINT PK_TBL_COORDINADOR PRIMARY KEY (PERF_ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
--- TBL_BANDEJA_ENTRADA
+-- tbl_bandeja_entrada
 -- --------------------------------------------------------
-CREATE TABLE TBL_BANDEJA_ENTRADA (
+CREATE TABLE tbl_bandeja_entrada (
     META_ELIMINADO INT         NOT NULL,
     PERF_ID        VARCHAR(50) NOT NULL,
     CONSTRAINT PK_TBL_BANDEJA_ENTRADA PRIMARY KEY (PERF_ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
--- TBL_BANDEJA_SALIDA
+-- tbl_bandeja_salida
 -- --------------------------------------------------------
-CREATE TABLE TBL_BANDEJA_SALIDA (
+CREATE TABLE tbl_bandeja_salida (
     META_ELIMINADO INT         NOT NULL,
     PERF_ID        VARCHAR(50),
     CONSTRAINT PK_TBL_BANDEJA_SALIDA PRIMARY KEY (PERF_ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
--- TBL_NOTIFICACION
+-- tbl_notificacion
 -- NTF_FECHAENVIO: sin entidad Java; DATETIME conservativo (Oracle DATE almacena hora)
 -- NTF_IDENTIFICADOR: sin secuencia en Oracle; BIGINT NOT NULL sin AUTO_INCREMENT
 --   (estrategia de poblacion desconocida al no existir entidad Java)
 -- SCRUM-166 #14: PERF_ID parte de PK -> SET NULL imposible -> RESTRICT
 --   Una notificacion sin emisor pierde trazabilidad de auditoria.
 -- --------------------------------------------------------
-CREATE TABLE TBL_NOTIFICACION (
+CREATE TABLE tbl_notificacion (
     META_ELIMINADO    INT           NOT NULL,
     NTF_IDENTIFICADOR BIGINT        NOT NULL,
     PERF_ID           VARCHAR(50)   NOT NULL,
@@ -378,15 +378,15 @@ CREATE TABLE TBL_NOTIFICACION (
     NTF_FECHAENVIO    DATETIME      NOT NULL,
     NTF_DESTINATARIOS VARCHAR(1000) NOT NULL,
     CONSTRAINT PK_TBL_NOTIFICACION            PRIMARY KEY (NTF_IDENTIFICADOR, PERF_ID),
-    CONSTRAINT FK_NOTIFICACION_BANDEJA_SALIDA FOREIGN KEY (PERF_ID) REFERENCES TBL_BANDEJA_SALIDA (PERF_ID) ON DELETE RESTRICT
+    CONSTRAINT FK_NOTIFICACION_BANDEJA_SALIDA FOREIGN KEY (PERF_ID) REFERENCES tbl_bandeja_salida (PERF_ID) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
--- TBL_ALERTA
+-- tbl_alerta
 -- SCRUM-166 #15: todas las columnas de FK son PK -> SET NULL imposible -> CASCADE
 --   Las alertas son mensajes del grupo. Si el grupo desaparece, sus alertas tambien.
 -- --------------------------------------------------------
-CREATE TABLE TBL_ALERTA (
+CREATE TABLE tbl_alerta (
     META_ELIMINADO    INT           NOT NULL,
     GRP_ANIO          BIGINT        NOT NULL,
     GRP_ITERABLE      BIGINT        NOT NULL,
@@ -394,15 +394,15 @@ CREATE TABLE TBL_ALERTA (
     CAT_TITULO        VARCHAR(100)  NOT NULL,
     ALERT_ASUNTO      VARCHAR(100)  NOT NULL,
     ALERT_DESCRIPCION VARCHAR(1000) NOT NULL,
-    CONSTRAINT FK_ALERTA_CURSO FOREIGN KEY (CAT_TITULO, CUR_NOMBRE, GRP_ANIO, GRP_ITERABLE) REFERENCES TBL_GRUPO (CAT_TITULO, CUR_NOMBRE, GRP_ANIO, GRP_ITERABLE) ON DELETE CASCADE,
+    CONSTRAINT FK_ALERTA_CURSO FOREIGN KEY (CAT_TITULO, CUR_NOMBRE, GRP_ANIO, GRP_ITERABLE) REFERENCES tbl_grupo (CAT_TITULO, CUR_NOMBRE, GRP_ANIO, GRP_ITERABLE) ON DELETE CASCADE,
     CONSTRAINT PK_TBL_ALERTA   PRIMARY KEY (GRP_ANIO, GRP_ITERABLE, CUR_NOMBRE, CAT_TITULO)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
--- TBL_ESCENARIO
+-- tbl_escenario
 -- ESC_ID: era SEQ_ESC_ID (START 1) -> AUTO_INCREMENT
 -- --------------------------------------------------------
-CREATE TABLE TBL_ESCENARIO (
+CREATE TABLE tbl_escenario (
     META_ELIMINADO   TINYINT      DEFAULT 0 NOT NULL,
     ESC_ID           BIGINT       NOT NULL AUTO_INCREMENT,
     ESC_NOMBRE       VARCHAR(100) NOT NULL,
@@ -417,7 +417,7 @@ CREATE TABLE TBL_ESCENARIO (
 -- DATOS INICIALES (SEED DATA)
 -- ============================================================
 
-INSERT INTO TBL_PERFIL (META_ELIMINADO, PERF_ID, PERF_NOMBRE, PERF_CORREO, PERF_IMAGEN, PERF_TIPOID, PERF_SEXO) VALUES
+INSERT INTO tbl_perfil (META_ELIMINADO, PERF_ID, PERF_NOMBRE, PERF_CORREO, PERF_IMAGEN, PERF_TIPOID, PERF_SEXO) VALUES
     (0, '3',          'SMERT EMJ',                       'edynsonjm@gmail.com',          NULL, 'CC', 'M'),
     (0, '1',          'EDYNSON MUNOZ JIMENEZ',           'edinsonmjim@unicauca.edu.co',  NULL, 'CC', 'M'),
     (0, '2',          'edynson munoz jimenez',           'edynsonmj@gmail.com',          NULL, 'CC', 'M'),
@@ -428,7 +428,7 @@ INSERT INTO TBL_PERFIL (META_ELIMINADO, PERF_ID, PERF_NOMBRE, PERF_CORREO, PERF_
     (0, '1061721857', 'JOHAN RICARDO MENDEZ CASTRO',     'johanmendez@unicauca.edu.co',  NULL, 'TI', 'M'),
     (0, '1061813673', 'Juan Sebastian Pisso',            'jpisso@unicauca.edu.co',       NULL, 'CC', 'M');
 
-INSERT INTO TBL_ALUMNO (META_ELIMINADO, PERF_ID, ALM_CODIGO, ALM_TIPO, ALM_ESTADO) VALUES
+INSERT INTO tbl_alumno (META_ELIMINADO, PERF_ID, ALM_CODIGO, ALM_TIPO, ALM_ESTADO) VALUES
     (0, '3',          NULL, 'Estudiante',     NULL),
     (0, '1',          NULL, 'Administrativo', NULL),
     (0, '2',          NULL, 'Docente',        NULL),
@@ -438,7 +438,7 @@ INSERT INTO TBL_ALUMNO (META_ELIMINADO, PERF_ID, ALM_CODIGO, ALM_TIPO, ALM_ESTAD
     (0, '1061700114', NULL, 'Estudiante',     NULL),
     (0, '1061721857', NULL, 'Estudiante',     NULL);
 
-INSERT INTO TBL_CATEGORIA_CURSO (META_ELIMINADO, CAT_TITULO, CAT_DESCRIPCION, CAT_IMAGEN) VALUES
+INSERT INTO tbl_categoria_curso (META_ELIMINADO, CAT_TITULO, CAT_DESCRIPCION, CAT_IMAGEN) VALUES
     (0, 'seleccionado ', 'Es un espacio para el entrenamiento y participacion en eventos deportivos competitivos de caracter universitario, realizados a nivel local, nacional e internacional, bien sea en la red ASCUN o invitaciones de otras universidades.', NULL),
     (0, 'Recreativo',    'El deporte recreativo es la modalidad definida como aquella practicada por placer y diversion, sin ninguna intencion de competir o superar a un adversario.', NULL),
     (0, 'Semillero',     'Este espacio tiene la facultad de ayudar a desarrollar destrezas fisicas, hacer ejercicios, socializar, divertirse, aprender a jugar formando parte de un grupo o equipo, aprender a jugar limpio y a mejorar su autoestima.', NULL),
@@ -446,7 +446,7 @@ INSERT INTO TBL_CATEGORIA_CURSO (META_ELIMINADO, CAT_TITULO, CAT_DESCRIPCION, CA
     (1, 'prurba2',       'Rur7r',   NULL),
     (1, 'ururt',         'Prueba',  NULL);
 
-INSERT INTO TBL_DEPORTE (META_ELIMINADO, DEPT_NOMBRE) VALUES
+INSERT INTO tbl_deporte (META_ELIMINADO, DEPT_NOMBRE) VALUES
     (0, 'Futbol'),
     (0, 'Baloncesto'),
     (0, 'Tenis'),
@@ -455,9 +455,9 @@ INSERT INTO TBL_DEPORTE (META_ELIMINADO, DEPT_NOMBRE) VALUES
     (0, 'Voleibol'),
     (0, 'Atletismo');
 
-INSERT INTO TBL_FACULTAD (META_ELIMINADO, FAC_NOMBRE) VALUES (0, 'fiet');
+INSERT INTO tbl_facultad (META_ELIMINADO, FAC_NOMBRE) VALUES (0, 'fiet');
 
-INSERT INTO TBL_CURSO (META_ELIMINADO, CUR_NOMBRE, DEPT_NOMBRE, CAT_TITULO, CUR_DESCRIPCION, CUR_IMAGEN) VALUES
+INSERT INTO tbl_curso (META_ELIMINADO, CUR_NOMBRE, DEPT_NOMBRE, CAT_TITULO, CUR_DESCRIPCION, CUR_IMAGEN) VALUES
     (0, 'futbol 1',             'Futbol',     'seleccionado ', 'Este curso es un programa competitivo que busca desarrollar las habilidades tecnicas, tacticas y fisicas de los jugadores para enfrentar a otras facultades e instituciones a nivel local y nacional.', NULL),
     (0, 'baloncesto',           'Baloncesto', 'seleccionado ', 'Este curso es ideal para hombres y mujeres que buscan competir a nivel superior en baloncesto. Se enfoca en la practica de tecnicas avanzadas y la mejora de la condicion fisica.', NULL),
     (0, 'natacion',              'Natacion',   'Semillero',     'Descr', NULL),
@@ -465,14 +465,14 @@ INSERT INTO TBL_CURSO (META_ELIMINADO, CUR_NOMBRE, DEPT_NOMBRE, CAT_TITULO, CUR_
     (0, 'baloncesto seleccionado', 'Baloncesto', 'seleccionado ', 'El curso de baloncesto seleccionado es un espacio dentro del programa de deporte competitivo de la Universidad del Cauca, disenado para atletas con un alto nivel de habilidad y dedicacion. En este entorno, los estudiantes seleccionados tienen la oportunidad de entrenar y competir en eventos deportivos universitarios de caracter local, nacional e internacional.', NULL),
     (0, 'ping pong',            'Ping pong',  'Recreativo',    'El ping pong recreativo es una modalidad del deporte del ping pong que se enfoca en la diversion y el disfrute, mas que en la competencia. En este entorno, los jugadores pueden desarrollar habilidades tecnicas y tacticas, mientras que tambien se enfocan en la socializacion y la relacion con otros jugadores.', NULL);
 
-INSERT INTO TBL_INSTRUCTOR (META_ELIMINADO, PERF_ID) VALUES (0, '2'), (0, '1061813673');
--- NOTA: el INSERT original de PERF_ID '987445' se omite porque no tiene entrada en TBL_PERFIL;
+INSERT INTO tbl_instructor (META_ELIMINADO, PERF_ID) VALUES (0, '2'), (0, '1061813673');
+-- NOTA: el INSERT original de PERF_ID '987445' se omite porque no tiene entrada en tbl_perfil;
 -- agregar primero el perfil correspondiente antes de insertar el instructor.
 
-INSERT INTO TBL_COORDINADOR (META_ELIMINADO, PERF_ID) VALUES (0, '1');
+INSERT INTO tbl_coordinador (META_ELIMINADO, PERF_ID) VALUES (0, '1');
 
--- TBL_ESCENARIO: ESC_ID omitido, AUTO_INCREMENT asigna valores 1-10
-INSERT INTO TBL_ESCENARIO (META_ELIMINADO, ESC_NOMBRE, ESC_DESCRIPCION, ESC_NUM_TRIBUNAS, ESC_DISPONIBLE) VALUES
+-- tbl_escenario: ESC_ID omitido, AUTO_INCREMENT asigna valores 1-10
+INSERT INTO tbl_escenario (META_ELIMINADO, ESC_NOMBRE, ESC_DESCRIPCION, ESC_NUM_TRIBUNAS, ESC_DISPONIBLE) VALUES
     (0, 'Piscina Olimpica',                    'Natacion. Seccion de clavados fuera de servicio.',                              0, 1),
     (0, 'Pista Atletica',                      'Medidas reglamentarias.',                                                       1, 1),
     (0, 'Cancha Descubierta de Voleibol',      'Medidas reglamentarias.',                                                       1, 1),
@@ -483,3 +483,4 @@ INSERT INTO TBL_ESCENARIO (META_ELIMINADO, ESC_NOMBRE, ESC_DESCRIPCION, ESC_NUM_
     (0, 'Sala de Ajedrez',                     NULL,                                                                            0, 1),
     (0, 'Salon de Aerobicos y Baile Deportivo', NULL,                                                                           0, 1),
     (0, 'Sala de Ping Pong',                   NULL,                                                                            0, 1);
+

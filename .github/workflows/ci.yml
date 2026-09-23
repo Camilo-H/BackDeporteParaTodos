@@ -43,6 +43,11 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
+      - name: Load database schema
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y mysql-client
+          mysql -h127.0.0.1 -P3306 -uroot -ptestroot deporteParaTodos < src/main/resources/DDL-MYSQL.sql
+
       - name: Build and run tests
         run: mvn --batch-mode --update-snapshots verify
         env:

@@ -55,9 +55,22 @@ class AlumnoGatewayTest {
 
         alumnoGateway.obtenerAlumnosGrupo("Recreativo", "Natacion", 2025, 1);
 
-        // Verifica que el 5º argumento (eliminado) sea siempre 0
+        // La query nativa filtra eliminado=0 Y inscr_estado='INSCRITO'; solo alumnos activos e inscritos llegan al gateway.
         verify(repoAlumno).buscarAlumnosGrupoRaw("Recreativo", "Natacion", 2025, 1, 0);
         verify(repoAlumno, never()).buscarAlumnosGrupoRaw(any(), any(), any(), any(), eq(1));
+    }
+
+    @Test
+    void obtenerAlumnosGrupo_soloAlumnosInscritos_alumnoEnEsperaExcluidoPorFiltroSQL() {
+        // La query nativa incluye AND ins.inscr_estado = 'INSCRITO'.
+        // Si el único alumno del grupo está EN_ESPERA, el SQL lo filtra y el repo retorna vacío.
+        when(repoAlumno.buscarAlumnosGrupoRaw("Recreativo", "Natacion", 2025, 1, 0))
+                .thenReturn(Collections.emptyList());
+
+        List<Alumno> resultado = alumnoGateway.obtenerAlumnosGrupo("Recreativo", "Natacion", 2025, 1);
+
+        assertTrue(resultado.isEmpty(),
+                "Un alumno EN_ESPERA no debe aparecer en la lista de alumnos del grupo");
     }
 
     @Test

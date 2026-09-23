@@ -18,7 +18,7 @@ import lombok.Setter;
 @Getter
 
 @Entity
-@Table(name = "TBL_IMAGEN")
+@Table(name = "tbl_imagen")
 public class ImagenEntidad {
 
     @Id
