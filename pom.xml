@@ -123,6 +123,20 @@
 				<artifactId>sonar-maven-plugin</artifactId>
 				<version>5.7.0.6970</version>
 			</plugin>
+			<!-- Ejecuta **/*IT.java (tests de integracion contra BD real) en la fase
+			     verify, separados de los tests unitarios de Surefire (**/*Test.java). -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
@@ -171,6 +185,16 @@
 								     del DDL a nombres en minusculas (convencion estandar MySQL/Linux), eliminando
 								     la necesidad del flag tanto en CI como en docker-compose local. -->
 								<exclude>**/DesarrollopruebaApplicationTests.java</exclude>
+							</excludes>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-failsafe-plugin</artifactId>
+						<configuration>
+							<excludes>
+								<!-- InscripcionConcurrenciaIT requiere BD MySQL real. -->
+								<exclude>**/InscripcionConcurrenciaIT.java</exclude>
 							</excludes>
 						</configuration>
 					</plugin>

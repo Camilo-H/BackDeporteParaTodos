@@ -20,4 +20,5 @@ public class InscripcionDto {
     private int iterable;
     private Timestamp fechaInscripcion;
     private Timestamp fechaDesvinculacion;
+    private String estado;
 }

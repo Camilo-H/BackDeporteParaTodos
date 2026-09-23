@@ -32,8 +32,8 @@ public interface IAlumnoRepositorio extends CrudRepository<AlumnoEntidad,String>
           AND ins.grp_anio = :anio
           AND ins.grp_iterable = :iterable
           AND ins.meta_eliminado = 0
-          AND (ins.inscr_fechadesvinculacion IS NULL
-               OR ins.inscr_fechadesvinculacion > CURRENT_TIMESTAMP)
+          AND ins.inscr_estado = 'INSCRITO'
+          AND ins.inscr_fechadesvinculacion IS NULL
         """, nativeQuery = true)
     List<Object[]> buscarAlumnosGrupoRaw(
         @Param("categoria") String categoria,

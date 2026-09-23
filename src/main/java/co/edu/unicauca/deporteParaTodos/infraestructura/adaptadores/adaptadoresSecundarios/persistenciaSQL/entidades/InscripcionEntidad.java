@@ -55,4 +55,7 @@ public class InscripcionEntidad {
 
     @Column(name = "META_ELIMINADO")
     private int eliminado;
+
+    @Column(name = "INSCR_ESTADO")
+    private String estado;
 }

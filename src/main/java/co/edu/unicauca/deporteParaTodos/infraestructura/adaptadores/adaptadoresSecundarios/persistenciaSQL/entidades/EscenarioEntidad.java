@@ -16,7 +16,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "TBL_ESCENARIO")
+@Table(name = "tbl_escenario")
 public class EscenarioEntidad {
 
     @Id

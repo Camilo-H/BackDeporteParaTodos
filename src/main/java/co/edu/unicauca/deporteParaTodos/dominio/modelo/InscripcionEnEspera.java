@@ -1,24 +1,19 @@
 package co.edu.unicauca.deporteParaTodos.dominio.modelo;
 
-import java.sql.Timestamp;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.sql.Timestamp;
+
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
 @Getter
-public class Inscripcion {
-
+@Setter
+public class InscripcionEnEspera {
     private String alumnoId;
-    private String categoria;
-    private String curso;
-    private int anio;
-    private int iterable;
+    private String nombre;
+    private String correo;
     private Timestamp fechaInscripcion;
-    private Timestamp fechaDesvinculacion;
-    private String estado;
 }

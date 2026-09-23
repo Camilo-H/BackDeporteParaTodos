@@ -29,7 +29,7 @@ public interface IGrupoRepositorio extends CrudRepository<GrupoEntidad, GrupoId>
 
     @Query(value = """
     SELECT DISTINCT g.*
-    FROM TBL_GRUPO g
+    FROM tbl_grupo g
     WHERE g.PERF_ID = :instructorId and g.META_ELIMINADO= 0
     """, nativeQuery = true)
     List<GrupoEntidad> obtenerGruposPorInstructor(@Param("instructorId") String instructorId);

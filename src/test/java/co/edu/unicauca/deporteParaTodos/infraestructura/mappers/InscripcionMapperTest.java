@@ -34,7 +34,7 @@ class InscripcionMapperTest {
     }
 
     private Inscripcion inscripcionBase() {
-        return new Inscripcion(ALUMNO_ID, CATEGORIA, CURSO, ANIO, ITERABLE, AHORA, null);
+        return new Inscripcion(ALUMNO_ID, CATEGORIA, CURSO, ANIO, ITERABLE, AHORA, null, "INSCRITO");
     }
 
     // ────────── toDominio ──────────
@@ -106,7 +106,7 @@ class InscripcionMapperTest {
 
     @Test
     void toDto_conFechasNulas_retornaFechasNulas() {
-        Inscripcion inscripcion = new Inscripcion(ALUMNO_ID, CATEGORIA, CURSO, ANIO, ITERABLE, null, null);
+        Inscripcion inscripcion = new Inscripcion(ALUMNO_ID, CATEGORIA, CURSO, ANIO, ITERABLE, null, null, null);
         InscripcionDto resultado = InscripcionMapper.toDto(inscripcion);
         assertNull(resultado.getFechaInscripcion());
         assertNull(resultado.getFechaDesvinculacion());
@@ -121,7 +121,7 @@ class InscripcionMapperTest {
 
     @Test
     void fromDto_mapeaTodosLosCampos() {
-        InscripcionDto dto = new InscripcionDto(ALUMNO_ID, CATEGORIA, CURSO, ANIO, ITERABLE, AHORA, null);
+        InscripcionDto dto = new InscripcionDto(ALUMNO_ID, CATEGORIA, CURSO, ANIO, ITERABLE, AHORA, null, null);
         Inscripcion resultado = InscripcionMapper.fromDto(dto);
         assertEquals(ALUMNO_ID, resultado.getAlumnoId());
         assertEquals(CATEGORIA, resultado.getCategoria());
@@ -133,7 +133,7 @@ class InscripcionMapperTest {
 
     @Test
     void fromDto_conFechasNulas_retornaFechasNulas() {
-        InscripcionDto dto = new InscripcionDto(ALUMNO_ID, CATEGORIA, CURSO, ANIO, ITERABLE, null, null);
+        InscripcionDto dto = new InscripcionDto(ALUMNO_ID, CATEGORIA, CURSO, ANIO, ITERABLE, null, null, null);
         Inscripcion resultado = InscripcionMapper.fromDto(dto);
         assertNull(resultado.getFechaInscripcion());
         assertNull(resultado.getFechaDesvinculacion());

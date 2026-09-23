@@ -2,7 +2,10 @@ package co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadores
 
 import co.edu.unicauca.deporteParaTodos.aplicacion.puertos.puertosEntrada.IInscripcionServicio;
 import co.edu.unicauca.deporteParaTodos.dominio.modelo.Inscripcion;
+import co.edu.unicauca.deporteParaTodos.dominio.modelo.InscripcionEnEspera;
 import co.edu.unicauca.deporteParaTodos.infraestructura.adaptadores.adaptadoresPrimarios.adaptadorRest.DTOs.InscripcionDto;
+
+import java.util.List;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -45,19 +49,20 @@ class InscripcionRestTest {
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(inscripcionRest)
+                .setCustomArgumentResolvers(new AuthenticationPrincipalArgumentResolver())
                 .setMessageConverters(new MappingJackson2HttpMessageConverter())
                 .build();
     }
 
     private Inscripcion inscripcionBase() {
-        return new Inscripcion(ALUMNO_ID, CATEGORIA, CURSO, ANIO, ITERABLE, AHORA, null);
+        return new Inscripcion(ALUMNO_ID, CATEGORIA, CURSO, ANIO, ITERABLE, AHORA, null, null);
     }
 
     @Test
     void postInscribir_retornaCreated() throws Exception {
         when(servicio.inscribir(any(Inscripcion.class))).thenReturn(inscripcionBase());
 
-        InscripcionDto dto = new InscripcionDto(ALUMNO_ID, CATEGORIA, CURSO, ANIO, ITERABLE, null, null);
+        InscripcionDto dto = new InscripcionDto(ALUMNO_ID, CATEGORIA, CURSO, ANIO, ITERABLE, null, null, null);
 
         mockMvc.perform(post("/api/v2/inscripcion")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -99,12 +104,30 @@ class InscripcionRestTest {
     }
 
     @Test
+    void getListaEspera_retornaOk() throws Exception {
+        List<InscripcionEnEspera> lista = List.of(
+                new InscripcionEnEspera(ALUMNO_ID, "Juan Perez", "juan@unicauca.edu.co", AHORA));
+        when(servicio.listarEnEspera(anyString(), anyString(), anyInt(), anyInt()))
+                .thenReturn(lista);
+
+        mockMvc.perform(get("/api/v2/inscripcion/listaEspera")
+                        .param("prmCategoria", CATEGORIA)
+                        .param("prmCurso", CURSO)
+                        .param("prmAnio", String.valueOf(ANIO))
+                        .param("prmIterable", String.valueOf(ITERABLE)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].alumnoId").value(ALUMNO_ID))
+                .andExpect(jsonPath("$[0].nombre").value("Juan Perez"))
+                .andExpect(jsonPath("$[0].correo").value("juan@unicauca.edu.co"));
+    }
+
+    @Test
     void putDesvincularInscripcion_retornaOk() throws Exception {
-        Inscripcion desvinculada = new Inscripcion(ALUMNO_ID, CATEGORIA, CURSO, ANIO, ITERABLE, AHORA, AHORA);
+        Inscripcion desvinculada = new Inscripcion(ALUMNO_ID, CATEGORIA, CURSO, ANIO, ITERABLE, AHORA, AHORA, null);
         when(servicio.desvincularInscripcion(anyString(), anyString(), anyString(), anyInt(), anyInt()))
                 .thenReturn(desvinculada);
 
-        InscripcionDto dto = new InscripcionDto(ALUMNO_ID, CATEGORIA, CURSO, ANIO, ITERABLE, null, null);
+        InscripcionDto dto = new InscripcionDto(ALUMNO_ID, CATEGORIA, CURSO, ANIO, ITERABLE, null, null, null);
 
         mockMvc.perform(put("/api/v2/desvincularInscripcion")
                         .contentType(MediaType.APPLICATION_JSON)
